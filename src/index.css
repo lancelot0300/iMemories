@@ -7,7 +7,9 @@
 }
 html{
   font-size: 62.5%; 
-  --btn-color: #BB86FC
+  --btn-color: #BB86FC;
+  --navBarHeight: 60px;
+  --appHeight: calc(100vh - var(--navBarHeight));
 }
 body{
   font-size: 1.6rem; 
