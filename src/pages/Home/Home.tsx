@@ -1,25 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { FolderGridContainer, HomeContainer } from './home.styles'
 import FolderTypeElement from '../../components/FolderTypeElement/FolderTypeElement'
-import { Item } from '../../intefaces'
+import { Item } from '../../types'
 import NavBar from '../../components/NavBar/NavBar'
 import useDropHook from '../../hooks/dropHook/useDropHook'
-import Statuses from '../../components/Statuses/Statuses'
-
-
+import { SelectedElements } from '../../types'
 
 
 
 
 function Home() {
 
-    const [selectedElement, setSelectedElement] = useState<Item | null>(null)
-
-    const activeFolderRef = useRef<HTMLDivElement | null>(null);
-    const filesRefs = useRef<(HTMLDivElement | null)[]>([]);
-
+    const [selectedElements, setSelectedElements] = useState<SelectedElements[]>([]);
     const containerRef = useRef<HTMLDivElement | null>(null);
-
+    const allFilesRefs = useRef<(HTMLDivElement | null)[]>([]);
     useDropHook({containerRef});
     
 
@@ -174,31 +168,30 @@ function Home() {
     
 
     const handleClickOutside = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        
-        if (activeFolderRef.current && selectedElement && !activeFolderRef.current.contains(e.target as Node)) {
-            activeFolderRef.current.classList.remove("active");
-            activeFolderRef.current = null;
-            setSelectedElement(null);
-        }
+        if(!containerRef.current) return;
+        if(selectedElements.length === 0) return;
+        if(allFilesRefs.current.some((el) => el?.contains(e.target as Node))) return;
+
+        setSelectedElements([]);
     };
+
 
 
 
     
   return (
     <>
-    {console.log("re")}
-        <NavBar selectedElement={selectedElement} />
+        <NavBar selectedElement={selectedElements} />
         <HomeContainer onClick={handleClickOutside} ref={containerRef}>
             <FolderGridContainer>
                 {Object.values(folderStructure).map((item: Item, index) => {
                     return (
                         <FolderTypeElement
                             key={item.id}
-                            ref={(el) => {filesRefs.current[index] = el}}
                             element={item}
-                            activeFolderRef={activeFolderRef}
-                            setSelectedElement={setSelectedElement}
+                            selectedElements={selectedElements}
+                            setSelectedElements={setSelectedElements}
+                            ref={(el) => {allFilesRefs.current[index] = el}}
                         />  
                     )
                 })}

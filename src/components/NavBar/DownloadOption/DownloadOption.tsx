@@ -1,8 +1,8 @@
-import { Item } from '../../../intefaces'
+import { Item, SelectedElements } from '../../../types'
 import { NavBarItem } from '../navBar.styles'
 
 type DownloadOptionProps = {
-  selectedElement: Item | null;
+  selectedElement: SelectedElements[];
 }
 
 function DownloadOption({selectedElement} : DownloadOptionProps) {

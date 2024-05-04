@@ -1,8 +1,8 @@
-import { Item } from "../../../intefaces";
+import { Item, SelectedElements } from "../../../types";
 import { NavBarItem } from "../navBar.styles";
 
 type CopyOptionProps = {
-  selectedElement: Item | null;
+  selectedElement: SelectedElements[];
 };
 
 function CopyOption({ selectedElement }: CopyOptionProps) {
