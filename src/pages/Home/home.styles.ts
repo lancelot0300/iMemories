@@ -1,15 +1,5 @@
 import styled from "styled-components";
 
-
-
-export const HomeContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: var(--appHeight);
-`;
-
 export const FolderGridContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -18,8 +8,24 @@ export const FolderGridContainer = styled.div`
     align-items: flex-start;
     align-content: flex-start;
     gap: 20px;
-    padding: 20px;
-    width: 100%;
+    margin: 20px;
+    width: calc(100% - 40px);
     height: 100%;
+    border: 2px dashed var(--background-color);
+
+`;
+
+
+
+export const HomeContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: var(--appHeight);
+
+    &.dragging ${FolderGridContainer} {
+      border: 2px dashed #212121;
+    }
 `;
 

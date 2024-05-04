@@ -1,7 +1,11 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FolderGridContainer, HomeContainer } from './home.styles'
 import FolderTypeElement from '../../components/FolderTypeElement/FolderTypeElement'
 import { Item } from '../../intefaces'
+import NavBar from '../../components/NavBar/NavBar'
+import useDropHook from '../../hooks/dropHook/useDropHook'
+import Statuses from '../../components/Statuses/Statuses'
+
 
 
 
@@ -9,11 +13,15 @@ import { Item } from '../../intefaces'
 
 function Home() {
 
-    const [folderPath, setFolderPath] = React.useState<string>("/")
-    const [selectedElement, setSelectedElement] = React.useState<Item | null>(null)
+    const [selectedElement, setSelectedElement] = useState<Item | null>(null)
 
     const activeFolderRef = useRef<HTMLDivElement | null>(null);
     const filesRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+    const containerRef = useRef<HTMLDivElement | null>(null);
+
+    useDropHook({containerRef});
+    
 
 
     const folderStructure = [
@@ -168,31 +176,34 @@ function Home() {
     const handleClickOutside = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         
         if (activeFolderRef.current && selectedElement && !activeFolderRef.current.contains(e.target as Node)) {
-            activeFolderRef.current.style.backgroundColor = "";
+            activeFolderRef.current.classList.remove("active");
             activeFolderRef.current = null;
             setSelectedElement(null);
         }
     };
 
 
+
+    
   return (
     <>
-    {console.log(folderStructure)}
-    <HomeContainer onClick={handleClickOutside}>
-        <FolderGridContainer>
-            {Object.values(folderStructure).map((item: Item, index) => {
-                return (
-                    <FolderTypeElement
-                        key={item.id}
-                        ref={(el) => {filesRefs.current[index] = el}}
-                        element={item}
-                        activeFolderRef={activeFolderRef}
-                        setSelectedElement={setSelectedElement}
-                    />  
-                )
-            })}
-        </FolderGridContainer>
-    </HomeContainer>   
+    {console.log("re")}
+        <NavBar selectedElement={selectedElement} />
+        <HomeContainer onClick={handleClickOutside} ref={containerRef}>
+            <FolderGridContainer>
+                {Object.values(folderStructure).map((item: Item, index) => {
+                    return (
+                        <FolderTypeElement
+                            key={item.id}
+                            ref={(el) => {filesRefs.current[index] = el}}
+                            element={item}
+                            activeFolderRef={activeFolderRef}
+                            setSelectedElement={setSelectedElement}
+                        />  
+                    )
+                })}
+            </FolderGridContainer>
+        </HomeContainer>   
     </>
     
   )

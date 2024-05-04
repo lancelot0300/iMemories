@@ -32,16 +32,6 @@ export const InputWrapper = styled.div`
     align-items: center;
     justify-content: space-between;
     width: 100%;
-
-
-
-    input[type="text"], input[type="password"] {
-        width: 100%;
-        max-width: 300px;
-        padding: 5px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-    }
 `
 
 export const Button = styled.button`
@@ -52,10 +42,11 @@ export const Button = styled.button`
     color: #fff;
     cursor: pointer;
 `
-export const StyledField = styled.input`
+export const StyledField = styled.input<{ $isError?: boolean }>`
     width: 100%;
     max-width: 300px;
     padding: 5px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: ${(props) => (props.$isError ? "2px solid red" : "1px solid #ccc")};
+
 `
