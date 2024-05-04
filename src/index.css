@@ -10,13 +10,14 @@ html{
   --btn-color: #BB86FC;
   --navBarHeight: 60px;
   --appHeight: calc(100vh - var(--navBarHeight));
+  --background-color: #121212;
 }
 body{
   font-size: 1.6rem; 
   font-family: 'Roboto', sans-serif; 
   line-height: 1.6; 
   color: #fff; 
-  background-color: #121212;
+  background-color: var(--background-color)
 }
 body, html, .App{
   height: 100%; 

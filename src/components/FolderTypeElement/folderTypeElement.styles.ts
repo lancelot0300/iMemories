@@ -14,8 +14,14 @@ export const Name = styled.span`
     font-weight: 500;
     color: #fff;
     text-align: center;
-    height: 30px;
     user-select: none;
+    white-space: pre-wrap;
+    width: 80px;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 `
 export const FolderTypeElementContainer = styled.div`
     display: flex;
@@ -25,15 +31,21 @@ export const FolderTypeElementContainer = styled.div`
     padding: 10px;
     border-radius: 5px;
     width: 100px;
-    height: 100px;
     cursor: pointer;
     transition: background-color 0.2s;
 
-    &:hover {
-        background-color: #f9f9f9;
+    &.active {
         ${Icon}, ${Name} {
             color: #000; 
         }
+    }
+
+    &:hover {
+        background-color: #414141;
+    }
+
+    &.active {
+        background-color: #a5a5a5;
     }
 
     &:active {
