@@ -48,7 +48,6 @@ function UploadOption() {
 
   return (
     <>
-    {console.log(files)}
       <NavBarItem onClick={handleOpenModal}>Upload</NavBarItem>
       <CreateModal isOpened={isOpened} setIsOpened={setIsOpened}>
         <UploadModal>

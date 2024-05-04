@@ -23,7 +23,12 @@ export const Name = styled.span`
     -webkit-line-clamp: 2;
     overflow: hidden;
 `
-export const FolderTypeElementContainer = styled.div`
+
+type FolderTypeProps = {
+    $isSelected: boolean;
+}
+
+export const FolderTypeElementContainer = styled.div<FolderTypeProps>`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -33,19 +38,20 @@ export const FolderTypeElementContainer = styled.div`
     width: 100px;
     cursor: pointer;
     transition: background-color 0.2s;
+    background-color: ${({ $isSelected }) => $isSelected ? '#a5a5a5' : ''};
 
-    &.active {
-        ${Icon}, ${Name} {
-            color: #000; 
+        &.active {
+            ${Icon}, ${Name} {
+                color: #000; 
+            }
         }
-    }
 
     &:hover {
-        background-color: #414141;
+        background-color: ${({ $isSelected }) => $isSelected ? '#a5a5a5' : '#414141'};
     }
 
-    &.active {
-        background-color: #a5a5a5;
+    ${Icon}, ${Name} {
+        color: ${({ $isSelected }) => $isSelected ? '#000' : '#fff'};
     }
 
     &:active {

@@ -1,40 +1,57 @@
 import React, { forwardRef, useEffect, useRef } from 'react'
-import { Item } from '../../intefaces'
+import { Item, SelectedElements } from '../../types'
 import { FolderTypeElementContainer, Icon, Name } from './folderTypeElement.styles'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFile, faFolder } from '@fortawesome/free-regular-svg-icons'
 
 interface IProps {
   element: Item
-  activeFolderRef: React.MutableRefObject<HTMLDivElement | null>;
-  setSelectedElement: React.Dispatch<React.SetStateAction<Item | null>>;
+  setSelectedElements: React.Dispatch<React.SetStateAction<SelectedElements[]>>;
+  selectedElements: SelectedElements[];
 }
 
-const FolderTypeElement = forwardRef<HTMLDivElement, IProps>(({ element, activeFolderRef, setSelectedElement }: IProps, ref) => {
-  
+const FolderTypeElement = forwardRef<HTMLDivElement, IProps>(({element, setSelectedElements, selectedElements}, ref) => {
   const icon = element.isFolder ? <FontAwesomeIcon icon={faFolder} size='2x' /> : <FontAwesomeIcon icon={faFile} size='2x' />
+  const isSelected = selectedElements.some((el) => el.itemData.id === element.id);
 
-    const handleActiveElementClick = (e: React.MouseEvent<HTMLDivElement>) => {
 
-      if(e.currentTarget === activeFolderRef.current) {
-          setSelectedElement(null);
-          activeFolderRef.current.classList.remove("active");
-          activeFolderRef.current = null;
-          return;
+  const selectSingleElement = () => {
+    setSelectedElements((prev) => {
+
+      if (prev.some((el) => el.itemData.id === element.id) && prev.length === 1) {
+        return [];
       }
 
-      if (activeFolderRef.current) {
-          activeFolderRef.current.classList.remove("active");
+      const newElement = { itemData: element};
+      return [newElement];
+    });
+  }
+
+  const selectMultipleElements = () => {
+    setSelectedElements((prev) => {
+
+      if (prev.some((el) => el.itemData.id === element.id)) {
+        return prev.filter((el) => el.itemData.id !== element.id);
       }
-      
-      e.currentTarget.classList.add("active");
-      activeFolderRef.current = e.currentTarget;
-      setSelectedElement(element);
+
+      const newElement = { itemData: element};
+      return [...prev, newElement];
+    });
+  }
+
+  const handleActiveElementClick = (e: React.MouseEvent<HTMLDivElement>) => {
+
+    if (e.ctrlKey) {
+      selectMultipleElements();
+    } else {
+      selectSingleElement();
+    }
+    
   };
 
 
   return (
-    <FolderTypeElementContainer  onClick={handleActiveElementClick}  ref={ref}>
+    <FolderTypeElementContainer onClick={handleActiveElementClick} ref={ref} $isSelected={isSelected}>
       <Icon>{icon}</Icon>
       <Name>{element.fileDetails.name}</Name>
     </FolderTypeElementContainer>

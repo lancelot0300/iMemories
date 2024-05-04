@@ -4,14 +4,16 @@ import {
   NavBarItem,
   RightOptionsWrapper,
 } from "./navBar.styles";
-import { Item } from "../../intefaces";
+import { SelectedElements } from "../../types";
 import DownloadOption from "./DownloadOption/DownloadOption";
 import CopyOption from "./CopyOption/CopyOption";
 import DeleteOption from "./DeleteOption/DeleteOption";
 import UploadOption from "./UploadOption/UploadOption";
 
+
+
 type NavBarProps = {
-  selectedElement: Item | null;
+  selectedElement: SelectedElements[];
 };
 
 function NavBar({ selectedElement }: NavBarProps) {
