@@ -19,7 +19,7 @@ function App() {
               path="/login"
               element={
                 <ProtectedRoute
-                  isAllowed={!user?.token}
+                  isAllowed={user?.token ? true : false}
                   redirectPath="/"
                 >
                   <Login />

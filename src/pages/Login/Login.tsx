@@ -37,18 +37,21 @@ function Login() {
   const onSubmit = async ({ Username, Password }: ILoginFormValues) => {
 
     try {
-      const login = await axios.post(process.env.REACT_APP_API_URL + "/user/login", {
+      const login = await axios.post(process.env.REACT_APP_API_URL + "/user/login",
+       {
         Username,
         Password,
       }, {
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+
+        
       });
 
-      localStorage.setItem("user", JSON.stringify(login.data));
       dispatch(loginSuccess(login.data));
-      navigate("/");
+      // navigate("/");
 
     } catch (error) {
       if (axios.isAxiosError<IError>(error)) {
@@ -84,14 +87,14 @@ function Login() {
         <h1>Log in</h1>
         <form onSubmit={handleSubmit} title="Login">
           <InputWrapper>
-            <StyledField id="Username" name="Username" placeholder="Username" value={values.Username} onChange={handleChange} $isError={!!errors.Username || status}/>
+            <StyledField id="Username" name="Username" autoComplete="username" placeholder="Username" value={values.Username} onChange={handleChange} $isError={!!errors.Username || status}/>
             <ErrorMessage $isError={!!errors.Username}>
               {touched.Username ? errors.Username : ""}
             </ErrorMessage>
           </InputWrapper>
 
           <InputWrapper>
-            <StyledField type="password" id="Password" name="Password" placeholder="Password" value={values.Password} onChange={handleChange} $isError={!!errors.Password || status} />
+            <StyledField type="password" autoComplete="current-password" id="Password" name="Password" placeholder="Password" value={values.Password} onChange={handleChange} $isError={!!errors.Password || status} />
             <ErrorMessage $isError={!!errors.Password && !!touched.Password}>
               {touched.Password ? errors.Password : ""}
             </ErrorMessage>
