@@ -46,11 +46,6 @@ function useDropHook({ containerRef }: { containerRef: React.RefObject<HTMLDivEl
             }
         };
 
-        if (!container.hasAttribute('draggable')) {
-            console.error("Drag and drop not supported in this browser.");
-            return;
-        }
-
         container.addEventListener("dragover", handleDragOver);
         container.addEventListener("drop", handleDrop);
         container.addEventListener("dragleave", handleDragLeave);
