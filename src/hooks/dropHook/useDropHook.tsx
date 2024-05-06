@@ -1,59 +1,68 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react';
 import useOptionsHook from '../uploadHook/useUploadFiles';
 
-function useDropHook({containerRef}: {containerRef: React.RefObject<HTMLDivElement>}) {
+function useDropHook({ containerRef }: { containerRef: React.RefObject<HTMLDivElement> }) {
+    const { uploadFiles } = useOptionsHook();
 
-    const {uploadFiles} = useOptionsHook();
-    
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
 
-    const handleDragOver = (e: DragEvent) => {
-        e.preventDefault();
-        if (containerRef.current) {
-            containerRef.current.classList.add("dragging");
-        }
+        const handleDragOver = (e: DragEvent) => {
+            e.preventDefault();
+            if (containerRef.current) {
+                containerRef.current.classList.add("dragging");
+            }
+        };
 
-    }
+        const handleDrop = (e: DragEvent) => {
+            e.preventDefault();
+            if (containerRef.current) {
+                containerRef.current.classList.remove("dragging");
+            }
 
-    const handleDrop = (e: DragEvent) => {
-        e.preventDefault();
-        if (containerRef.current) {
-            containerRef.current.classList.remove("dragging");
-        }
-    
-        if (!process.env.REACT_APP_API_URL) {
-            console.error("REACT_APP_API_URL is not defined.");
+            if (!process.env.REACT_APP_API_URL) {
+                console.error("REACT_APP_API_URL is not defined.");
+                return;
+            }
+
+            if (!e.dataTransfer) {
+                console.error("No dataTransfer");
+                return;
+            }
+
+            const files = e.dataTransfer.files;
+            if (files.length === 0) {
+                console.error("No files dropped.");
+                return;
+            }
+
+            uploadFiles(files);
+        };
+
+        const handleDragLeave = () => {
+            if (containerRef.current) {
+                containerRef.current.classList.remove("dragging");
+            }
+        };
+
+        if (!container.hasAttribute('draggable')) {
+            console.error("Drag and drop not supported in this browser.");
             return;
         }
-    
-        if (!e.dataTransfer) {
-            console.error("No dataTransfer");
-            return;
-        }
-    
-    
-        uploadFiles(e.dataTransfer.files);
-    }
 
-
-    const handleDragLeave = () => {
-        if (containerRef.current) {
-            containerRef.current.classList.remove("dragging");
-        }
-    }
-
-   useEffect(() => {
-        containerRef.current?.addEventListener("dragover", handleDragOver);
-        containerRef.current?.addEventListener("drop", handleDrop);
-        containerRef.current?.addEventListener("dragleave", handleDragLeave);
+        container.addEventListener("dragover", handleDragOver);
+        container.addEventListener("drop", handleDrop);
+        container.addEventListener("dragleave", handleDragLeave);
 
         return () => {
-            containerRef.current?.removeEventListener("dragover", handleDragOver);
-            containerRef.current?.removeEventListener("drop", handleDrop);
-            containerRef.current?.removeEventListener("dragleave", handleDragLeave);
+            container.removeEventListener("dragover", handleDragOver);
+            container.removeEventListener("drop", handleDrop);
+            container.removeEventListener("dragleave", handleDragLeave);
         };
-    }
-    , []);
+    }, [containerRef, uploadFiles]);
+
+    return null; 
 }
 
-export default useDropHook
+export default useDropHook;

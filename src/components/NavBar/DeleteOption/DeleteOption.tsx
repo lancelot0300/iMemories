@@ -1,4 +1,4 @@
-import { Item, SelectedElements } from '../../../types'
+import {  SelectedElements } from '../../../types'
 import { NavBarItem } from '../navBar.styles'
 
 type DeleteOptionProps = {

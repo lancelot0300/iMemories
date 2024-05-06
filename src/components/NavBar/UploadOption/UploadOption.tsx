@@ -44,7 +44,7 @@ function UploadOption() {
     if(!isOpened && files ) {
       setFiles(null);
     }
-  }, [isOpened])
+  }, [isOpened, files])
 
   return (
     <>

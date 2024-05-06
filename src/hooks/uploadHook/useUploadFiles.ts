@@ -25,7 +25,7 @@ function useOptionsHook() {
                 status: "0%",
             }));
 
-            const requestPromise = axios.post(apiUrl, formData, {
+            axios.post(apiUrl, formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },

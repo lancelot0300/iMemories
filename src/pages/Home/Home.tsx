@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, {  useRef, useState } from 'react'
 import { FolderGridContainer, HomeContainer } from './home.styles'
 import FolderTypeElement from '../../components/FolderTypeElement/FolderTypeElement'
 import { Item } from '../../types'

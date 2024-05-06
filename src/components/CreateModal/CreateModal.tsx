@@ -1,5 +1,4 @@
-import { create } from "domain";
-import React, { PropsWithChildren, useEffect, useRef } from "react";
+import React, { PropsWithChildren } from "react";
 import { createPortal } from "react-dom";
 import { Overlay } from "./createModal.styles";
 

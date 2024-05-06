@@ -1,4 +1,3 @@
-import React from "react";
 import {
   FormWrapper,
   LoginContainer,
@@ -11,7 +10,6 @@ import { useFormik } from "formik";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import { useAppDispatch } from "../../hooks/stateHook/useStateHook";
 import { loginSuccess } from "../../state/features/auth/authSlice";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 type ILoginFormValues = {
@@ -26,7 +24,6 @@ type IError = {
 function Login() {
 
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
 
   const schema = yup.object().shape({

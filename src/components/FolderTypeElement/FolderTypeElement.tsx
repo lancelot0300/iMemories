@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef } from 'react'
+import React, { forwardRef } from 'react'
 import { Item, SelectedElements } from '../../types'
 import { FolderTypeElementContainer, Icon, Name } from './folderTypeElement.styles'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
