@@ -53,6 +53,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-transform-private-property-in-object": "^7.24.5",
     "@types/jsonwebtoken": "^9.0.6"
   }
 }
