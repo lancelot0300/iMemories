@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { number } from 'yup';
 
 export const Icon = styled.div`
     flex-shrink: 0;
@@ -61,5 +62,20 @@ export const FolderTypeElementContainer = styled.div<FolderTypeProps>`
 
 `;
 
+type ContextWrapperProps = {
+    $posX: string
+    $posY: string
+}
 
+export const ContextWrapper = styled.div<ContextWrapperProps>`
+    position: fixed;
+    left: ${({ $posX }) => $posX + "px" || "50%"};
+    top: ${({ $posY }) => $posY + "px" || "50%"};
+    ${({ $posY, $posX }) => $posY && $posX ? "" : "transform: translate(-50%, -50%)"};
+    min-width: 150px;
+    min-height: 200px;
+    border-radius: 1rem;
+    background-color: #3d3d3d;
+    padding: 10px;
+`
 

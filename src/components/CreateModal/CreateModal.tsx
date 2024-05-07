@@ -16,6 +16,7 @@ function CreateModal({
 }: PropsWithChildren<CreateModalProps>) {
   const handleClickOutside = (e: React.MouseEvent<HTMLDivElement>) => {
     if(e.button !== 0) return;
+    e.stopPropagation()
     setIsOpened(false);
   };
 
@@ -24,7 +25,7 @@ function CreateModal({
 
     return createPortal(
       <>
-        {!withoutOverlay && <Overlay onClick={handleClickOutside} />}
+        <Overlay $wihoutOverlay={withoutOverlay} onClick={handleClickOutside} />
         {children}
       </>,
       document.getElementById("modal-root") as HTMLElement
