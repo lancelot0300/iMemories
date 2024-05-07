@@ -17,6 +17,9 @@ export type Item = {
     };
 }
 
-export type SelectedElements = {
-    itemData: Item;
-};
+export type ActiveFiles = {
+    ref: HTMLDivElement | null
+    item: Item
+}
+
+export type SelectedElements = Item[]

@@ -1,3 +1,4 @@
+import React from "react";
 import {
   FormWrapper,
   LoginContainer,
@@ -32,7 +33,6 @@ function Login() {
   });
 
   const onSubmit = async ({ Username, Password }: ILoginFormValues) => {
-
     try {
       const login = await axios.post(process.env.REACT_APP_API_URL + "/user/login",
        {
@@ -48,7 +48,8 @@ function Login() {
       });
 
       dispatch(loginSuccess(login.data));
-      // navigate("/");
+      const jwt = document.cookie.split(";").find((c) => c.trim().startsWith("jwt="));
+      console.log(jwt);
 
     } catch (error) {
       if (axios.isAxiosError<IError>(error)) {

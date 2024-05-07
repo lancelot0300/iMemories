@@ -2,7 +2,7 @@ import {  SelectedElements } from "../../../types";
 import { NavBarItem } from "../navBar.styles";
 
 type CopyOptionProps = {
-  selectedElement: SelectedElements[];
+  selectedElement: SelectedElements;
 };
 
 function CopyOption({ selectedElement }: CopyOptionProps) {

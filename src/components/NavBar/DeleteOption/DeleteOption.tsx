@@ -2,7 +2,7 @@ import {  SelectedElements } from '../../../types'
 import { NavBarItem } from '../navBar.styles'
 
 type DeleteOptionProps = {
-  selectedElement: SelectedElements[];
+  selectedElement: SelectedElements;
 }
 
 function DeleteOption({selectedElement} : DeleteOptionProps) {

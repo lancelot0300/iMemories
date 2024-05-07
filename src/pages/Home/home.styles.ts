@@ -16,13 +16,17 @@ export const FolderGridContainer = styled.div`
 `;
 
 
-
-export const HomeContainer = styled.div`
+type ContainerProps = {
+  $isDragging: boolean;
+}
+export const HomeContainer = styled.div<ContainerProps>`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: var(--appHeight);
+    cursor: ${({ $isDragging }) => $isDragging ? 'crosshair' : 'default'};
+
 
     &.dragging ${FolderGridContainer} {
       border: 2px dashed #212121;

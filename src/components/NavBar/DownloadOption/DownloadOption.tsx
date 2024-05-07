@@ -2,7 +2,7 @@ import {  SelectedElements } from '../../../types'
 import { NavBarItem } from '../navBar.styles'
 
 type DownloadOptionProps = {
-  selectedElement: SelectedElements[];
+  selectedElement: SelectedElements;
 }
 
 function DownloadOption({selectedElement} : DownloadOptionProps) {

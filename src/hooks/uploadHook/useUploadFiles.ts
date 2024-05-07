@@ -11,7 +11,7 @@ function useOptionsHook() {
 
     const uploadFiles = async (files: FileList | null) => {
         if (files) {
-          const apiUrl = process.env.REACT_APP_API_URL + "/file/16D49864-CD29-47BE-10C2-08DC649F508B" + path;
+          const apiUrl = process.env.REACT_APP_API_URL + "/file/A66946B5-99B4-425F-0922-08DC6499EC98" + path;
       
           for (let i = 0; i < files.length; i++) {
             const formData = new FormData();
@@ -29,6 +29,7 @@ function useOptionsHook() {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
+              withCredentials: true,
               onUploadProgress(progressEvent) {
                 if(progressEvent && progressEvent.total) {
                   const procent = (progressEvent.loaded / progressEvent.total) * 100;

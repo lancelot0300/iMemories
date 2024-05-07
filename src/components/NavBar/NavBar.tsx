@@ -13,7 +13,7 @@ import UploadOption from "./UploadOption/UploadOption";
 
 
 type NavBarProps = {
-  selectedElement: SelectedElements[];
+  selectedElement: SelectedElements;
 };
 
 function NavBar({ selectedElement }: NavBarProps) {
