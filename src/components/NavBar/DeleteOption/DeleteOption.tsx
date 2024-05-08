@@ -1,16 +1,13 @@
-import {  SelectedElements } from '../../../types'
+import { useAppSelector } from '../../../hooks/stateHook/useStateHook';
 import { NavBarItem } from '../navBar.styles'
 
-type DeleteOptionProps = {
-  selectedElement: SelectedElements;
-}
-
-function DeleteOption({selectedElement} : DeleteOptionProps) {
+function DeleteOption() {
+  const { selectedFiles } = useAppSelector((state) => state.selectedFiles);
 
 
   const handleDeleteClick = () => {
-    if(selectedElement) {
-      console.log("Deleting: ", selectedElement)
+    if(selectedFiles) {
+      console.log("Deleting: ", selectedFiles)
     }
     else {
       alert("Select an item to Delete")

@@ -3,23 +3,22 @@ import { FolderGridContainer, HomeContainer } from "./home.styles";
 import FolderTypeElement from "../../components/FolderTypeElement/FolderTypeElement";
 import { Item } from "../../types";
 import NavBar from "../../components/NavBar/NavBar";
-import useDropHook from "../../hooks/dropHook/useDropHook";
+import useDropHook from "../../hooks/dropHook/useDropFiles";
 import useSelection from "../../hooks/selectionHook/useSelection";
 
 function Home() {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  useDropHook({ containerRef });
+
   const {
-    handleClickOutside,
-    handleMouseLeave,
+    handleMouseUp,
     handleMouseDown,
     handleMouseMove,
-    handleMouseUp,
+    handleClick,
+    handleMouseLeave,
     draggingRef,
-    selectedElements,
-    setSelectedElements,
     allFilesRefs,
   } = useSelection({ containerRef });
+  useDropHook({ containerRef, allFilesRefs });
 
   const folderStructure = [
     {
@@ -167,16 +166,16 @@ function Home() {
       },
     },
   ];
-
   return (
     <>
-      <NavBar selectedElement={selectedElements} />
+    {console.log("Home")}
+      <NavBar />
       <HomeContainer
-        onClick={handleClickOutside}
-        onMouseLeave={handleMouseLeave}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}
+        onClick={handleClick}
         $isDragging={draggingRef.current ? true : false}
         ref={containerRef}
       >
@@ -186,11 +185,11 @@ function Home() {
               <FolderTypeElement
                 key={item.id}
                 element={item}
-                selectedElements={selectedElements}
-                setSelectedElements={setSelectedElements}
+                onClick={(e) => console.log(e.target)}
                 ref={(el) => {
                   allFilesRefs.current[index] = { ref: el, item: item };
                 }}
+                draggingRef={draggingRef}
               />
             );
           })}

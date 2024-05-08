@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { Item, SelectedElements } from "../../types";
 import {
   ContextWrapper,
@@ -9,16 +9,22 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile, faFolder } from "@fortawesome/free-regular-svg-icons";
 import CreateModal from "../CreateModal/CreateModal";
+import { useAppDispatch, useAppSelector } from "../../hooks/stateHook/useStateHook";
+import { addFile, removeFile, selectFiles } from "../../state/features/filesManager/filesSlice";
 
 interface IProps {
   element: Item;
-  setSelectedElements: React.Dispatch<React.SetStateAction<SelectedElements>>;
-  selectedElements: SelectedElements;
+  draggingRef: React.MutableRefObject<boolean>;
+  draggable?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 const FolderTypeElement = forwardRef<HTMLDivElement, IProps>(
-  ({ element, setSelectedElements, selectedElements }, ref) => {
+  ({ element }, ref) => {
     const [isOpened, setIsOpened] = useState(false);
+
+    const { selectedFiles } = useAppSelector((state) => state.selectedFiles);
+    const dispatch = useAppDispatch();
 
     const posX = useRef("0");
     const posY = useRef("0");
@@ -28,26 +34,28 @@ const FolderTypeElement = forwardRef<HTMLDivElement, IProps>(
     ) : (
       <FontAwesomeIcon icon={faFile} size="2x" />
     );
-    const isSelected = selectedElements.some((el) => el.id === element.id);
+    const isSelected = selectedFiles.some((el) => el.id === element.id);
 
     const selectSingleElement = () => {
-      if (isSelected && selectedElements.length === 1) {
-        return setSelectedElements([]);
+      
+      if(isSelected && selectedFiles.length === 1) {
+        dispatch(selectFiles([]))
       }
-      setSelectedElements([element]);
+      else {
+        dispatch(selectFiles([element]))
+      }
+ 
     };
 
     const selectMultipleElements = () => {
-      setSelectedElements((prev) => {
-        if (prev.some((el) => el.id === element.id)) {
-          return prev.filter((el) => el.id !== element.id);
-        }
-
-        return [...prev, element];
-      });
+      if (isSelected) {
+        dispatch(removeFile(element));
+      } else {
+        dispatch(addFile(element));
+      }
     };
 
-    const handleActiveElementClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const setActiveElement = (e: React.MouseEvent<HTMLDivElement>) => {
       if (e.ctrlKey) {
         selectMultipleElements();
       } else {
@@ -62,24 +70,42 @@ const FolderTypeElement = forwardRef<HTMLDivElement, IProps>(
       posY.current = e.clientY.toString()
     };
 
+    const handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      console.log("double click")
+    }
+
+    const lastTimeClick = useRef(0);
+
+    const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+      console.log("click")
+      const clickTime = new Date().getTime();
+      const timeSinceLastClick = clickTime - lastTimeClick.current;
+
+      if (timeSinceLastClick < 300) {
+        return handleDoubleClick(event);
+      }
+      
+      lastTimeClick.current = clickTime;
+
+      setActiveElement(event);
+    };
+
     return (
       <>
+      {console.log("FolderTypeElement")}
         <FolderTypeElementContainer
-          onClick={handleActiveElementClick}
+          onClick={handleClick}
           onContextMenu={handleRightClick}
           ref={ref}
           $isSelected={isSelected}>
           <Icon>{icon}</Icon>
           <Name>{element.fileDetails.name}</Name>
         </FolderTypeElementContainer>
-       <CreateModal isOpened={isOpened} setIsOpened={setIsOpened} withoutOverlay>
-          <ContextWrapper $posX={posX.current} $posY={posY.current}>
-              <ul style={{listStyle: "none"}}>
-                <li>copy</li>
-                <li>del</li>
-              </ul>
-          </ContextWrapper>
-       </CreateModal>
+        <CreateModal isOpened={isOpened} setIsOpened={setIsOpened} withoutOverlay >
+            <ContextWrapper $posX={posX.current} $posY={posY.current}>
+                
+            </ContextWrapper>
+        </CreateModal>
       </>
     );
   }

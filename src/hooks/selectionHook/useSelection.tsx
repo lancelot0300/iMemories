@@ -1,109 +1,183 @@
-import { useRef, useState } from "react";
-import { ActiveFiles, SelectedElements } from "../../types";
+import React, {  useEffect, useRef } from "react";
+import { ActiveFiles } from "../../types";
+import { useAppDispatch, useAppSelector } from "../stateHook/useStateHook";
+import { selectFiles } from "../../state/features/filesManager/filesSlice";
 
 type Props = {
     containerRef: React.MutableRefObject<HTMLDivElement | null>
 }
 
 function useSelection({containerRef} : Props) {
-
-    const [selectedElements, setSelectedElements] = useState<SelectedElements>([]);
+    const { selectedFiles } = useAppSelector((state) => state.selectedFiles);
+    const dispatch = useAppDispatch();
     const allFilesRefs = useRef<(ActiveFiles)[]>([]);
-
   
     const draggingRef = useRef(false);
-    const isClicked = useRef(false);
-    const startPosRef = useRef({ x: 0, y: 0 });
-    const endPosRef = useRef({ x: 0, y: 0 });
-    const selectDiv = useRef<HTMLDivElement | null>(null);
+    let {current: isClickedFlag} = useRef(false);
+    let {current: startPos} = useRef<{ x: number; y: number } | null>(null);
+    let {current: endPos } = useRef<{ x: number; y: number } | null>(null);
+    let {current: selectDiv} = useRef<HTMLDivElement | null>(null);
+
+    const { current: allFiles } = allFilesRefs;
+    let { current: dragging } = draggingRef;
+    
+    const isClickedContainer = (e?: React.MouseEvent<HTMLDivElement>) => {
+        if(e?.target === undefined) return true;
+        return e?.target === containerRef.current || e?.target === containerRef.current?.firstChild;
+    }
+
+    const isFolderTypeChild = (e?: React.MouseEvent<HTMLDivElement>) => {
+        return allFilesRefs.current.some((el) => el.ref?.contains(e?.target as Node));
+    }
 
     const createSelection = (x: number, y: number, width: number, height: number) => {
-        if (!containerRef.current) return;
-
-        if (!selectDiv.current) {
-            selectDiv.current = document.createElement('div');
-            containerRef.current.appendChild(selectDiv.current);
+        const div = selectDiv || document.createElement('div');
+        const style = div.style;
+    
+        style.display = 'block';
+        style.width = `${width}px`;
+        style.height = `${height}px`;
+        style.position = 'absolute';
+        style.top = `${y}px`;
+        style.left = `${x}px`;
+        style.border = '1px solid black';
+        style.backgroundColor = 'rgba(255,255,255,0.05)';
+    
+        if (!selectDiv) {
+            containerRef.current?.appendChild(div);
+            selectDiv = div;
         }
-
-        selectDiv.current.style.display = 'block';
-        selectDiv.current.style.width = `${width}px`;
-        selectDiv.current.style.height = `${height}px`;
-        selectDiv.current.style.position = 'absolute';
-        selectDiv.current.style.top = `${y}px`;
-        selectDiv.current.style.left = `${x}px`;
-        selectDiv.current.style.border = '1px solid black';
-        selectDiv.current.style.backgroundColor = 'rgba(255,255,255,0.05)';
     };
 
     const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-        e.stopPropagation();
-        if (allFilesRefs.current.some((el) => el.ref?.contains(e.target as Node))) return;
-        startPosRef.current = { x: e.clientX, y: e.clientY };
-        endPosRef.current = { x: e.clientX, y: e.clientY };
-        isClicked.current = true;
+        if(!isClickedContainer(e)) return;
+        if(dragging) return;
+
+        console.log("mouse down")
+        startPos = { x: e.clientX, y: e.clientY };
+        endPos = { x: e.clientX, y: e.clientY };
+        isClickedFlag = true;
     };
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        e.stopPropagation();
-        if (isClicked.current === false) return;
-        if (Math.min(startPosRef.current.x, endPosRef.current.x) > 1000 && Math.min(startPosRef.current.y, endPosRef.current.y) > 1000) {
-            draggingRef.current = true;
+        if (!isClickedFlag || !startPos) return;
+        const { clientX: mouseX, clientY: mouseY } = e;
+        
+        endPos = { x: e.clientX, y: e.clientY };
+
+
+        if(startPos.x > endPos.x) endPos.x += 1;
+        if(startPos.y > endPos.y) endPos.y += 1;
+
+
+        const selectedItems = allFiles.filter((el) => {
+            if (!el || !el.ref) return false;
+            const rect = el.ref.getBoundingClientRect();
+            if(!startPos || !endPos) return false;
+            return (
+                rect.x < Math.max(startPos.x, endPos.x) &&
+                rect.x + rect.width > Math.min(startPos.x, endPos.x) &&
+                rect.y < Math.max(startPos.y, endPos.y) &&
+                rect.y + rect.height > Math.min(startPos.y, endPos.y)
+            );
+        })
+        
+        selectedItems.forEach((el) => {
+            if (el.ref) {
+                el.ref.style.backgroundColor = 'rgba(255,255,255,0.1)';
+            }
+        });
+
+        allFiles.forEach((el) => {
+            if (el.ref && !selectedItems.includes(el)) {
+                el.ref.style.backgroundColor = '';
+            }
+        });
+
+
+
+        const deltaX = Math.abs(startPos.x - mouseX);
+        const deltaY = Math.abs(startPos.y - mouseY);
+    
+        if (deltaX < 20 && deltaY < 20) {
+            resetSelection();
+            return;
         }
-        endPosRef.current = { x: e.clientX, y: e.clientY };
+
+        if (!dragging) dragging = true;
+
         createSelection(
-            Math.min(startPosRef.current.x, endPosRef.current.x),
-            Math.min(startPosRef.current.y, endPosRef.current.y),
-            Math.abs(startPosRef.current.x - endPosRef.current.x),
-            Math.abs(startPosRef.current.y - endPosRef.current.y)
+            Math.min(startPos.x, endPos.x),
+            Math.min(startPos.y, endPos.y),
+            Math.abs(startPos.x - endPos.x),
+            Math.abs(startPos.y - endPos.y)
         );
     };
 
-    const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
-        e.stopPropagation();
-        isClicked.current = false;
-
-        if (!selectDiv.current) return false;
-      
-            selectDiv.current.remove();
-            selectDiv.current = null;
-
-            if (!containerRef.current) return;
-
-            const selectedItems = allFilesRefs.current.filter((el) => {
-                if (!el || !el.ref) return false;
-                const rect = el.ref.getBoundingClientRect();
-                return (
-                    rect.x < Math.max(startPosRef.current.x, endPosRef.current.x) &&
-                    rect.x + rect.width > Math.min(startPosRef.current.x, endPosRef.current.x) &&
-                    rect.y < Math.max(startPosRef.current.y, endPosRef.current.y) &&
-                    rect.y + rect.height > Math.min(startPosRef.current.y, endPosRef.current.y)
-                );
-            }).map(el => el.item);
-
-            if (selectedItems.length !== 0) {
-                setSelectedElements(selectedItems);
-            }
-            draggingRef.current = false;
-        
+    const resetSelection = () => {
+        selectDiv?.remove();
+        selectDiv = null;
+        dragging = false;
     };
 
-    const handleClickOutside = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (allFilesRefs.current.some((el) => el.ref?.contains(e.target as Node))) return;
-        if (endPosRef.current.x === startPosRef.current.x && endPosRef.current.y === startPosRef.current.y) {
-            draggingRef.current = false;
-            if (!containerRef.current || selectedElements.length === 0) return;
-            setSelectedElements([]);
-        }
+    const handleMouseUp = () => {
+        if (!isClickedFlag) return;
+
+        console.log("mouse up")
+        allFiles.forEach((el) => {
+            if (el.ref) {
+                el.ref.style.backgroundColor = '';
+            }
+        });
+
+        isClickedFlag = false;
+        dragging = false;
+    
+        selectDiv?.remove();
+        selectDiv = null;
+    };
+
+    
+    const handleClick = (e?: React.MouseEvent<HTMLDivElement>) => {
+       
+        if(!isClickedContainer(e)) return;
+        console.log("click event")
+        const selectedItems = allFiles.filter((el) => {
+            if (!el || !el.ref) return false;
+            const rect = el.ref.getBoundingClientRect();
+            if(!startPos || !endPos) return false;
+            return (
+                rect.x < Math.max(startPos.x, endPos.x) &&
+                rect.x + rect.width > Math.min(startPos.x, endPos.x) &&
+                rect.y < Math.max(startPos.y, endPos.y) &&
+                rect.y + rect.height > Math.min(startPos.y, endPos.y)
+            );
+        }).map(el => el.item);
+
+
+
+       if(selectedItems.length === 0 && selectedFiles.length === 0) return
+       dispatch(selectFiles(selectedItems));
+
     }
+
+    const handleClickOutside = () => {
+
+        if(!isClickedFlag) return;
+        if(!dragging) return;
+
+        handleMouseUp();
+        handleClick();
+    };
+
+
 
     const handleMouseLeave = () => {
-        draggingRef.current = false;
-        selectDiv.current?.remove();
-        selectDiv.current = null;
-        isClicked.current = false
-    }
+        window.addEventListener('mouseup', handleClickOutside, {once: true});
+    };
 
-    return {handleMouseUp, handleMouseMove, handleMouseDown, handleClickOutside, handleMouseLeave, draggingRef, selectedElements, setSelectedElements, allFilesRefs}
+
+    return {handleMouseUp, handleMouseMove, handleMouseDown, handleMouseLeave, handleClick, draggingRef, allFilesRefs}
 
 }
 

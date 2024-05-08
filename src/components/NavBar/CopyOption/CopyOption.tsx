@@ -1,14 +1,14 @@
-import {  SelectedElements } from "../../../types";
+import { useAppSelector } from "../../../hooks/stateHook/useStateHook";
 import { NavBarItem } from "../navBar.styles";
 
-type CopyOptionProps = {
-  selectedElement: SelectedElements;
-};
 
-function CopyOption({ selectedElement }: CopyOptionProps) {
+
+function CopyOption() {
+  const { selectedFiles } = useAppSelector((state) => state.selectedFiles);
+
   const handleCopyClick = () => {
-    if (selectedElement) {
-      console.log("Copy: ", selectedElement);
+    if (selectedFiles) {
+      console.log("Copy: ", selectedFiles);
     } else {
       alert("Select an item to download");
     }

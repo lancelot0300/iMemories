@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/stateHook/useStateHo
 import { Status, StatusFileName, StatusesWrapper } from './statuses.styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
-import { removeFileStatus } from '../../state/features/activeRequests/activeRequests';
+import { removeFileStatus } from '../../state/features/activeRequests/requestsSlice';
 
 function Statuses() {
 

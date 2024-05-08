@@ -1,8 +1,18 @@
 import React, { useEffect } from 'react';
 import useOptionsHook from '../uploadHook/useUploadFiles';
+import { ActiveFiles } from '../../types';
 
-function useDropHook({ containerRef }: { containerRef: React.RefObject<HTMLDivElement> }) {
+type HookProps = {
+    containerRef: React.MutableRefObject<HTMLDivElement | null>;
+    allFilesRefs: React.MutableRefObject<(ActiveFiles)[]>;
+}
+
+function useDropHook({ containerRef }: HookProps) {
     const { uploadFiles } = useOptionsHook();
+
+    const ifNotFiles = (e: DragEvent) => {
+        return !e.dataTransfer?.types.includes("Files");
+    }
 
     useEffect(() => {
         const container = containerRef.current;
@@ -10,6 +20,10 @@ function useDropHook({ containerRef }: { containerRef: React.RefObject<HTMLDivEl
 
         const handleDragOver = (e: DragEvent) => {
             e.preventDefault();
+
+            if(ifNotFiles(e)) return;
+
+
             if (containerRef.current) {
                 containerRef.current.classList.add("dragging");
             }
@@ -17,6 +31,8 @@ function useDropHook({ containerRef }: { containerRef: React.RefObject<HTMLDivEl
 
         const handleDrop = (e: DragEvent) => {
             e.preventDefault();
+            if(ifNotFiles(e)) return;
+
             if (containerRef.current) {
                 containerRef.current.classList.remove("dragging");
             }
@@ -40,7 +56,10 @@ function useDropHook({ containerRef }: { containerRef: React.RefObject<HTMLDivEl
             uploadFiles(files);
         };
 
-        const handleDragLeave = () => {
+        const handleDragLeave = (e: DragEvent) => {
+            
+            if(ifNotFiles(e)) return;
+
             if (containerRef.current) {
                 containerRef.current.classList.remove("dragging");
             }

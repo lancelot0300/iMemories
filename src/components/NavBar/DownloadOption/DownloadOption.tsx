@@ -1,16 +1,13 @@
-import {  SelectedElements } from '../../../types'
+import { useAppSelector } from '../../../hooks/stateHook/useStateHook';
 import { NavBarItem } from '../navBar.styles'
 
-type DownloadOptionProps = {
-  selectedElement: SelectedElements;
-}
 
-function DownloadOption({selectedElement} : DownloadOptionProps) {
-
+function DownloadOption() {
+  const { selectedFiles } = useAppSelector((state) => state.selectedFiles);
 
   const handleDownloadClick = () => {
-    if(selectedElement) {
-      console.log("Downloading: ", selectedElement)
+    if(selectedFiles) {
+      console.log("Downloading: ", selectedFiles)
     }
     else {
       alert("Select an item to download")

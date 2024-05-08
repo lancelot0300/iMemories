@@ -11,4 +11,5 @@ export const Overlay = styled.div<OverLayProps>`
     width: 100vw;
     height: 100vh;
     background-color: ${({ $wihoutOverlay }) => $wihoutOverlay ? '' : 'rgba(0, 0, 0, 0.5)'};
+    user-select: none;
 `;
