@@ -1,5 +1,5 @@
-import React, { forwardRef, useEffect, useRef, useState } from "react";
-import { Item, SelectedElements } from "../../types";
+import React, { createRef, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { ActiveFiles, Item, SelectedElements } from "../../types";
 import {
   ContextWrapper,
   FolderTypeElementContainer,
@@ -11,17 +11,30 @@ import { faFile, faFolder } from "@fortawesome/free-regular-svg-icons";
 import CreateModal from "../CreateModal/CreateModal";
 import { useAppDispatch, useAppSelector } from "../../hooks/stateHook/useStateHook";
 import { addFile, removeFile, selectFiles } from "../../state/features/filesManager/filesSlice";
+import { all } from "axios";
 
 interface IProps {
   element: Item;
   draggingRef: React.MutableRefObject<boolean>;
-  draggable?: boolean;
-  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  allFilesRefs: React.MutableRefObject<ActiveFiles[]>;
 }
 
-const FolderTypeElement = forwardRef<HTMLDivElement, IProps>(
-  ({ element }, ref) => {
+const FolderTypeElement = forwardRef<ActiveFiles, IProps>(
+  ({ element, allFilesRefs }, ref) => {
     const [isOpened, setIsOpened] = useState(false);
+    const [isActive, setIsActive] = useState(false);
+    const folderElement = createRef<HTMLDivElement>();
+
+    const setActive = ( isActive : boolean) => {
+      setIsActive(isActive);
+    }
+
+    useImperativeHandle(ref, () => ({
+      element: folderElement,
+      item: element,
+      setActive : setActive,
+      isActive: isActive
+    }));
 
     const { selectedFiles } = useAppSelector((state) => state.selectedFiles);
     const dispatch = useAppDispatch();
@@ -38,20 +51,33 @@ const FolderTypeElement = forwardRef<HTMLDivElement, IProps>(
 
     const selectSingleElement = () => {
       
-      if(isSelected && selectedFiles.length === 1) {
-        dispatch(selectFiles([]))
-      }
-      else {
-        dispatch(selectFiles([element]))
+     if(isActive && selectedFiles.length === 1) {
+
+        allFilesRefs.current.forEach((el) => {
+          el.setActive(false);
+        });
+
+        setIsActive(false)
+        dispatch(removeFile(element));
+      } else {
+
+        allFilesRefs.current.forEach((el) => {
+          el.setActive(false);
+        });
+
+        dispatch(selectFiles([element]));
+        setIsActive(true)
       }
  
     };
 
     const selectMultipleElements = () => {
-      if (isSelected) {
+      if(isActive) {
+        setIsActive(false)
         dispatch(removeFile(element));
       } else {
         dispatch(addFile(element));
+        setIsActive(true)
       }
     };
 
@@ -92,12 +118,11 @@ const FolderTypeElement = forwardRef<HTMLDivElement, IProps>(
 
     return (
       <>
-      {console.log("FolderTypeElement")}
-        <FolderTypeElementContainer
+        <FolderTypeElementContainer 
+          ref={folderElement}
           onClick={handleClick}
           onContextMenu={handleRightClick}
-          ref={ref}
-          $isSelected={isSelected}>
+          $isSelected={isActive}>
           <Icon>{icon}</Icon>
           <Name>{element.fileDetails.name}</Name>
         </FolderTypeElementContainer>

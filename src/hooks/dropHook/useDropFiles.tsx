@@ -4,7 +4,7 @@ import { ActiveFiles } from '../../types';
 
 type HookProps = {
     containerRef: React.MutableRefObject<HTMLDivElement | null>;
-    allFilesRefs: React.MutableRefObject<(ActiveFiles)[]>;
+    allFilesRefs: React.MutableRefObject<(ActiveFiles | null)[]>;
 }
 
 function useDropHook({ containerRef }: HookProps) {

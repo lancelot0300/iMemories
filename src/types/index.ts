@@ -18,8 +18,10 @@ export type Item = {
 }
 
 export type ActiveFiles = {
-    ref: HTMLDivElement | null
+    element: React.RefObject<HTMLDivElement>;
     item: Item
+    setActive: (isActive: boolean) => void;
+    isActive: boolean;
 }
 
 export type SelectedElements = Item[]

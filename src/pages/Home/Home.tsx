@@ -1,10 +1,11 @@
-import { useRef } from "react";
+import { createRef, useRef } from "react";
 import { FolderGridContainer, HomeContainer } from "./home.styles";
 import FolderTypeElement from "../../components/FolderTypeElement/FolderTypeElement";
 import { Item } from "../../types";
 import NavBar from "../../components/NavBar/NavBar";
 import useDropHook from "../../hooks/dropHook/useDropFiles";
 import useSelection from "../../hooks/selectionHook/useSelection";
+import { all } from "axios";
 
 function Home() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -168,7 +169,7 @@ function Home() {
   ];
   return (
     <>
-    {console.log("Home")}
+      {console.log(allFilesRefs.current)}
       <NavBar />
       <HomeContainer
         onMouseDown={handleMouseDown}
@@ -185,10 +186,16 @@ function Home() {
               <FolderTypeElement
                 key={item.id}
                 element={item}
-                onClick={(e) => console.log(e.target)}
-                ref={(el) => {
-                  allFilesRefs.current[index] = { ref: el, item: item };
-                }}
+                allFilesRefs={allFilesRefs}
+                ref={el => {
+                  allFilesRefs.current[index] = {
+                    item,
+                    element: el?.element || createRef<HTMLDivElement>(),
+                    setActive: el?.setActive || (() => {}),
+                    isActive: el?.isActive || false,
+                }
+              }
+              }
                 draggingRef={draggingRef}
               />
             );
