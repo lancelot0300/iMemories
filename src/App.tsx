@@ -8,11 +8,17 @@ import PersistLogin from "./components/PersistLogin/PersistLogin";
 import Statuses from "./components/Statuses/Statuses";
 
 function App() {
+
   const { user } = useSelector((state: RootState) => state.user);
+
+  const disableContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+  }
+
 
   return (
     <>
-      <div className="App">
+      <div className="App" onContextMenu={disableContextMenu}>
         <Routes>
           <Route element={<PersistLogin />} path="/">
             <Route

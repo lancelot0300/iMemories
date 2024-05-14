@@ -18,10 +18,14 @@ export type Item = {
 }
 
 export type ActiveFiles = {
-    element: React.RefObject<HTMLDivElement>;
+    element: HTMLDivElement | null;
     item: Item
-    setActive: (isActive: boolean) => void;
-    isActive: boolean;
+    setActive?: (isActive: boolean) => void;
+    setIsCopied?: (isCopied: boolean) => void;
 }
 
 export type SelectedElements = Item[]
+
+export type ContextRef = {
+    handleOpenContext: (e: React.MouseEvent<HTMLDivElement, MouseEvent>, isOpen: boolean) => void;
+}

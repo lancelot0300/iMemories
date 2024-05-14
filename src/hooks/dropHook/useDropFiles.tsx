@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import useOptionsHook from '../uploadHook/useUploadFiles';
 import { ActiveFiles } from '../../types';
+import useUpload from '../useUpload/useUpload';
 
 type HookProps = {
     containerRef: React.MutableRefObject<HTMLDivElement | null>;
@@ -8,7 +8,7 @@ type HookProps = {
 }
 
 function useDropHook({ containerRef }: HookProps) {
-    const { uploadFiles } = useOptionsHook();
+    const { uploadFiles } = useUpload();
 
     const ifNotFiles = (e: DragEvent) => {
         return !e.dataTransfer?.types.includes("Files");
@@ -35,11 +35,6 @@ function useDropHook({ containerRef }: HookProps) {
 
             if (containerRef.current) {
                 containerRef.current.classList.remove("dragging");
-            }
-
-            if (!process.env.REACT_APP_API_URL) {
-                console.error("REACT_APP_API_URL is not defined.");
-                return;
             }
 
             if (!e.dataTransfer) {

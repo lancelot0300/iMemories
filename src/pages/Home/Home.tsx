@@ -1,207 +1,122 @@
-import { createRef, useRef } from "react";
+import { useRef, useState } from "react";
 import { FolderGridContainer, HomeContainer } from "./home.styles";
-import FolderTypeElement from "../../components/FolderTypeElement/FolderTypeElement";
-import { Item } from "../../types";
-import NavBar from "../../components/NavBar/NavBar";
+import { ActiveFiles, ContextRef, Item } from "../../types";
 import useDropHook from "../../hooks/dropHook/useDropFiles";
 import useSelection from "../../hooks/selectionHook/useSelection";
-import { all } from "axios";
+import FileElement from "../../components/FileElement/FileElement";
+import DownloadOption from "../../components/DownloadOption/DownloadOption";
+import CopyOption from "../../components/CopyOption/CopyOption";
+import DeleteOption from "../../components/DeleteOption/DeleteOption";
+import UploadOption from "../../components/UploadOption/UploadOption";
+import NavBar from "../../components/NavBar/NavBar";
+import LeftSideMenu from "../../components/LeftSideMenu/LeftSideMenu";
+import {
+  NavBarItem
+} from "../../components/NavBar/navBar.styles";
+import RightSideMenu from "../../components/RightSideMenu/RightSideMenu";
+import ContextMenu from "../../components/ContextMenu/ContextMenu";
+import { isClickedContainer } from "../../utils/homeUtils";
 
 function Home() {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const allFilesRefs = useRef<ActiveFiles[]>([]);
+  const contextMenuRef = useRef<ContextRef>(null);
+
 
   const {
-    handleMouseUp,
     handleMouseDown,
     handleMouseMove,
     handleClick,
     handleMouseLeave,
     draggingRef,
-    allFilesRefs,
-  } = useSelection({ containerRef });
+  } = useSelection({ containerRef, allFilesRefs });
   useDropHook({ containerRef, allFilesRefs });
 
-  const folderStructure = [
-    {
-      id: "84bb8ca0-0bfa-409d-4964-08dc64a33add",
-      folderId: "16d49864-cd29-47be-10c2-08dc649f508b",
-      storageFileId: "9c651e8a-4f23-4b14-826e-a9bf1214af64",
+  const folderStructure = [];
+
+
+  function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0,
+          v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+  
+  for (let i = 0; i < 25; i++) {
+    const file = {
+      id: uuidv4(),
+      folderId: uuidv4(),
+      storageFileId: uuidv4(),
       tags: [],
       isFolder: false,
       category: null,
       fileDetails: {
-        id: "84bb8ca0-0bfa-409d-4964-08dc64a33add",
-        name: "bukkit.yml",
-        size: 1264,
+        id: uuidv4(),
+        name: `file_${i}.txt`,
+        size: Math.floor(Math.random() * 10000),
         description: null,
         isStared: false,
-        createdDate: "2024-04-24T21:15:57.4333161",
+        createdDate: new Date().toISOString(),
         lastOpenedDate: "0001-01-01T00:00:00",
         lastModifiedDate: "0001-01-01T00:00:00",
       },
-    },
-    {
-      id: "0c61fae1-9a41-4a48-9d32-08dc64a1ac7d",
-      folderId: "16d49864-cd29-47be-10c2-08dc649f508b",
-      storageFileId: "bd0a3c11-7825-49a0-a1d8-4f898a566e7b",
-      tags: [],
-      isFolder: false,
-      category: null,
-      fileDetails: {
-        id: "0c61fae1-9a41-4a48-9d32-08dc64a1ac7d",
-        name: "Mateusz Rączka - Comarch.pdf",
-        size: 62534,
-        description: null,
-        isStared: false,
-        createdDate: "2024-04-24T21:01:36.4775277",
-        lastOpenedDate: "0001-01-01T00:00:00",
-        lastModifiedDate: "0001-01-01T00:00:00",
-      },
-    },
-    {
-      id: "84bb8ca0-0bfa-409d-4964-08dc64a33add3",
-      folderId: "16d49864-cd29-47be-10c2-08dc649f508b",
-      storageFileId: "9c651e8a-4f23-4b14-826e-a9bf1214af64",
-      tags: [],
-      isFolder: true,
-      category: null,
-      fileDetails: {
-        id: "84bb8ca0-0bfa-409d-4964-08dc64a33add",
-        name: "Folder 2",
-        size: 1264,
-        description: null,
-        isStared: false,
-        createdDate: "2024-04-24T21:15:57.4333161",
-        lastOpenedDate: "0001-01-01T00:00:00",
-        lastModifiedDate: "0001-01-01T00:00:00",
-      },
-    },
-    {
-      id: "0c61fae1-9a41-4a48-9d32-08dc64a1ac7d3",
-      folderId: "16d49864-cd29-47be-10c2-08dc649f508b",
-      storageFileId: "bd0a3c11-7825-49a0-a1d8-4f898a566e7b",
-      tags: [],
-      isFolder: false,
-      category: null,
-      fileDetails: {
-        id: "0c61fae1-9a41-4a48-9d32-08dc64a1ac7d",
-        name: "Mateusz Rączka - Comarch.pdf",
-        size: 62534,
-        description: null,
-        isStared: false,
-        createdDate: "2024-04-24T21:01:36.4775277",
-        lastOpenedDate: "0001-01-01T00:00:00",
-        lastModifiedDate: "0001-01-01T00:00:00",
-      },
-    },
-    {
-      id: "84bb8ca0-0bfa-409d-4964-08dc64a33add2",
-      folderId: "16d49864-cd29-47be-10c2-08dc649f508b",
-      storageFileId: "9c651e8a-4f23-4b14-826e-a9bf1214af64",
-      tags: [],
-      isFolder: false,
-      category: null,
-      fileDetails: {
-        id: "84bb8ca0-0bfa-409d-4964-08dc64a33add",
-        name: "bukkit.yml",
-        size: 1264,
-        description: null,
-        isStared: false,
-        createdDate: "2024-04-24T21:15:57.4333161",
-        lastOpenedDate: "0001-01-01T00:00:00",
-        lastModifiedDate: "0001-01-01T00:00:00",
-      },
-    },
-    {
-      id: "0c61fae1-9a41-4a48-9d32-08dc64a1ac7d2",
-      folderId: "16d49864-cd29-47be-10c2-08dc649f508b",
-      storageFileId: "bd0a3c11-7825-49a0-a1d8-4f898a566e7b",
-      tags: [],
-      isFolder: false,
-      category: null,
-      fileDetails: {
-        id: "0c61fae1-9a41-4a48-9d32-08dc64a1ac7d",
-        name: "Mateusz Rączka - Comarch.pdf",
-        size: 62534,
-        description: null,
-        isStared: false,
-        createdDate: "2024-04-24T21:01:36.4775277",
-        lastOpenedDate: "0001-01-01T00:00:00",
-        lastModifiedDate: "0001-01-01T00:00:00",
-      },
-    },
-    {
-      id: "84bb8ca0-0bfa-409d-4964-08dc64a33add1",
-      folderId: "16d49864-cd29-47be-10c2-08dc649f508b",
-      storageFileId: "9c651e8a-4f23-4b14-826e-a9bf1214af64",
-      tags: [],
-      category: null,
-      isFolder: false,
-      fileDetails: {
-        id: "84bb8ca0-0bfa-409d-4964-08dc64a33add",
-        name: "bukkit.yml",
-        size: 1264,
-        description: null,
-        isStared: false,
-        createdDate: "2024-04-24T21:15:57.4333161",
-        lastOpenedDate: "0001-01-01T00:00:00",
-        lastModifiedDate: "0001-01-01T00:00:00",
-      },
-    },
-    {
-      id: "0c61fae1-9a41-4a48-9d32-08dc64a1ac7d1",
-      folderId: "16d49864-cd29-47be-10c2-08dc649f508b",
-      storageFileId: "bd0a3c11-7825-49a0-a1d8-4f898a566e7b",
-      tags: [],
-      isFolder: false,
-      category: null,
-      fileDetails: {
-        id: "0c61fae1-9a41-4a48-9d32-08dc64a1ac7d",
-        name: "Mateusz Rączka - Comarch.pdf",
-        size: 62534,
-        description: null,
-        isStared: false,
-        createdDate: "2024-04-24T21:01:36.4775277",
-        lastOpenedDate: "0001-01-01T00:00:00",
-        lastModifiedDate: "0001-01-01T00:00:00",
-      },
-    },
-  ];
+    };
+    
+    folderStructure.push(file);
+  }
+
+  const [files, setFiles] = useState(folderStructure);
+
+  const handleContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if(!isClickedContainer(containerRef, e)) return;
+    contextMenuRef.current?.handleOpenContext(e, true);
+  };
+
   return (
     <>
-      {console.log(allFilesRefs.current)}
-      <NavBar />
+      {console.log("Home Rendered")}
+
+      <NavBar>
+        <LeftSideMenu>
+          <NavBarItem>Settings</NavBarItem>
+        </LeftSideMenu>
+        <RightSideMenu>
+          <DownloadOption />
+          <CopyOption  />
+          <DeleteOption />
+          <UploadOption />
+        </RightSideMenu>
+      </NavBar>
+
       <HomeContainer
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        onMouseUp={handleMouseUp}
+        onContextMenu={handleContextMenu}
         onClick={handleClick}
         $isDragging={draggingRef.current ? true : false}
         ref={containerRef}
       >
         <FolderGridContainer>
-          {Object.values(folderStructure).map((item: Item, index) => {
+          {files.map((item: Item, index) => {
             return (
-              <FolderTypeElement
+              <FileElement
                 key={item.id}
                 element={item}
                 allFilesRefs={allFilesRefs}
-                ref={el => {
-                  allFilesRefs.current[index] = {
-                    item,
-                    element: el?.element || createRef<HTMLDivElement>(),
-                    setActive: el?.setActive || (() => {}),
-                    isActive: el?.isActive || false,
-                }
-              }
-              }
+                ref={(el) => {
+                  if (!el) return;
+                  allFilesRefs.current[index] = el;
+                }}
                 draggingRef={draggingRef}
               />
             );
           })}
         </FolderGridContainer>
       </HomeContainer>
+      <ContextMenu  ref={contextMenuRef} />
     </>
   );
 }

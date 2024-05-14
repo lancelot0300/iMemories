@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { number } from 'yup';
 
 export const Icon = styled.div`
     flex-shrink: 0;
@@ -27,9 +26,10 @@ export const Name = styled.span`
 
 type FolderTypeProps = {
     $isSelected: boolean;
+    $isCopy?: boolean;
 }
 
-export const FolderTypeElementContainer = styled.div<FolderTypeProps>`
+export const FileElementContainer = styled.div<FolderTypeProps>`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -39,7 +39,7 @@ export const FolderTypeElementContainer = styled.div<FolderTypeProps>`
     width: 100px;
     cursor: pointer;
     transition: background-color 0.2s;
-    background-color: ${({ $isSelected }) => $isSelected ? '#a5a5a5' : ''};
+    background-color: ${({ $isSelected, $isCopy }) => $isSelected ? '#a5a5a5' : $isCopy ? '#080808' : 'var(--background-color)'};
 
         &.active {
             ${Icon}, ${Name} {
@@ -78,4 +78,14 @@ export const ContextWrapper = styled.div<ContextWrapperProps>`
     background-color: #3d3d3d;
     padding: 10px;
 `
+export const ContextOption = styled.div`
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    user-select: none;
 
+    &:hover {
+        background-color: #4d4d4d;
+    }
+`

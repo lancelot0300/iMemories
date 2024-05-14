@@ -1,15 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit'
 import usersReducer from './features/auth/authSlice'
 import pathReducer from './features/path/pathSlice'
-import activeRequests from './features/activeRequests/requestsSlice'
-import filesReducer from './features/filesManager/filesSlice'
+import activeRequests from './features/requests/requestsSlice'
+import filesReducer from './features/files/filesSlice'
 
 export const store = configureStore({
   reducer: {
     user: usersReducer,
     path: pathReducer,
     activeRequests: activeRequests,
-    selectedFiles: filesReducer
+    files: filesReducer
   },
 })
 

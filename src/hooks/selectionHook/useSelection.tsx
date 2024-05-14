@@ -1,14 +1,17 @@
 import React, { useRef } from "react";
 import { ActiveFiles } from "../../types";
+import { useAppDispatch } from "../stateHook/useStateHook";
+import { addFiles, selectFiles } from "../../state/features/files/filesSlice";
+import { isClickedContainer } from "../../utils/homeUtils";
 
 
 type Props = {
   containerRef: React.MutableRefObject<HTMLDivElement | null>;
+  allFilesRefs: React.MutableRefObject<ActiveFiles[]>;
 };
 
-function useSelection({ containerRef }: Props) {
-  const allFilesRefs = useRef<ActiveFiles[]>([]);
-  const activeFiles = useRef<ActiveFiles[]>([]);
+function useSelection({ containerRef, allFilesRefs }: Props) {
+  const dispatch = useAppDispatch();
 
   const draggingRef = useRef(false);
   let { current: isClickedFlag } = useRef(false);
@@ -19,19 +22,6 @@ function useSelection({ containerRef }: Props) {
   const { current: allFiles } = allFilesRefs;
   let { current: dragging } = draggingRef;
 
-  const isClickedContainer = (e?: React.MouseEvent<HTMLDivElement>) => {
-    if (e?.target === undefined) return true;
-    return (
-      e?.target === containerRef.current ||
-      e?.target === containerRef.current?.firstChild
-    );
-  };
-
-  const isFolderTypeChild = (e?: React.MouseEvent<HTMLDivElement>) => {
-    return allFilesRefs.current.some((el) =>
-      el?.element?.current?.contains(e?.target as Node)
-    );
-  };
 
   const createSelection = (
     x: number,
@@ -45,7 +35,7 @@ function useSelection({ containerRef }: Props) {
     style.display = "block";
     style.width = `${width}px`;
     style.height = `${height}px`;
-    style.position = "absolute";
+    style.position = "fixed";
     style.top = `${y}px`;
     style.left = `${x}px`;
     style.border = "1px solid black";
@@ -58,8 +48,9 @@ function useSelection({ containerRef }: Props) {
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isClickedContainer(e)) return;
+    if (!isClickedContainer( containerRef, e)) return;
     if (dragging) return;
+    if(e.button !== 0) return;
 
     console.log("mouse down");
     startPos = { x: e.clientX, y: e.clientY };
@@ -77,9 +68,9 @@ function useSelection({ containerRef }: Props) {
     if (startPos.y > endPos.y) endPos.y += 1;
 
     const selectedItems = allFiles.filter((el) => {
-      if (!el || !el.element?.current) return false;
-      const rect = el.element.current.getBoundingClientRect();
+      if (!el || !el.element) return false;
       if (!startPos || !endPos) return false;
+      const rect = el.element.getBoundingClientRect();
       return (
         rect.x < Math.max(startPos.x, endPos.x) &&
         rect.x + rect.width > Math.min(startPos.x, endPos.x) &&
@@ -89,14 +80,14 @@ function useSelection({ containerRef }: Props) {
     });
 
     selectedItems.forEach((el) => {
-      if (el?.element.current) {
-        el.element.current.style.backgroundColor = "rgba(255,255,255,0.1)";
+      if (el?.element) {
+        el.element.style.backgroundColor = "rgba(255,255,255,0.1)";
       }
     });
 
     allFiles.forEach((el) => {
-      if (el?.element?.current && !selectedItems.includes(el)) {
-        el.element.current.style.backgroundColor = "";
+      if (el?.element && !selectedItems.includes(el)) {
+        el.element.style.backgroundColor = "";
       }
     });
 
@@ -124,30 +115,30 @@ function useSelection({ containerRef }: Props) {
     dragging = false;
   };
 
-  const handleMouseUp = () => {
-    if (!isClickedFlag) return;
+  const clearDrag = () => {
 
-    console.log("mouse up");
     allFiles.forEach((el) => {
-      if (el?.element?.current) {
-        el.element.current.style.backgroundColor = "";
+      if (el?.element) {
+        el.element.style.backgroundColor = "";
       }
     });
 
-    isClickedFlag = false;
     dragging = false;
-
+    isClickedFlag = false;
     selectDiv?.remove();
     selectDiv = null;
-  };
+}
 
   const handleClick = (e?: React.MouseEvent<HTMLDivElement>) => {
-    if (!isClickedContainer(e)) return;
+    if (!isClickedContainer( containerRef ,e)) return;
+    if(!dragging && !isClickedFlag) return;
+
+    clearDrag();
 
     const selectedItems: ActiveFiles[] = allFiles.filter((el) => {
-      if (!el || !el.element?.current) return false;
-      const rect = el.element.current.getBoundingClientRect();
+      if (!el || !el.element) return false;
       if (!startPos || !endPos) return false;
+      const rect = el.element.getBoundingClientRect();
       return (
         rect.x < Math.max(startPos.x, endPos.x) &&
         rect.x + rect.width > Math.min(startPos.x, endPos.x) &&
@@ -156,33 +147,21 @@ function useSelection({ containerRef }: Props) {
       );
     });
 
-    activeFiles.current = allFiles.filter((el) => el.isActive);
-
-    if(selectedItems.length === 0 && activeFiles.current.length === 0) return
-
-    activeFiles.current.forEach((el) => {
-      el.setActive(false);
-    });
-    activeFiles.current = selectedItems;
-    activeFiles.current.forEach((el) => {
-        el.setActive(true);
-    });
+    if(e?.ctrlKey) {
+      return dispatch(addFiles(selectedItems.map((el) => el.item)));
+    }
+    
+    dispatch(selectFiles(selectedItems.map((el) => el.item)));
   };
 
-  const handleClickOutside = () => {
-    if (!isClickedFlag) return;
-    if (!dragging) return;
-
-    handleMouseUp();
-    handleClick();
-  };
 
   const handleMouseLeave = () => {
-    window.addEventListener("mouseup", handleClickOutside, { once: true });
+    if (!isClickedFlag) return;
+    if (!dragging) return;
+    window.addEventListener("mouseup", () => handleClick(), { once: true });
   };
 
   return {
-    handleMouseUp,
     handleMouseMove,
     handleMouseDown,
     handleMouseLeave,

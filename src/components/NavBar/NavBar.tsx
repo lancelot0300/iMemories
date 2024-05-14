@@ -1,30 +1,12 @@
-import {
-  LeftOptionsWrapper,
-  NavBarContainer,
-  NavBarItem,
-  RightOptionsWrapper,
-} from "./navBar.styles";
-import DownloadOption from "./DownloadOption/DownloadOption";
-import CopyOption from "./CopyOption/CopyOption";
-import DeleteOption from "./DeleteOption/DeleteOption";
-import UploadOption from "./UploadOption/UploadOption";
+import React, { PropsWithChildren } from 'react'
+import { NavBarContainer } from './navBar.styles'
 
-
-
-function NavBar() {
+function NavBar({children}: PropsWithChildren) {
   return (
     <NavBarContainer>
-      <LeftOptionsWrapper>
-        <NavBarItem>Settings</NavBarItem>
-      </LeftOptionsWrapper>
-      <RightOptionsWrapper>
-        <DownloadOption />
-        <CopyOption />
-        <DeleteOption />
-        <UploadOption />
-      </RightOptionsWrapper>
+        {children}
     </NavBarContainer>
-  );
+  )
 }
 
-export default NavBar;
+export default NavBar

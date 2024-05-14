@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const NavBarContainer = styled.div`
     display: flex;
@@ -18,6 +18,7 @@ export const NavBarItem = styled.div`
         background-color: #424242;
     }
 `;
+
 
 export const RightOptionsWrapper = styled.div`
     display: flex;
