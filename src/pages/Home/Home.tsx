@@ -4,24 +4,22 @@ import { ActiveFiles, ContextRef, Item } from "../../types";
 import useDropHook from "../../hooks/dropHook/useDropFiles";
 import useSelection from "../../hooks/selectionHook/useSelection";
 import FileElement from "../../components/FileElement/FileElement";
-import DownloadOption from "../../components/DownloadOption/DownloadOption";
-import CopyOption from "../../components/CopyOption/CopyOption";
-import DeleteOption from "../../components/DeleteOption/DeleteOption";
-import UploadOption from "../../components/UploadOption/UploadOption";
 import NavBar from "../../components/NavBar/NavBar";
 import LeftSideMenu from "../../components/LeftSideMenu/LeftSideMenu";
-import {
-  NavBarItem
-} from "../../components/NavBar/navBar.styles";
 import RightSideMenu from "../../components/RightSideMenu/RightSideMenu";
-import ContextMenu from "../../components/ContextMenu/ContextMenu";
+import ContextMenu from "../../components/ContextComponents/FileContextMenu/FileContextMenu";
 import { isClickedContainer } from "../../utils/homeUtils";
+import ContainerContextMenu from "../../components/ContextComponents/ContainerContextMenu/ContainerContextMenu";
+import { useAppDispatch } from "../../hooks/stateHook/useStateHook";
+import { selectFiles } from "../../state/features/files/filesSlice";
+import Menu from "../../components/Menu/Menu";
 
 function Home() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const allFilesRefs = useRef<ActiveFiles[]>([]);
   const contextMenuRef = useRef<ContextRef>(null);
 
+  const dispatch = useAppDispatch();
 
   const {
     handleMouseDown,
@@ -38,12 +36,12 @@ function Home() {
   function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
       var r = Math.random() * 16 | 0,
-          v = c == 'x' ? r : (r & 0x3 | 0x8);
+          v = c === 'x' ? r : ((r & 0x3) | 0x8);
       return v.toString(16);
     });
   }
   
-  for (let i = 0; i < 25; i++) {
+  for (let i = 0; i < 205; i++) {
     const file = {
       id: uuidv4(),
       folderId: uuidv4(),
@@ -72,24 +70,13 @@ function Home() {
     e.preventDefault();
     if(!isClickedContainer(containerRef, e)) return;
     contextMenuRef.current?.handleOpenContext(e, true);
+    dispatch(selectFiles([]))
   };
 
   return (
     <>
       {console.log("Home Rendered")}
-
-      <NavBar>
-        <LeftSideMenu>
-          <NavBarItem>Settings</NavBarItem>
-        </LeftSideMenu>
-        <RightSideMenu>
-          <DownloadOption />
-          <CopyOption  />
-          <DeleteOption />
-          <UploadOption />
-        </RightSideMenu>
-      </NavBar>
-
+      <Menu />
       <HomeContainer
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -116,7 +103,7 @@ function Home() {
           })}
         </FolderGridContainer>
       </HomeContainer>
-      <ContextMenu  ref={contextMenuRef} />
+      <ContainerContextMenu  ref={contextMenuRef} />
     </>
   );
 }

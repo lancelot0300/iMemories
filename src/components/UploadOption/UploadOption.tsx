@@ -1,5 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useUpload from "../../hooks/useUpload/useUpload";
-import { NavBarItem } from "../NavBar/navBar.styles";
+import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import { MenuItem } from "../Menu/menu.styled";
 
 function UploadOption() {
 
@@ -7,7 +9,7 @@ function UploadOption() {
 
   return (
     <>
-      <NavBarItem onClick={() => setIsOpened(true)}>Upload</NavBarItem>
+      <MenuItem onClick={() => setIsOpened(true)}><FontAwesomeIcon icon={faUpload} /></MenuItem>
       {createModal()}
     </>
   );

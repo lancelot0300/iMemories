@@ -4,23 +4,16 @@ export const NavBarContainer = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 10px;
-    background-color: #212121;
+    background-color: #0a1329;
     color: #fff;
     height: var(--navBarHeight);
 `;
 
-export const NavBarItem = styled.div`
-    cursor: pointer;
-    padding: 10px;
-    user-select: none;
 
-    &:hover {
-        background-color: #424242;
-    }
-`;
 
 
 export const RightOptionsWrapper = styled.div`
+    margin-left: auto;
     display: flex;
     gap: 20px;
 `;

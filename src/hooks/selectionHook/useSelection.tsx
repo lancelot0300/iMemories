@@ -60,12 +60,13 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isClickedFlag || !startPos) return;
-    const { clientX: mouseX, clientY: mouseY } = e;
+    if (!dragging) dragging = true;
 
     endPos = { x: e.clientX, y: e.clientY };
 
     if (startPos.x > endPos.x) endPos.x += 1;
     if (startPos.y > endPos.y) endPos.y += 1;
+
 
     const selectedItems = allFiles.filter((el) => {
       if (!el || !el.element) return false;
@@ -81,25 +82,17 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
 
     selectedItems.forEach((el) => {
       if (el?.element) {
-        el.element.style.backgroundColor = "rgba(255,255,255,0.1)";
+        el.element.classList.add("hoverActive");
       }
     });
 
     allFiles.forEach((el) => {
       if (el?.element && !selectedItems.includes(el)) {
-        el.element.style.backgroundColor = "";
+        el.element.classList.remove("hoverActive");
       }
     });
 
-    const deltaX = Math.abs(startPos.x - mouseX);
-    const deltaY = Math.abs(startPos.y - mouseY);
 
-    if (deltaX < 20 && deltaY < 20) {
-      resetSelection();
-      return;
-    }
-
-    if (!dragging) dragging = true;
 
     createSelection(
       Math.min(startPos.x, endPos.x),
@@ -109,17 +102,11 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
     );
   };
 
-  const resetSelection = () => {
-    selectDiv?.remove();
-    selectDiv = null;
-    dragging = false;
-  };
-
   const clearDrag = () => {
 
     allFiles.forEach((el) => {
       if (el?.element) {
-        el.element.style.backgroundColor = "";
+        el.element.classList.remove("hoverActive");
       }
     });
 

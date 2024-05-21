@@ -8,6 +8,10 @@ export const Icon = styled.div`
     justify-content: center;
     align-items: center;
     color: #fff;
+
+    img {
+        user-select: none;
+    }
 `;
 export const Name = styled.span`
     font-size: 12px;
@@ -39,7 +43,8 @@ export const FileElementContainer = styled.div<FolderTypeProps>`
     width: 100px;
     cursor: pointer;
     transition: background-color 0.2s;
-    background-color: ${({ $isSelected, $isCopy }) => $isSelected ? '#a5a5a5' : $isCopy ? '#080808' : 'var(--background-color)'};
+    background-color: ${({ $isSelected }) => $isSelected ? 'rgba(255,255,255,0.15)' : 'var(--background-color)'};
+    opacity: ${({ $isCopy }) => $isCopy ? '0.5' : '1'};
 
         &.active {
             ${Icon}, ${Name} {
@@ -48,44 +53,48 @@ export const FileElementContainer = styled.div<FolderTypeProps>`
         }
 
     &:hover {
-        background-color: ${({ $isSelected }) => $isSelected ? '#a5a5a5' : '#414141'};
+        background-color: ${({ $isSelected }) => $isSelected ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.05)'};
     }
-
-    ${Icon}, ${Name} {
-        color: ${({ $isSelected }) => $isSelected ? '#000' : '#fff'};
+       
+    &.hoverActive {
+        background-color: rgba(255,255,255,0.1);
     }
-
-    &:active {
-        background-color: #bbb9b9;
-    }
-
-
 `;
 
 type ContextWrapperProps = {
-    $posX: string
-    $posY: string
+    $posX: number
+    $posY: number
 }
 
 export const ContextWrapper = styled.div<ContextWrapperProps>`
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     position: fixed;
     left: ${({ $posX }) => $posX + "px" || "50%"};
     top: ${({ $posY }) => $posY + "px" || "50%"};
     ${({ $posY, $posX }) => $posY && $posX ? "" : "transform: translate(-50%, -50%)"};
     min-width: 150px;
-    min-height: 200px;
-    border-radius: 1rem;
-    background-color: #3d3d3d;
-    padding: 10px;
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(17, 25, 40, 0.75);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    padding: 5px;
 `
 export const ContextOption = styled.div`
-    padding: 5px;
+    display:flex;
+    flex-direction:row;
+    gap:15px;
+    padding: 6px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.2s;
     user-select: none;
+    align-items: center;
 
     &:hover {
-        background-color: #4d4d4d;
+        background: rgba(75, 75, 75, 0.46);
+        
     }
 `

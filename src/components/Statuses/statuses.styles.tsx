@@ -5,12 +5,15 @@ export const Status = styled.div`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    background-color: #292929;
     padding: 10px;
     margin: 10px;
-    border-radius: 5px;
     width: 300px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(17, 25, 40, 0.75);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
     `;
 
 export const StatusesWrapper = styled.div`

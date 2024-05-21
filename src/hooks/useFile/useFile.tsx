@@ -1,6 +1,6 @@
 import React from 'react'
 import { Item } from '../../types';
-import { useAppDispatch, useAppSelector } from '../stateHook/useStateHook';
+import { useAppDispatch } from '../stateHook/useStateHook';
 import { addFile, removeFile, selectFiles } from '../../state/features/files/filesSlice';
 
 type Props = {

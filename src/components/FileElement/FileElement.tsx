@@ -5,12 +5,10 @@ import CreateModal from "../CreateModal/CreateModal";
 import { ActiveFiles, ContextRef, Item } from "../../types";
 import { ContextOption, ContextWrapper, FileElementContainer, Icon, Name } from "./fileElement.styles";
 import useFile from "../../hooks/useFile/useFile";
-import DownloadContextOption from "../DownloadContextOption/DownloadContextOption";
-import DeleteContextOption from "../DeleteContextOption/DeleteContextOption";
-import CopyContextOption from "../CopyContextOption/CopyContextOption";
 import useContext from "../../hooks/useContext/useContext";
 import { useAppSelector } from "../../hooks/stateHook/useStateHook";
-import ContextMenu from "../ContextMenu/ContextMenu";
+import ContextMenu from "../ContextComponents/FileContextMenu/FileContextMenu";
+import FileContextMenu from "../ContextComponents/FileContextMenu/FileContextMenu";
 
 interface IProps {
   element: Item;
@@ -77,10 +75,10 @@ const FileElement = forwardRef<ActiveFiles, IProps>(
           $isSelected={isActive}
           $isCopy={isCopy}
         >
-          <Icon><FontAwesomeIcon icon={faFile} size="2x" /></Icon>
+          <Icon><img src="icons/folder2.svg" draggable='false' alt="" /></Icon>
           <Name>{element.fileDetails.name}</Name>
         </FileElementContainer>
-        <ContextMenu  ref={contextMenuRef} />
+        <FileContextMenu  ref={contextMenuRef} />
       </>
     );
   }
