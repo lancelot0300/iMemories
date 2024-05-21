@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react'
-import { LeftOptionsWrapper, NavBarItem } from '../NavBar/navBar.styles'
+import { LeftOptionsWrapper} from '../NavBar/navBar.styles'
 
 function LeftSiedeMenu({children}: PropsWithChildren) {
   return (
