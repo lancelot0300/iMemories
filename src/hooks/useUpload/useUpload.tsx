@@ -8,56 +8,95 @@ import axios from "axios";
 import CreateModal from "../../components/CreateModal/CreateModal";
 import { UploadModal } from "../../components/UploadOption/uploadOption.styles";
 import { UploadCustomButton, UploadFormButton, UploadFormInput, UploadFormTitle } from "./useUpload.styles";
+import { useQueryClient } from "@tanstack/react-query";
 
 function useUpload() {
-  const { path } = useAppSelector((state) => state.path);
+  const { actualPath } = useAppSelector((state) => state.path);
   const dispatch = useAppDispatch();
   const [files, setFiles] = useState<FileList | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [isOpened, setIsOpened] = useState(false);
+  const queryClient = useQueryClient();
 
   const uploadFiles = async (files: FileList | null) => {
-    if (files) {
-      const apiUrl = process.env.REACT_APP_API_URL + "/file/" + path;
+    if (!files) {
+      alert("Select a file to upload");
+      return;
+    }
+  
+    const apiUrl = `${process.env.REACT_APP_API_URL}/file/${actualPath}`;
+    const uploadPromises: Promise<any>[] = [];
+  
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const formData = new FormData();
+      formData.append("fileData", file);
+  
+      const fileId = `${file.name}-${Date.now()}`;
+      dispatch(
+        addFileStatus({
+          index: fileId,
+          fileName: file.name,
+          progress: "0%",
+          status: "Uploading",
+        })
+      );
+  
+      const uploadPromise = axios.post(apiUrl, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent && progressEvent.total) {
+            const percent = (progressEvent.loaded / progressEvent.total) * 100;
 
-      for (let i = 0; i < files.length; i++) {
-        const formData = new FormData();
-        const file = files[i];
-        formData.append("fileData", file);
-
-        const fileId = `${file.name}-${Date.now()}`;
-        dispatch(
-          addFileStatus({
-            index: fileId,
-            fileName: file.name,
-            status: "0%",
-          })
-        );
-
-        axios.post(apiUrl, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          withCredentials: true,
-          onUploadProgress(progressEvent) {
-            if (progressEvent && progressEvent.total) {
-              const procent =
-                (progressEvent.loaded / progressEvent.total) * 100;
+            if(percent === 100) {
               dispatch(
                 updateFileStatus({
                   index: fileId,
                   fileName: file.name,
-                  status: procent.toFixed(0) + "%",
+                  progress: "100%",
+                  status: "Finished",
                 })
               );
             }
-          },
-        });
-      }
-    } else {
-      alert("Select a file to upload");
+            else {
+              dispatch(
+                updateFileStatus({
+                  index: fileId,
+                  fileName: file.name,
+                  progress: `${Math.round(percent)}%`,
+                  status: "Uploading",
+                })
+              );
+            }
+
+           
+          }
+        },
+      }).catch(() => {
+        dispatch(
+          updateFileStatus({
+            index: fileId,
+            fileName: file.name,
+            progress: "Failed",
+            status: "Error",
+          })
+        );
+      });
+  
+      uploadPromises.push(uploadPromise);
+    }
+  
+    try {
+      await Promise.all(uploadPromises);
+      queryClient.invalidateQueries({ queryKey: ['folder'] });
+    } catch (error) {
+      queryClient.invalidateQueries({ queryKey: ['folder'] });
     }
   };
+  
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if(event.target.files) {
@@ -72,7 +111,6 @@ function useUpload() {
     else {
       alert("Select a file to upload")
     }
-
 
     uploadFiles(files);
   }

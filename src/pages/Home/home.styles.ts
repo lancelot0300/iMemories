@@ -12,7 +12,6 @@ export const FolderGridContainer = styled.div`
     width: calc(100% - 40px);
     min-height: calc(100vh - 100px);
     border: 2px dashed var(--background-color);
-
 `;
 
 

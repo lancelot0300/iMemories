@@ -1,39 +1,40 @@
-import React, { forwardRef, useImperativeHandle, useRef, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile, faFolder } from "@fortawesome/free-regular-svg-icons";
-import CreateModal from "../CreateModal/CreateModal";
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { ActiveFiles, ContextRef, Item } from "../../types";
-import { ContextOption, ContextWrapper, FileElementContainer, Icon, Name } from "./fileElement.styles";
+import { FileElementContainer, Icon, Name } from "./fileElement.styles";
 import useFile from "../../hooks/useFile/useFile";
-import useContext from "../../hooks/useContext/useContext";
 import { useAppSelector } from "../../hooks/stateHook/useStateHook";
-import ContextMenu from "../ContextComponents/FileContextMenu/FileContextMenu";
 import FileContextMenu from "../ContextComponents/FileContextMenu/FileContextMenu";
+import { renderIcon } from "../../utils/iconsUtils";
 
 interface IProps {
   element: Item;
-  draggingRef: React.MutableRefObject<boolean>;
-  allFilesRefs: React.MutableRefObject<ActiveFiles[]>;
+  clearDrag: () => void;
 }
 
 const FileElement = forwardRef<ActiveFiles, IProps>(
-  ({ element }, ref) => {
+  ({ element, clearDrag }, ref) => {
     const fileElementRef = useRef<HTMLDivElement>(null);
     const contextMenuRef = useRef<ContextRef>();
 
     
     const {selectedFiles} = useAppSelector((state) => state.files, (prev, next) => {
-      return (prev.selectedFiles.some((el) => el.id === element.id)) === next.selectedFiles.some((el) => el.id === element.id);
-  });
-    const {copyFiles} = useAppSelector((state) => state.files, (prev, next) => {
-        return (prev.copyFiles.some((el) => el.id === element.id)) === next.copyFiles.some((el) => el.id === element.id);
+      const wasSelected = prev.selectedFiles.some((el) => el.id === element.id);
+      const isSelected = next.selectedFiles.some((el) => el.id === element.id);
+      return wasSelected === isSelected && (!isSelected || !wasSelected);
     });
+
+    const {copyFiles} = useAppSelector((state) => state.files, (prev, next) => {
+      const wasSelected = prev.copyFiles.some((el) => el.id === element.id);
+      const isSelected = next.copyFiles.some((el) => el.id === element.id);
+      return wasSelected === isSelected ;
+    });
+
 
     const {setActiveElement, isActive, isCopy, setActiveOnRightClick} = useFile({element, selectedFiles, copyFiles});
    
 
     useImperativeHandle(ref, () => ({
-      element: fileElementRef.current,
+      element: fileElementRef.current as HTMLDivElement,
       item: element
     }));
 
@@ -59,15 +60,16 @@ const FileElement = forwardRef<ActiveFiles, IProps>(
     const handleRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
-
+      clearDrag();
       setActiveOnRightClick(e);
       contextMenuRef.current?.handleOpenContext(e, true);
     };
 
 
+
     return (
       <>
-      {console.log("FileElement Rendered " + element.fileDetails.name)}
+      {console.log(selectedFiles)}
         <FileElementContainer
           ref={fileElementRef}
           onClick={handleClick}
@@ -75,7 +77,7 @@ const FileElement = forwardRef<ActiveFiles, IProps>(
           $isSelected={isActive}
           $isCopy={isCopy}
         >
-          <Icon><img src="icons/folder2.svg" draggable='false' alt="" /></Icon>
+          <Icon><img width={45} height={45} src={renderIcon(element.fileDetails.extension)} draggable='false' alt="" /></Icon>
           <Name>{element.fileDetails.name}</Name>
         </FileElementContainer>
         <FileContextMenu  ref={contextMenuRef} />

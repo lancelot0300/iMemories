@@ -5,7 +5,6 @@ import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import { useSelector } from "react-redux";
 import { RootState } from "./state/store";
 import PersistLogin from "./components/PersistLogin/PersistLogin";
-import Statuses from "./components/Statuses/Statuses";
 
 function App() {
 
@@ -35,7 +34,6 @@ function App() {
             <Route path="/" element={<Home />} />
           </Route>
         </Routes>
-        <Statuses />
       </div>
     </>
   );

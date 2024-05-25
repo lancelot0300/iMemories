@@ -3,7 +3,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 type FileStatusState = {
   index: string;
   fileName: string;
-  status: string;
+  progress: string;
+  status: "Uploading" | "Error" | "Finished";
 };
 
 type InitialState = {
@@ -25,10 +26,11 @@ const activeRequests = createSlice({
       state.activeRequests.push({
         index: index,
         fileName,
+        progress: "0%",
         status,
       });
 
-      if(state.activeRequests.length > 8 && state.activeRequests[0].status === "100%") {
+      if(state.activeRequests.length > 8 && state.activeRequests[0].progress === "100%") {
         state.activeRequests.shift();
       }
 
@@ -42,6 +44,7 @@ const activeRequests = createSlice({
           return {
             index: file.index,
             fileName: action.payload.fileName,
+            progress: action.payload.progress,
             status: action.payload.status,
           };
         }

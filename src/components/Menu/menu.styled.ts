@@ -12,7 +12,7 @@ export const MenuWrapper = styled.div`
     gap: 20px;
     position: sticky;
     top: 0;
-
+z-index: 1000;
 `;
 
 export const Navigation = styled.div`
@@ -23,7 +23,7 @@ export const Navigation = styled.div`
 `;
 
 type NavigationOptionProps = {
-    disabled?: boolean;
+    $disabled?: boolean;
 }
 
 export const NavigationOption = styled.div<NavigationOptionProps>`
@@ -35,9 +35,9 @@ export const NavigationOption = styled.div<NavigationOptionProps>`
     border-radius: 50%;
     transition: background-color 0.2s;
     &:hover {
-        background-color: ${({ disabled }) => disabled ? 'transparent' : 'rgba(255,255,255,0.1)'};
+        background-color: ${({ $disabled }) => $disabled ? 'transparent' : 'rgba(255,255,255,0.1)'};
     }
-    color: ${({ disabled }) => disabled ? 'rgba(255,255,255,0.5)' : 'inherit'};
+    color: ${({ $disabled }) => $disabled ? 'rgba(255,255,255,0.5)' : 'inherit'};
 `;
 
 export const CurrentPath = styled.span`

@@ -13,12 +13,14 @@ function Statuses() {
         dispatch(removeFileStatus(index));
     }
 
+    
     return (
+        
         <StatusesWrapper>
             {activeRequests.map((request, index) => (
-                <Status key={index} >
+                <Status key={index} $status={request.status}>
                     <StatusFileName>{request.fileName}</StatusFileName>
-                    <p>{request.status}</p>
+                    <p>{request.progress}</p>
                     <FontAwesomeIcon icon={faCircleXmark} onClick={() => handleCloseClick(request.index)} style={{cursor: "pointer"}} />
                 </Status>
             ))}

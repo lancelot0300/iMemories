@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {  Item, SelectedElements } from "../../../types";
 
 
@@ -57,7 +57,7 @@ const filesSlice = createSlice({
           break;
         case "delete":
           state.copyFiles = state.copyFiles.filter((stateEl) => {
-            return !action.payload.files?.some((actionEl) => actionEl.id === stateEl.id);
+            return !action.payload.files?.find((actionEl) => actionEl.id === stateEl.id);
           });
           break;
         default:
@@ -69,6 +69,11 @@ const filesSlice = createSlice({
     },
   },
 });
+
+export const selectActualFiles = (state: { files: InitialState }) => state.files.selectedFiles;
+
+export const selectCopyFiles = (state: { files: InitialState }) => state.files.copyFiles;
+
 
 export default filesSlice.reducer;
 export const { selectFiles, addFile, addFiles, removeFile, setLastCommand} =

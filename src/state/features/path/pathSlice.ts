@@ -1,38 +1,39 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type PathHistory = {
-  key: number;
+type Path = {
   path: string;
-  data: {};
+  name: string;
 };
 
 type InitialState = {
-  path: string;
-  pathHistory: PathHistory[];
+  actualPath: Path[];
 };
 
 const initialState: InitialState = {
-  path: "/",
-  pathHistory: [],
+  actualPath: [{ path: "", name: "Home" }],
 };
 
 const pathSlice = createSlice({
   name: "path",
   initialState,
   reducers: {
-    nextPath: (state, action: PayloadAction<PathHistory>) => {
-      state.pathHistory.push(action.payload);
-      state.path = action.payload.path;
+    nextPath: (state, action: PayloadAction<Path[]>) => {
+      state.actualPath = action.payload;
     },
     previousPath: (state) => {
-      state.pathHistory.pop();
-      state.path = state.pathHistory[state.pathHistory.length - 1].path;
+      state.actualPath.pop();
     },
-    setPath: (state, action: PayloadAction<string>) => {
-      state.path = action.payload;
+    setPath: (state, action: PayloadAction<Path[]>) => {
+      state.actualPath = action.payload;
+    },
+    goBackToPath: (state, action: PayloadAction<number>) => {
+      state.actualPath = state.actualPath.slice(0, action.payload + 1);
     },
   },
 });
+
+export const getActualPath = (state: InitialState) =>
+  state.actualPath[state.actualPath.length - 1];
 
 export default pathSlice.reducer;
 export const { nextPath, previousPath, setPath } = pathSlice.actions;

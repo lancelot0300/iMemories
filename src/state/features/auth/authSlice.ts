@@ -9,7 +9,7 @@ type InitialState = {
 }
 
 const initialState: InitialState = {
-  user: window.localStorage.getItem("user") ? JSON.parse(window.localStorage.getItem("user") as string) : null,
+  user: null,
 };
 
 const authSlice = createSlice({

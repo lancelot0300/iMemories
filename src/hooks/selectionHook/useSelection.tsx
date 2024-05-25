@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { ActiveFiles } from "../../types";
 import { useAppDispatch } from "../stateHook/useStateHook";
 import { addFiles, selectFiles } from "../../state/features/files/filesSlice";
@@ -35,11 +35,12 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
     style.display = "block";
     style.width = `${width}px`;
     style.height = `${height}px`;
-    style.position = "fixed";
+    style.position = "absolute";
     style.top = `${y}px`;
     style.left = `${x}px`;
     style.border = "1px solid black";
     style.backgroundColor = "rgba(255,255,255,0.05)";
+    style.zIndex = "1";
 
     if (!selectDiv) {
       containerRef.current?.appendChild(div);
@@ -52,9 +53,10 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
     if (dragging) return;
     if(e.button !== 0) return;
 
-    console.log("mouse down");
-    startPos = { x: e.clientX, y: e.clientY };
-    endPos = { x: e.clientX, y: e.clientY };
+   
+    startPos = { x: e.pageX, y: e.pageY };
+    endPos = { x: e.pageX, y: e.pageY };
+
     isClickedFlag = true;
   };
 
@@ -62,21 +64,23 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
     if (!isClickedFlag || !startPos) return;
     if (!dragging) dragging = true;
 
-    endPos = { x: e.clientX, y: e.clientY };
+    endPos = { x: e.pageX, y: e.pageY };
 
     if (startPos.x > endPos.x) endPos.x += 1;
     if (startPos.y > endPos.y) endPos.y += 1;
 
+    if(endPos.x > window.innerWidth - 10) endPos.x = window.innerWidth - 10;
+    if(endPos.y > window.innerHeight + window.scrollY) endPos.y = window.innerHeight + window.scrollY - 10;
 
     const selectedItems = allFiles.filter((el) => {
       if (!el || !el.element) return false;
       if (!startPos || !endPos) return false;
       const rect = el.element.getBoundingClientRect();
       return (
-        rect.x < Math.max(startPos.x, endPos.x) &&
-        rect.x + rect.width > Math.min(startPos.x, endPos.x) &&
-        rect.y < Math.max(startPos.y, endPos.y) &&
-        rect.y + rect.height > Math.min(startPos.y, endPos.y)
+        rect.x < Math.max(startPos.x - window.scrollX, endPos.x - window.scrollX) &&
+        rect.x + rect.width > Math.min(startPos.x - window.scrollX, endPos.x - window.scrollX) &&
+        rect.y < Math.max(startPos.y - window.scrollY, endPos.y - window.scrollY) &&
+        rect.y + rect.height > Math.min(startPos.y - window.scrollY, endPos.y - window.scrollY)
       );
     });
 
@@ -101,6 +105,7 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
       Math.abs(startPos.y - endPos.y)
     );
   };
+
 
   const clearDrag = () => {
 
@@ -127,10 +132,10 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
       if (!startPos || !endPos) return false;
       const rect = el.element.getBoundingClientRect();
       return (
-        rect.x < Math.max(startPos.x, endPos.x) &&
-        rect.x + rect.width > Math.min(startPos.x, endPos.x) &&
-        rect.y < Math.max(startPos.y, endPos.y) &&
-        rect.y + rect.height > Math.min(startPos.y, endPos.y)
+        rect.x < Math.max(startPos.x - window.scrollX, endPos.x - window.scrollX) &&
+        rect.x + rect.width > Math.min(startPos.x - window.scrollX, endPos.x - window.scrollX) &&
+        rect.y < Math.max(startPos.y - window.scrollY, endPos.y - window.scrollY) &&
+        rect.y + rect.height > Math.min(startPos.y - window.scrollY, endPos.y - window.scrollY)
       );
     });
 
@@ -148,6 +153,7 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
     window.addEventListener("mouseup", () => handleClick(), { once: true });
   };
 
+
   return {
     handleMouseMove,
     handleMouseDown,
@@ -155,6 +161,7 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
     handleClick,
     draggingRef,
     allFilesRefs,
+    clearDrag
   };
 }
 

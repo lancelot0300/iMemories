@@ -1,23 +1,41 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FolderGridContainer, HomeContainer } from "./home.styles";
 import { ActiveFiles, ContextRef, Item } from "../../types";
 import useDropHook from "../../hooks/dropHook/useDropFiles";
 import useSelection from "../../hooks/selectionHook/useSelection";
 import FileElement from "../../components/FileElement/FileElement";
-import NavBar from "../../components/NavBar/NavBar";
-import LeftSideMenu from "../../components/LeftSideMenu/LeftSideMenu";
-import RightSideMenu from "../../components/RightSideMenu/RightSideMenu";
-import ContextMenu from "../../components/ContextComponents/FileContextMenu/FileContextMenu";
 import { isClickedContainer } from "../../utils/homeUtils";
 import ContainerContextMenu from "../../components/ContextComponents/ContainerContextMenu/ContainerContextMenu";
-import { useAppDispatch } from "../../hooks/stateHook/useStateHook";
+import { useAppDispatch, useAppSelector } from "../../hooks/stateHook/useStateHook";
 import { selectFiles } from "../../state/features/files/filesSlice";
 import Menu from "../../components/Menu/Menu";
+import Statuses from "../../components/Statuses/Statuses";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { Response } from "../../types";
+import { getActualPath } from "../../state/features/path/pathSlice";
 
 function Home() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const allFilesRefs = useRef<ActiveFiles[]>([]);
   const contextMenuRef = useRef<ContextRef>(null);
+  const pathHistory = useAppSelector((state) => getActualPath(state.path));
+
+  const { data } = useQuery<Response>({ queryKey: [pathHistory.path], queryFn: async () => {
+    const res = await axios.get(process.env.REACT_APP_API_URL + "/folder/" + pathHistory.path, {withCredentials: true});
+    console.log(res.data);
+    return res.data as Response;
+  },
+  refetchOnWindowFocus: false,
+  refetchOnMount: false,
+  refetchOnReconnect: false,
+  refetchInterval: false,
+  refetchIntervalInBackground: false,
+  retry: 1,
+})
+
+
+
 
   const dispatch = useAppDispatch();
 
@@ -27,83 +45,52 @@ function Home() {
     handleClick,
     handleMouseLeave,
     draggingRef,
+    clearDrag
   } = useSelection({ containerRef, allFilesRefs });
   useDropHook({ containerRef, allFilesRefs });
 
-  const folderStructure = [];
-
-
-  function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0,
-          v = c === 'x' ? r : ((r & 0x3) | 0x8);
-      return v.toString(16);
-    });
-  }
   
-  for (let i = 0; i < 205; i++) {
-    const file = {
-      id: uuidv4(),
-      folderId: uuidv4(),
-      storageFileId: uuidv4(),
-      tags: [],
-      isFolder: false,
-      category: null,
-      fileDetails: {
-        id: uuidv4(),
-        name: `file_${i}.txt`,
-        size: Math.floor(Math.random() * 10000),
-        description: null,
-        isStared: false,
-        createdDate: new Date().toISOString(),
-        lastOpenedDate: "0001-01-01T00:00:00",
-        lastModifiedDate: "0001-01-01T00:00:00",
-      },
-    };
-    
-    folderStructure.push(file);
-  }
-
-  const [files, setFiles] = useState(folderStructure);
 
   const handleContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    if(!isClickedContainer(containerRef, e)) return;
+    clearDrag();
+    if (!isClickedContainer(containerRef, e)) return;
     contextMenuRef.current?.handleOpenContext(e, true);
-    dispatch(selectFiles([]))
+    dispatch(selectFiles([]));
   };
+
+
 
   return (
     <>
-      {console.log("Home Rendered")}
       <Menu />
       <HomeContainer
         onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onContextMenu={handleContextMenu}
+        onMouseMove={handleMouseMove}
         onClick={handleClick}
         $isDragging={draggingRef.current ? true : false}
         ref={containerRef}
       >
         <FolderGridContainer>
-          {files.map((item: Item, index) => {
+          {data?.files.map((item: Item, index) => {
             return (
               <FileElement
                 key={item.id}
+                clearDrag={clearDrag}
                 element={item}
-                allFilesRefs={allFilesRefs}
                 ref={(el) => {
                   if (!el) return;
                   allFilesRefs.current[index] = el;
                 }}
-                draggingRef={draggingRef}
               />
             );
           })}
         </FolderGridContainer>
+        <ContainerContextMenu ref={contextMenuRef} />
+        <Statuses />
       </HomeContainer>
-      <ContainerContextMenu  ref={contextMenuRef} />
     </>
   );
 }

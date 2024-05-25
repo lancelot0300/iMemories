@@ -17,15 +17,14 @@ export const Name = styled.span`
     font-size: 12px;
     font-weight: 500;
     color: #fff;
-    text-align: center;
-    user-select: none;
-    white-space: pre-wrap;
-    width: 80px;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
     overflow: hidden;
+    text-overflow: ellipsis;
+    width: 80px;
+    text-align: center;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow-wrap: break-word;
 `
 
 type FolderTypeProps = {
@@ -43,7 +42,7 @@ export const FileElementContainer = styled.div<FolderTypeProps>`
     width: 100px;
     cursor: pointer;
     transition: background-color 0.2s;
-    background-color: ${({ $isSelected }) => $isSelected ? 'rgba(255,255,255,0.15)' : 'var(--background-color)'};
+    background-color: ${({ $isSelected }) => $isSelected ? 'rgba(255,255,255,0.15)' : ''};
     opacity: ${({ $isCopy }) => $isCopy ? '0.5' : '1'};
 
         &.active {

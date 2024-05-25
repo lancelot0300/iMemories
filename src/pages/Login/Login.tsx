@@ -72,8 +72,8 @@ function Login() {
     handleSubmit,
   } = useFormik<ILoginFormValues>({
     initialValues: {
-      Username: "",
-      Password: "",
+      Username: "masza221",
+      Password: "test1234",
     },
     onSubmit,
     validationSchema: schema,
