@@ -12,34 +12,54 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import RightSideMenu from "../RightSideMenu/RightSideMenu";
 import UploadOption from "../UploadOption/UploadOption";
-import { useAppDispatch, useAppSelector } from "../../hooks/stateHook/useStateHook";
-import { previousPath } from "../../state/features/path/pathSlice";
+import { useAppDispatch, useAppSelector } from "../../state/store";
+import {
+  goBackToPath,
+  setNextPath,
+  setPreviousPath,
+} from "../../state/features/path/pathSlice";
 
 function Menu() {
-  const { actualPath } = useAppSelector((state) => state.path);
+  const { actualPath, history } = useAppSelector((state) => state.path);
   const dispatch = useAppDispatch();
-
-  const isDisabled = actualPath.length === 1;
+  const actualPathInHistory = history?.findIndex(
+    (path) => path.path === actualPath[actualPath.length - 1].path
+  ) ?? -1;
+  const isPreviousPath = actualPathInHistory > 0;
+  const isNextPath = history && actualPathInHistory < history.length - 1;
 
   const handlePreviousPath = () => {
-    if(isDisabled) return
-     dispatch(previousPath());
+    if (!isPreviousPath) return;
+    dispatch(setPreviousPath());
+  };
+
+  const handleBackToPath = (index: number) => {
+    console.log(index);
+    dispatch(goBackToPath(index));
+  };
+
+  const handleNextPath = () => {
+    if (!isNextPath) return;
+    dispatch(setNextPath(actualPathInHistory + 1));
   }
 
   return (
     <MenuWrapper>
       <Navigation>
-        <NavigationOption $disabled={isDisabled}  onClick={handlePreviousPath}>
-          <FontAwesomeIcon  icon={faArrowLeftLong}/>
+        <NavigationOption
+          $disabled={!isPreviousPath}
+          onClick={handlePreviousPath}
+        >
+          <FontAwesomeIcon icon={faArrowLeftLong} />
         </NavigationOption>
-        <NavigationOption>
+        <NavigationOption $disabled={!isNextPath} onClick={handleNextPath}>
           <FontAwesomeIcon icon={faArrowRightLong} />
         </NavigationOption>
       </Navigation>
       <CurrentPath>
         {actualPath.map((path, index) => (
           <React.Fragment key={index}>
-            <span>{path.name}</span>
+            <span onClick={() => handleBackToPath(index)}>{path.name}</span>
             {index < actualPath.length - 1 && (
               <FontAwesomeIcon
                 icon={faArrowRightLong}

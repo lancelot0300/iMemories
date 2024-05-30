@@ -1,7 +1,9 @@
 import React, { forwardRef, useImperativeHandle } from "react";
-import CreateModal from "../../CreateModal/CreateModal";
-import { ContextWrapper } from "../../FileElement/fileElement.styles";
-import useContext from "../../../hooks/useContext/useContext";
+import CreateModal from "../CreateModal/CreateModal";
+import { ContextWrapper } from "../FileElement/fileElement.styles";
+import useContext from "../../hooks/useContext/useContext";
+import CreateFolderOption from "../ContextComponents/CreateFolderOption/CreateFolderOption";
+import UploadContextOption from "../ContextComponents/UploadContextOption/UploadContextOption";
 
 const ContainerContextMenu = forwardRef(({}, ref) => {
   const { handleOpenContext, isOpened, posY, posX, setIsOpened } = useContext();
@@ -13,9 +15,9 @@ const ContainerContextMenu = forwardRef(({}, ref) => {
   return (
     <CreateModal isOpened={isOpened} setIsOpened={setIsOpened} withoutOverlay>
       <ContextWrapper $posX={posX.current} $posY={posY.current}>
-        <li>Create Folder</li>
+        <CreateFolderOption />
         <li>Paste</li>
-        <li>Upload</li>
+        <UploadContextOption />
       </ContextWrapper>
     </CreateModal>
   );

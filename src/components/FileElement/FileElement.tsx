@@ -2,8 +2,8 @@ import React, { forwardRef, useEffect, useImperativeHandle, useRef } from "react
 import { ActiveFiles, ContextRef, Item } from "../../types";
 import { FileElementContainer, Icon, Name } from "./fileElement.styles";
 import useFile from "../../hooks/useFile/useFile";
-import { useAppSelector } from "../../hooks/stateHook/useStateHook";
-import FileContextMenu from "../ContextComponents/FileContextMenu/FileContextMenu";
+import { useAppSelector } from "../../state/store"
+import FileContextMenu from "../FileContextMenu/FileContextMenu";
 import { renderIcon } from "../../utils/iconsUtils";
 
 interface IProps {
@@ -69,7 +69,6 @@ const FileElement = forwardRef<ActiveFiles, IProps>(
 
     return (
       <>
-      {console.log(selectedFiles)}
         <FileElementContainer
           ref={fileElementRef}
           onClick={handleClick}

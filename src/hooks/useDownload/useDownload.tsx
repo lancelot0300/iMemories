@@ -1,5 +1,5 @@
 import React from 'react'
-import { useAppSelector } from '../stateHook/useStateHook';
+import { useAppDispatch, useAppSelector } from "../../state/store"
 import axios from 'axios';
 
 function useDownload (setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) {

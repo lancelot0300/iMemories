@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from '../../hooks/stateHook/useStateHook';
+import { useAppDispatch, useAppSelector } from "../../state/store"
 import { Status, StatusFileName, StatusesWrapper } from './statuses.styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';

@@ -13,6 +13,31 @@ export const Icon = styled.div`
         user-select: none;
     }
 `;
+
+export const LoadingIcon = styled.div`
+
+
+@keyframes loading {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+    position: relative;
+    animation: loading 1s infinite linear;
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    opacity: 1;
+`;
+
 export const Name = styled.span`
     font-size: 12px;
     font-weight: 500;
@@ -28,7 +53,7 @@ export const Name = styled.span`
 `
 
 type FolderTypeProps = {
-    $isSelected: boolean;
+    $isSelected?: boolean;
     $isCopy?: boolean;
 }
 
@@ -59,6 +84,7 @@ export const FileElementContainer = styled.div<FolderTypeProps>`
         background-color: rgba(255,255,255,0.1);
     }
 `;
+
 
 type ContextWrapperProps = {
     $posX: number

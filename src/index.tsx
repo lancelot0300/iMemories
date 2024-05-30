@@ -12,24 +12,24 @@ const root = ReactDOM.createRoot(
 );
 const queryClient = new QueryClient();
 
-root.render(
-  <React.StrictMode>
-    <Router>
-      <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
-          <App />
-        </QueryClientProvider>
-      </Provider>
-    </Router>
-  </React.StrictMode>
-);
-
 // root.render(
-//   <Router>
-//     <Provider store={store}>
-//       <QueryClientProvider client={queryClient}>
-//         <App />
-//       </QueryClientProvider>
-//     </Provider>
-//   </Router>
+//   <React.StrictMode>
+//     <Router>
+//       <Provider store={store}>
+//         <QueryClientProvider client={queryClient}>
+//           <App />
+//         </QueryClientProvider>
+//       </Provider>
+//     </Router>
+//   </React.StrictMode>
 // );
+
+root.render(
+  <Router>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </Provider>
+  </Router>
+);

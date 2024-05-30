@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../stateHook/useStateHook";
+import { useAppDispatch, useAppSelector } from "../../state/store"
 import {
   addFileStatus,
   updateFileStatus,
@@ -9,14 +9,17 @@ import CreateModal from "../../components/CreateModal/CreateModal";
 import { UploadModal } from "../../components/UploadOption/uploadOption.styles";
 import { UploadCustomButton, UploadFormButton, UploadFormInput, UploadFormTitle } from "./useUpload.styles";
 import { useQueryClient } from "@tanstack/react-query";
+import { getActualPath, setPathAsync, setPath } from "../../state/features/path/pathSlice";
+import { Response } from "../../types";
 
 function useUpload() {
-  const { actualPath } = useAppSelector((state) => state.path);
+  // const  actualPath  = useAppSelector((state) => getActualPath(state.path));
   const dispatch = useAppDispatch();
   const [files, setFiles] = useState<FileList | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [isOpened, setIsOpened] = useState(false);
-  const queryClient = useQueryClient();
+  const { data } = useAppSelector((state) => state.path);
+  const actualPath = useAppSelector((state) => getActualPath(state.path));
 
   const uploadFiles = async (files: FileList | null) => {
     if (!files) {
@@ -24,7 +27,7 @@ function useUpload() {
       return;
     }
   
-    const apiUrl = `${process.env.REACT_APP_API_URL}/file/${actualPath}`;
+    const apiUrl = `${process.env.REACT_APP_API_URL}/file/${data?.id}`;
     const uploadPromises: Promise<any>[] = [];
   
     for (let i = 0; i < files.length; i++) {
@@ -91,10 +94,10 @@ function useUpload() {
   
     try {
       await Promise.all(uploadPromises);
-      queryClient.invalidateQueries({ queryKey: ['folder'] });
+      if(!data?.id) return;
+      dispatch(setPathAsync(actualPath.path));
     } catch (error) {
-      queryClient.invalidateQueries({ queryKey: ['folder'] });
-    }
+      console.error("Error uploading files:", error);}
   };
   
 

@@ -1,10 +1,10 @@
 import React, { forwardRef, useImperativeHandle } from "react";
-import CreateModal from "../../CreateModal/CreateModal";
-import { ContextWrapper } from "../../FileElement/fileElement.styles";
-import DeleteContextOption from "../DeleteContextOption/DeleteContextOption";
-import CopyContextOption from "../CopyContextOption/CopyContextOption";
-import DownloadContextOption from "../DownloadContextOption/DownloadContextOption";
-import useContext from "../../../hooks/useContext/useContext";
+import CreateModal from "../CreateModal/CreateModal";
+import { ContextWrapper } from "../FileElement/fileElement.styles";
+import DeleteContextOption from "../ContextComponents/DeleteContextOption/DeleteContextOption";
+import CopyContextOption from "../ContextComponents/CopyContextOption/CopyContextOption";
+import DownloadContextOption from "../ContextComponents/DownloadContextOption/DownloadContextOption";
+import useContext from "../../hooks/useContext/useContext";
 
 const ContextMenu = forwardRef(({}, ref) => {
   const { handleOpenContext, isOpened, posY, posX, setIsOpened, contextMenuRefs } = useContext();

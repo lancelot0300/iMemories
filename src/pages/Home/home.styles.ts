@@ -16,7 +16,7 @@ export const FolderGridContainer = styled.div`
 
 
 type ContainerProps = {
-  $isDragging: boolean;
+  $isDragging?: boolean;
 }
 export const HomeContainer = styled.div<ContainerProps>`
     display: flex;

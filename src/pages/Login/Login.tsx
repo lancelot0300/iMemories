@@ -9,9 +9,10 @@ import {
 import * as yup from "yup";
 import { useFormik } from "formik";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
-import { useAppDispatch } from "../../hooks/stateHook/useStateHook";
+import { useAppDispatch, useAppSelector } from "../../state/store"
 import { loginSuccess } from "../../state/features/auth/authSlice";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 type ILoginFormValues = {
   Username: string;
@@ -25,6 +26,7 @@ type IError = {
 function Login() {
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
 
   const schema = yup.object().shape({
@@ -48,8 +50,7 @@ function Login() {
       });
 
       dispatch(loginSuccess(login.data));
-      const jwt = document.cookie.split(";").find((c) => c.trim().startsWith("jwt="));
-      console.log(jwt);
+      navigate("/");
 
     } catch (error) {
       if (axios.isAxiosError<IError>(error)) {

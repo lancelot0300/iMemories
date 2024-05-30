@@ -1,5 +1,5 @@
 import React from 'react'
-import { useAppDispatch, useAppSelector } from '../stateHook/useStateHook';
+import { useAppDispatch, useAppSelector } from "../../state/store"
 import { setLastCommand } from '../../state/features/files/filesSlice';
 
 function useCopy(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) {
