@@ -61,3 +61,13 @@ export const MenuItem = styled.div`
         background-color: rgba(255,255,255,0.1);
     }
 `;
+
+export const PathSpan = styled.span`
+    cursor: pointer;
+    color: var(--text-color);
+    user-select: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+`;

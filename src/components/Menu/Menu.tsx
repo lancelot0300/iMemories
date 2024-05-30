@@ -4,6 +4,7 @@ import {
   MenuWrapper,
   Navigation,
   NavigationOption,
+  PathSpan,
 } from "./menu.styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -34,7 +35,9 @@ function Menu() {
   };
 
   const handleBackToPath = (index: number) => {
-    console.log(index);
+
+    if(index === actualPath.length - 1) return;
+
     dispatch(goBackToPath(index));
   };
 
@@ -59,12 +62,9 @@ function Menu() {
       <CurrentPath>
         {actualPath.map((path, index) => (
           <React.Fragment key={index}>
-            <span onClick={() => handleBackToPath(index)}>{path.name}</span>
+            <PathSpan onClick={() => handleBackToPath(index)}>{path.name}</PathSpan>
             {index < actualPath.length - 1 && (
-              <FontAwesomeIcon
-                icon={faArrowRightLong}
-                style={{ margin: "0 8px" }}
-              />
+              <span> / </span>
             )}
           </React.Fragment>
         ))}

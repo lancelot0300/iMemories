@@ -30,7 +30,7 @@ const getPathMiddleware: ThunkMiddleware = (store) => (next) => (action) => {
   
     if(goBackToPath.match(action)) {
       const goBackToPath = path.history[action.payload]?.path;
-      if (goBackToPath) {
+      if (goBackToPath || goBackToPath === "") {
         store.dispatch(setPathAsync(goBackToPath));
       }
     }

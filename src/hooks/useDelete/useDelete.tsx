@@ -2,7 +2,6 @@ import React from "react";
 import { useAppDispatch, useAppSelector } from "../../state/store"
 import { setLastCommand } from "../../state/features/files/filesSlice";
 import axios from "axios";
-import { useQueryClient } from "@tanstack/react-query";
 
 function useDelete(
   setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>
