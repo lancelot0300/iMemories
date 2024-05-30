@@ -52,9 +52,9 @@ function Home() {
     return <div>Failed to load data</div>;
   }
 
-
+  if(status === "loading") {
     return <LoadingHome />
-
+  }
 
   return (
     <>
