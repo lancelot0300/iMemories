@@ -4,11 +4,11 @@ export type Response = {
   id: string;
   parentFolderId: string | null;
   folderDetails: string | null;
-  files: Item[];
-  childFolders: [];
+  files: File[];
+  childFolders: File[];
 };
 
-export type Item = {
+export type File = {
   id: string;
   folderId: string;
   tags: [];
@@ -25,6 +25,22 @@ export type Item = {
     lastModifiedDate: string;
   };
 };
+
+export type Folder = {
+  id: string;
+  parentFolderId: string | null;
+  folderDetails: {
+    id: string;
+    createdDate: string;
+    lastModifiedDate: string;
+    name: string;
+    lastOpenedDate: string;
+    isStared: boolean;
+  };
+}
+
+export type Item = File 
+
 
 export type ActiveFiles = {
   element: HTMLDivElement | null;

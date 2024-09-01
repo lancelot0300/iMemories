@@ -1,9 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { ActiveFiles } from "../../types";
-import { useAppDispatch, useAppSelector } from "../../state/store"
+import { useAppDispatch, useAppSelector } from "../../state/store";
 import { addFiles, selectFiles } from "../../state/features/files/filesSlice";
 import { isClickedContainer } from "../../utils/homeUtils";
-
 
 type Props = {
   containerRef: React.MutableRefObject<HTMLDivElement | null>;
@@ -21,7 +20,6 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
 
   const { current: allFiles } = allFilesRefs;
   let { current: dragging } = draggingRef;
-
 
   const createSelection = (
     x: number,
@@ -49,11 +47,9 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isClickedContainer( containerRef, e)) return;
-    if (dragging) return;
-    if(e.button !== 0) return;
+    if (!isClickedContainer(containerRef, e) || e.button !== 0 || dragging) return;
+    console.log("mouse down");
 
-   
     startPos = { x: e.pageX, y: e.pageY };
     endPos = { x: e.pageX, y: e.pageY };
 
@@ -62,25 +58,31 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isClickedFlag || !startPos) return;
-    if (!dragging) dragging = true;
-
+    
+    dragging = true;
+    console.log("mouse move");
     endPos = { x: e.pageX, y: e.pageY };
 
     if (startPos.x > endPos.x) endPos.x += 1;
     if (startPos.y > endPos.y) endPos.y += 1;
 
-    if(endPos.x > window.innerWidth - 10) endPos.x = window.innerWidth - 10;
-    if(endPos.y > window.innerHeight + window.scrollY) endPos.y = window.innerHeight + window.scrollY - 10;
+    if (endPos.x > window.innerWidth - 10) endPos.x = window.innerWidth - 10;
+    if (endPos.y > window.innerHeight + window.scrollY)
+      endPos.y = window.innerHeight + window.scrollY - 10;
 
     const selectedItems = allFiles.filter((el) => {
       if (!el || !el.element) return false;
       if (!startPos || !endPos) return false;
       const rect = el.element.getBoundingClientRect();
       return (
-        rect.x < Math.max(startPos.x - window.scrollX, endPos.x - window.scrollX) &&
-        rect.x + rect.width > Math.min(startPos.x - window.scrollX, endPos.x - window.scrollX) &&
-        rect.y < Math.max(startPos.y - window.scrollY, endPos.y - window.scrollY) &&
-        rect.y + rect.height > Math.min(startPos.y - window.scrollY, endPos.y - window.scrollY)
+        rect.x <
+          Math.max(startPos.x - window.scrollX, endPos.x - window.scrollX) &&
+        rect.x + rect.width >
+          Math.min(startPos.x - window.scrollX, endPos.x - window.scrollX) &&
+        rect.y <
+          Math.max(startPos.y - window.scrollY, endPos.y - window.scrollY) &&
+        rect.y + rect.height >
+          Math.min(startPos.y - window.scrollY, endPos.y - window.scrollY)
       );
     });
 
@@ -96,8 +98,6 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
       }
     });
 
-
-
     createSelection(
       Math.min(startPos.x, endPos.x),
       Math.min(startPos.y, endPos.y),
@@ -106,9 +106,7 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
     );
   };
 
-
   const clearDrag = () => {
-
     allFiles.forEach((el) => {
       if (el?.element) {
         el.element.classList.remove("hoverActive");
@@ -119,12 +117,13 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
     isClickedFlag = false;
     selectDiv?.remove();
     selectDiv = null;
-}
+  };
 
   const handleClick = (e?: React.MouseEvent<HTMLDivElement>) => {
-    if (!isClickedContainer( containerRef ,e)) return;
-    if(!dragging && !isClickedFlag) return;
+    if (!isClickedContainer(containerRef, e)) return;
+    if (!dragging && !isClickedFlag) return;
 
+    console.log("click");
     clearDrag();
 
     const selectedItems: ActiveFiles[] = allFiles.filter((el) => {
@@ -132,27 +131,29 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
       if (!startPos || !endPos) return false;
       const rect = el.element.getBoundingClientRect();
       return (
-        rect.x < Math.max(startPos.x - window.scrollX, endPos.x - window.scrollX) &&
-        rect.x + rect.width > Math.min(startPos.x - window.scrollX, endPos.x - window.scrollX) &&
-        rect.y < Math.max(startPos.y - window.scrollY, endPos.y - window.scrollY) &&
-        rect.y + rect.height > Math.min(startPos.y - window.scrollY, endPos.y - window.scrollY)
+        rect.x <
+          Math.max(startPos.x - window.scrollX, endPos.x - window.scrollX) &&
+        rect.x + rect.width >
+          Math.min(startPos.x - window.scrollX, endPos.x - window.scrollX) &&
+        rect.y <
+          Math.max(startPos.y - window.scrollY, endPos.y - window.scrollY) &&
+        rect.y + rect.height >
+          Math.min(startPos.y - window.scrollY, endPos.y - window.scrollY)
       );
     });
 
-    if(e?.ctrlKey) {
+    if (e?.ctrlKey) {
       return dispatch(addFiles(selectedItems.map((el) => el.item)));
     }
-    
+
     dispatch(selectFiles(selectedItems.map((el) => el.item)));
   };
 
-
   const handleMouseLeave = () => {
-    if (!isClickedFlag) return;
-    if (!dragging) return;
+    if (!isClickedFlag || !dragging) return;
+    console.log("mouse leave");
     window.addEventListener("mouseup", () => handleClick(), { once: true });
   };
-
 
   return {
     handleMouseMove,
@@ -161,7 +162,7 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
     handleClick,
     draggingRef,
     allFilesRefs,
-    clearDrag
+    clearDrag,
   };
 }
 

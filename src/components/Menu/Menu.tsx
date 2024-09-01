@@ -19,32 +19,42 @@ import {
   setNextPath,
   setPreviousPath,
 } from "../../state/features/path/pathSlice";
+import { ActiveFiles } from "../../types";
+import { all } from "axios";
 
-function Menu() {
+type Props = {
+  allFilesRefs: React.MutableRefObject<ActiveFiles[]>;
+};
+
+function Menu({ allFilesRefs }: Props) {
   const { actualPath, history } = useAppSelector((state) => state.path);
   const dispatch = useAppDispatch();
-  const actualPathInHistory = history?.findIndex(
-    (path) => path.path === actualPath[actualPath.length - 1].path
-  ) ?? -1;
+  const actualPathInHistory =
+    history?.findIndex(
+      (path) => path.path === actualPath[actualPath.length - 1].path
+    ) ?? -1;
   const isPreviousPath = actualPathInHistory > 0;
   const isNextPath = history && actualPathInHistory < history.length - 1;
 
+
+
   const handlePreviousPath = () => {
     if (!isPreviousPath) return;
+    allFilesRefs.current = [];
     dispatch(setPreviousPath());
   };
 
   const handleBackToPath = (index: number) => {
-
-    if(index === actualPath.length - 1) return;
-
+    if (index === actualPath.length - 1) return;
+    allFilesRefs.current = [];
     dispatch(goBackToPath(index));
   };
 
   const handleNextPath = () => {
     if (!isNextPath) return;
+    allFilesRefs.current = [];
     dispatch(setNextPath(actualPathInHistory + 1));
-  }
+  };
 
   return (
     <MenuWrapper>
@@ -62,10 +72,10 @@ function Menu() {
       <CurrentPath>
         {actualPath.map((path, index) => (
           <React.Fragment key={index}>
-            <PathSpan onClick={() => handleBackToPath(index)}>{path.name}</PathSpan>
-            {index < actualPath.length - 1 && (
-              <span> / </span>
-            )}
+            <PathSpan onClick={() => handleBackToPath(index)}>
+              {path.name}
+            </PathSpan>
+            {index < actualPath.length - 1 && <span> / </span>}
           </React.Fragment>
         ))}
       </CurrentPath>

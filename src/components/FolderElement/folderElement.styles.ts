@@ -59,7 +59,7 @@ type FolderTypeProps = {
     $isCopy?: boolean;
 }
 
-export const FileElementContainer = styled.div<FolderTypeProps>`
+export const FolderElementContainer = styled.div<FolderTypeProps>`
     display: flex;
     flex-direction: column;
     align-items: center;

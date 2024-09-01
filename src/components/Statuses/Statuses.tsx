@@ -1,31 +1,27 @@
-import { useAppDispatch, useAppSelector } from "../../state/store"
-import { Status, StatusFileName, StatusesWrapper } from './statuses.styles';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
-import { removeFileStatus } from '../../state/features/requests/requestsSlice';
+import { useAppSelector } from "../../state/store";
+import { StatusesWrapper } from "./statuses.styles";
+import Status from "./Status";
 
 function Statuses() {
-
-  const { activeRequests } = useAppSelector((state) => state.activeRequests);
-  const dispatch = useAppDispatch();
-
-   const handleCloseClick = (index: string) => {
-        dispatch(removeFileStatus(index));
+  const { activeRequests } = useAppSelector(
+    (state) => state.activeRequests,
+    (prev, next) => {
+      return prev.activeRequests.length === next.activeRequests.length;
     }
+  );
 
-    
-    return (
-        
-        <StatusesWrapper>
-            {activeRequests.map((request, index) => (
-                <Status key={index} $status={request.status}>
-                    <StatusFileName>{request.fileName}</StatusFileName>
-                    <p>{request.progress}</p>
-                    <FontAwesomeIcon icon={faCircleXmark} onClick={() => handleCloseClick(request.index)} style={{cursor: "pointer"}} />
-                </Status>
-            ))}
-        </StatusesWrapper>
-    )
+  if (activeRequests.length === 0) return null;
+
+  return (
+    <>
+      <StatusesWrapper>
+        {activeRequests.map((request) => (
+          <Status key={request.index} request={request} />
+        ))}
+      </StatusesWrapper>
+      {console.log("Statuses rendered")}
+    </>
+  );
 }
 
-export default Statuses
+export default Statuses;

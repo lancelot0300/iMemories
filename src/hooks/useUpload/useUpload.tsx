@@ -7,11 +7,12 @@ import { UploadModal } from "../../components/UploadOption/uploadOption.styles";
 import { UploadCustomButton, UploadFormButton, UploadFormInput, UploadFormTitle } from "./useUpload.styles";
 import { getActualPath, setPathAsync } from "../../state/features/path/pathSlice";
 
-function useUpload() {
+
+function useUpload(setIsOpened? : (value: boolean) => void) {
   const dispatch = useAppDispatch();
   const [files, setFiles] = useState<FileList | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isOpened, setIsOpened] = useState(false);
+  const [isOpenedModal, setIsOpenedModal] = useState(false);
   const { data } = useAppSelector((state) => state.path);
   const actualPath = useAppSelector((state) => getActualPath(state.path));
 
@@ -80,9 +81,15 @@ function useUpload() {
     setFiles(event.target.files);
   };
 
+  const handleCloseClick = () => {
+    setIsOpenedModal(false);
+    setIsOpened && setIsOpened(false);
+  }
+
   const handleUploadClick = () => {
     if (files) {
       uploadFiles(files);
+      handleCloseClick();
     } else {
       alert("Select a file to upload");
     }
@@ -93,13 +100,13 @@ function useUpload() {
   };
 
   useEffect(() => {
-    if (!isOpened && files) {
+    if (!isOpenedModal && files) {
       setFiles(null);
     }
-  }, [isOpened, files]);
+  }, [isOpenedModal, files]);
 
   const createModal = () => (
-    <CreateModal isOpened={isOpened} setIsOpened={setIsOpened}>
+    <CreateModal isOpened={isOpenedModal} setIsOpened={handleCloseClick}>
       <UploadModal>
         <UploadFormTitle>Upload File</UploadFormTitle>
         <UploadCustomButton onClick={handleCustomButtonClick}>
@@ -114,7 +121,7 @@ function useUpload() {
     </CreateModal>
   );
 
-  return { uploadFiles, createModal, setIsOpened };
+  return { uploadFiles, createModal, setIsOpenedModal };
 }
 
 export default useUpload;

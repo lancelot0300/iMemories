@@ -12,7 +12,6 @@ export const MenuWrapper = styled.div`
     gap: 20px;
     position: sticky;
     top: 0;
-z-index: 1000;
 `;
 
 export const Navigation = styled.div`

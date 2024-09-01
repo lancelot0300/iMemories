@@ -8,7 +8,7 @@ type Path = {
 };
 
 type InitialState = {
-  data: Response | null;
+  data: Response;
   actualPath: Path[];
   history: Path[];
   status: "idle" | "loading" | "failed" | "completed";
@@ -22,9 +22,15 @@ export const setPathAsync = createAsyncThunk('path/setPath', async (path: string
 
 
 const initialState: InitialState = {
-  data: null,
+  data: {
+    id: "",
+    parentFolderId: "",
+    folderDetails: "",
+    files: [],
+    childFolders: []
+  },
   actualPath: [{ path: "", name: "Home" }],
-  history: [{ path: "", name: "Home" }, { path: "FBF57E49-90D4-46DF-BD73-08DC80000248", name: "First" }],
+  history: [{ path: "", name: "Home" }, { path: "51D45D81-EB86-4453-F301-08DCB7E6C0E9", name: "First" }],
   status: "idle",
 };
 

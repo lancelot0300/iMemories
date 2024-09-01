@@ -1,17 +1,16 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
-import { ActiveFiles, ContextRef, Item } from "../../types";
-import { FileElementContainer, Icon, Name } from "./fileElement.styles";
-import useFile from "../../hooks/useFile/useFile";
+import { ActiveFiles, ContextRef, Folder, Item } from "../../types";
+import { FolderElementContainer, Icon, Name } from "./folderElement.styles";
 import { useAppSelector } from "../../state/store"
 import ContextMenu from "../ContextMenu/ContextMenu";
-import { renderIcon } from "../../utils/iconsUtils";
+import { faFolder } from "@fortawesome/free-solid-svg-icons";
 
 interface IProps {
-  element: Item;
+  element: Folder;
   clearDrag: () => void;
 }
 
-const FileElement = forwardRef<ActiveFiles | null, IProps>(
+const FolderElement = forwardRef<ActiveFiles | null, IProps>(
   ({ element, clearDrag }, ref) => {
     const fileElementRef = useRef<HTMLDivElement>(null);
     const contextMenuRef = useRef<ContextRef>();
@@ -30,13 +29,13 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
     });
 
 
-    const {setActiveElement, isActive, isCopy, setActiveOnRightClick} = useFile({element, selectedFiles, copyFiles});
+    // const {setActiveElement, isActive, isCopy, setActiveOnRightClick} = useFolder({element, selectedFolders, copyFolders});
    
 
-    useImperativeHandle(ref, () => ({
-      element: fileElementRef.current as HTMLDivElement,
-      item: element
-    }));
+    // useImperativeHandle(ref, () => ({
+    //   element: fileElementRef.current as HTMLDivElement,
+    //   item: element
+    // }));
 
     const handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
       console.log("double click");
@@ -53,7 +52,7 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
       }
 
       lastTimeClick.current = clickTime;
-      setActiveElement(event);
+      // setActiveElement(event);
     };
 
 
@@ -61,7 +60,7 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
       e.preventDefault();
       e.stopPropagation();
       clearDrag();
-      setActiveOnRightClick(e);
+      // setActiveOnRightClick(e);
       contextMenuRef.current?.handleOpenContext(e, true);
     };
 
@@ -72,21 +71,21 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
     return (
       <>
        {console.log("render file")}
-        <FileElementContainer
+        <FolderElementContainer
           ref={fileElementRef}
           onClick={handleClick}
           onContextMenu={handleRightClick}
-          $isSelected={isActive}
-          $isCopy={isCopy}
+          // $isSelected={isActive}
+          // $isCopy={isCopy}
         >
-          <Icon><img width={45} height={45} src={renderIcon(element.fileDetails.extension)} draggable='false' alt="" /></Icon>
-          <Name>{element.fileDetails.name}</Name>
-        </FileElementContainer>
-        <ContextMenu element="File" ref={contextMenuRef} />
+          <Icon><img width={45} height={45} src={""} draggable='false' alt="" /></Icon>
+          <Name>{element.folderDetails.name}</Name>
+        </FolderElementContainer>
+        <ContextMenu element="Folder" ref={contextMenuRef} />
       </>
     );
   }
 );
 
 
-export default FileElement;
+export default FolderElement;

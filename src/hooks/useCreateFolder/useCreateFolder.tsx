@@ -1,31 +1,94 @@
-import { get } from "http";
-import { useAppDispatch, useAppSelector } from "../../state/store"
-import { getActualPath } from "../../state/features/path/pathSlice";
+
+import { useRef, useState } from "react";
+import CreateModal from "../../components/CreateModal/CreateModal";
+import { UploadFormButton, UploadFormInput, UploadFormTitle, UploadModal } from "../../components/UploadOption/uploadOption.styles";
+import { useAppSelector } from "../../state/store"
+import * as yup from "yup";
+import { useFormik } from "formik";
+import { InputWrapper, StyledField } from "../../pages/Login/login.styles";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import axios from "axios";
 
+type IFolderFormValues = {
+  folder: string;
+}
 
-function useCreateFolder() {
+function useCreateFolder(setIsOpened: (value: boolean) => void) {
 
-    const path = useAppSelector((state) => getActualPath(state.path))
+    const { data } = useAppSelector((state) => state.path);
+    const [isOpenedModal, setIsOpenedModal] = useState(false);
 
-    const handleCreateClick = () => {
-       const response = axios.post(
-         process.env.REACT_APP_API_URL + "/folder",
-         {
-           parentFolderId: "f46fe28e-1293-4f93-75bb-08dc7f57c8eb",
-           folderDetails: {
-             Name: "TestFolder",
-           },
-         },
-         { withCredentials: true }
-       ).then((res) => {
-           console.log(res.data)
-       }).catch((error) => {
-           console.log(error)
-       })
+    const schema = yup.object().shape({
+      folder: yup.string().required("Folder name is required"),
+    });
+  
+
+    const handleCloseClick = () => {
+      setIsOpenedModal(false);
+      setIsOpened(false);
     }
 
-    return {handleCreateClick}
+    const onSubmit = async ( {folder } : IFolderFormValues) => {
+
+      if(data.childFolders.some((child) => child.fileDetails.name === folder)) {
+        setErrors({folder: "Folder with this name already exists"})
+        return;
+      }
+
+      try {
+        const response = await axios.post(
+          process.env.REACT_APP_API_URL + "/folder",
+          {
+            parentFolderId: data.id,
+            folderDetails: {
+              Name: folder,
+            },
+          },
+          { withCredentials: true }
+        );
+      } catch (error) {
+        console.error(error);
+      }
+      
+      resetForm();
+      handleCloseClick();
+    }
+
+    const {
+      values,
+      errors,
+      touched,
+      handleChange,
+      handleSubmit,
+      setErrors,
+      resetForm,
+    } = useFormik<{folder: string}>({
+      initialValues: {
+        folder: "",
+      },
+      onSubmit,
+      validationSchema: schema,
+    });
+
+    const createModal = () => (
+      <CreateModal isOpened={isOpenedModal} setIsOpened={handleCloseClick}>
+        <UploadModal>
+        <form onSubmit={handleSubmit} title="Folder">
+          <InputWrapper>
+            <StyledField id="folder" name="folder" autoComplete="folder" placeholder="Folder name" value={values.folder} onChange={handleChange} $isError={!!errors.folder}/>
+            <ErrorMessage $isError={!!errors.folder} >
+              {touched.folder && errors.folder ? errors.folder : ""}
+            </ErrorMessage>
+          </InputWrapper>
+          <UploadFormButton type="submit">
+            Create
+          </UploadFormButton>
+        </form>
+        </UploadModal>
+      </CreateModal>
+    );
+
+    return {setIsOpenedModal, createModal}
 
 }
 

@@ -42,6 +42,8 @@ export const UploadFormButton = styled.button`
     color: #fff;
     border: none;
     cursor: pointer;
+    display: block;
+    margin: 20px auto 0;
 `;
 
 export const UploadCustomButton = styled.label`

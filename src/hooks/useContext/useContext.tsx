@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 function useContext() {
 
-    const [isOpened, setIsOpened] = useState(false);
+    const [isOpenedContext, setIsOpenedContex] = useState(false);
     const contextMenuRefs = useRef<HTMLDivElement | null>(null);
 
     const posX = useRef(0);
@@ -10,7 +10,7 @@ function useContext() {
 
     useLayoutEffect(() => {
       if(!contextMenuRefs.current) return;
-      if(!isOpened) return;
+      if(!isOpenedContext) return;
 
       const contextMenu = contextMenuRefs.current;
 
@@ -25,11 +25,11 @@ function useContext() {
         contextMenu.style.top = `${posY.current}px`;
       }
 
-    },[isOpened])
+    },[isOpenedContext])
 
     const handleOpenContext = (e: React.MouseEvent<HTMLDivElement>, isOpen: boolean) => {
         e.preventDefault();
-        setIsOpened(isOpen);
+        setIsOpenedContex(isOpen);
         if(isOpen) {
           posX.current = e.clientX;
           posY.current = e.clientY
@@ -41,7 +41,7 @@ function useContext() {
       };
 
 
-      return { handleOpenContext, isOpened, posY, posX, setIsOpened, contextMenuRefs}
+      return { handleOpenContext, isOpenedContext, posY, posX, setIsOpenedContex, contextMenuRefs}
 }
 
 export default useContext

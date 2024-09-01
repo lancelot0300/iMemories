@@ -5,11 +5,11 @@ import { MenuItem } from "../Menu/menu.styled";
 
 function UploadOption() {
 
-  const { createModal, setIsOpened } = useUpload();
+  const { createModal, setIsOpenedModal } = useUpload();
 
   return (
     <>
-      <MenuItem onClick={() => setIsOpened(true)}><FontAwesomeIcon icon={faUpload} /></MenuItem>
+      <MenuItem onClick={() => setIsOpenedModal(true)}><FontAwesomeIcon icon={faUpload} /></MenuItem>
       {createModal()}
     </>
   );

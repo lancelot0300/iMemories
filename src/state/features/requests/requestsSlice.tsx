@@ -58,5 +58,8 @@ const activeRequests = createSlice({
   },
 });
 
+export const getActualElement = (state: InitialState, index: string) => state.activeRequests.find((file) => file.index === index);
+
+
 export default activeRequests.reducer;
 export const { addFileStatus, removeFileStatus, updateFileStatus, clearAllFilesStatus } = activeRequests.actions;

@@ -4,13 +4,22 @@ import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
 import { ContextOption } from "../../FileElement/fileElement.styles";
 import useCreateFolder from "../../../hooks/useCreateFolder/useCreateFolder";
 
-function CreateFolderOption() {
+type Props = {
+  setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-  const {handleCreateClick} = useCreateFolder();
+function CreateFolderOption({setIsOpened}: Props) {
+
+  const {createModal, setIsOpenedModal, } = useCreateFolder(setIsOpened);
+
+  const handleOptionClick = () => {
+    setIsOpenedModal(true);
+  }
 
   return (
     <>
-        <ContextOption onClick={handleCreateClick}><FontAwesomeIcon icon={faFolderPlus} size='1x' /><span>Create Folder</span></ContextOption>
+        <ContextOption onClick={handleOptionClick}><FontAwesomeIcon icon={faFolderPlus} size='1x' /><span>Create Folder</span></ContextOption>
+        {createModal()}
     </>
   );
 }

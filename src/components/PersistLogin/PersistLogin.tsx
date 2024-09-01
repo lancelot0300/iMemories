@@ -7,41 +7,49 @@ import axios from "axios";
 function PersistLogin() {
 
 
-  // const dispatch = useAppDispatch();
-  // const [loading, setLoading] = useState(false);
-  // const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  // const refreshToken = async () => {
-  //   try {
-  //     const login = await axios.post(process.env.REACT_APP_API_URL + "/token/refresh", {}, {
-  //       withCredentials: true,
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //     });
+  const user = useAppSelector((state) => state.user);
 
-  //     dispatch(loginSuccess(login.data))
-  //     console.log(login.data);
-  //     setLoading(false);
-  //     // navigate("/");
-  //   } catch (error) {
-  //     console.log(error);
-  //     setLoading(false);
-  //     // navigate("/login");
-  //   }
-  // }
+  const refreshToken = async () => {
+    try {
+      const login = await axios.post(process.env.REACT_APP_API_URL + "/token/refresh", {}, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
 
-  // useEffect(() => {
-  //   refreshToken();
-  // }, []);
+      dispatch(loginSuccess(login.data))
+      console.log(login.data);
+      setLoading(false);
+      // navigate("/");
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      // navigate("/login");
+    }
+  }
 
-  // if (loading) {
-  //   return <div>Loading...</div>
-  // }
+  useEffect(() => {
+    if(!user) {
+      refreshToken();
+    }
+
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
 
 
 
-  return <><Outlet /></>;
+  return <>
+  <Outlet />
+  {console.log("PersistLogin")}
+  </>;
 }
 
 export default PersistLogin;

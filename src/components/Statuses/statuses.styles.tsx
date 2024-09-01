@@ -1,10 +1,10 @@
 import { styled } from "styled-components";
 
 type StatusProps = {
-    $status: "Uploading" | "Error" | "Finished";
+    $status: string | undefined;
 }
 
-export const Status = styled.div<StatusProps>`
+export const StatusWrapper = styled.div<StatusProps>`
     display: flex;
     flex-direction: row;
     justify-content: space-between;

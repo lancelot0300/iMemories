@@ -1,35 +1,32 @@
-import { Suspense, useEffect, useRef, useState } from "react";
+import {  useEffect, useRef } from "react";
 import { FolderGridContainer, HomeContainer } from "./home.styles";
-import { ActiveFiles, ContextRef, Item } from "../../types";
-import useDropHook from "../../hooks/dropHook/useDropFiles";
-import useSelection from "../../hooks/selectionHook/useSelection";
-import FileElement from "../../components/FileElement/FileElement";
+import { ActiveFiles, ContextRef } from "../../types";
+import useDropHook from "../../hooks/useDrop/useDropFiles";
+import useSelection from "../../hooks/useSelection/useSelection";
 import { isClickedContainer } from "../../utils/homeUtils";
-import ContainerContextMenu from "../../components/ContainerContextMenu/ContainerContextMenu";
 import { useAppDispatch, useAppSelector } from "../../state/store";
-import {
-  selectFiles,
-} from "../../state/features/files/filesSlice";
+import { selectFiles } from "../../state/features/files/filesSlice";
 import Menu from "../../components/Menu/Menu";
 import Statuses from "../../components/Statuses/Statuses";
-import {
-  setPathAsync,
-} from "../../state/features/path/pathSlice";
+import { setPathAsync } from "../../state/features/path/pathSlice";
 import LoadingHome from "./LoadingHome";
+import RenderFiles from "../../components/RenderFiles/RenderFiles";
+import ContextMenu from "../../components/ContextMenu/ContextMenu";
+import RenderFolders from "../../components/RenderFolders/RenderFolders";
 
 function Home() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const allFilesRefs = useRef<ActiveFiles[]>([]);
   const contextMenuRef = useRef<ContextRef>(null);
-  const { data, status } = useAppSelector(
-    (state) => state.path
-  );
+  const { data, status, actualPath } = useAppSelector((state) => state.path);
   const dispatch = useAppDispatch();
 
+
   useEffect(() => {
-    dispatch(setPathAsync(""));
+    dispatch(setPathAsync(actualPath[actualPath.length - 1].path));
   }, [dispatch]);
 
+  useDropHook({ containerRef });
   const {
     handleMouseDown,
     handleMouseMove,
@@ -38,7 +35,6 @@ function Home() {
     draggingRef,
     clearDrag,
   } = useSelection({ containerRef, allFilesRefs });
-  useDropHook({ containerRef, allFilesRefs });
 
   const handleContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -52,13 +48,13 @@ function Home() {
     return <div>Failed to load data</div>;
   }
 
-  if(status === "loading") {
-    return <LoadingHome />
+  if (status === "loading") {
+    return <LoadingHome />;
   }
 
   return (
     <>
-      <Menu />
+      <Menu allFilesRefs={allFilesRefs} />
       <HomeContainer
         onMouseDown={handleMouseDown}
         onMouseLeave={handleMouseLeave}
@@ -68,24 +64,22 @@ function Home() {
         $isDragging={draggingRef.current ? true : false}
         ref={containerRef}
       >
-          <FolderGridContainer>
-            {data?.files.map((item: Item, index) => {
-              return (
-                <FileElement
-                  key={item.id}
-                  clearDrag={clearDrag}
-                  element={item}
-                  ref={(el) => {
-                    if (!el) return;
-                    allFilesRefs.current[index] = el;
-                  }}
-                />
-              );
-            })}
-          </FolderGridContainer>
-        <ContainerContextMenu ref={contextMenuRef} />
+        <FolderGridContainer>
+        <RenderFolders
+            data={data}
+            clearDrag={clearDrag}
+            allFilesRefs={allFilesRefs}
+          />
+          <RenderFiles
+            data={data}
+            clearDrag={clearDrag}
+            allFilesRefs={allFilesRefs}
+          />
+        </FolderGridContainer>
+        <ContextMenu element={"Home"}  ref={contextMenuRef} />
         <Statuses />
       </HomeContainer>
+      {console.log(data)}
     </>
   );
 }

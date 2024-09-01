@@ -1,5 +1,5 @@
-import { ListenerMiddleware, ThunkMiddleware } from '@reduxjs/toolkit';
-import pathReducer, {  setNextPath, setPreviousPath, setPath, goBackToPath, setData, setPathAsync } from '../features/path/pathSlice'
+import {  ThunkMiddleware } from '@reduxjs/toolkit';
+import  {  setNextPath, setPreviousPath, setPath, goBackToPath, setPathAsync } from '../features/path/pathSlice'
 import { RootState } from '../store';
 
 

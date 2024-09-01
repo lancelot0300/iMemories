@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
-import { ActiveFiles } from '../../types';
 import useUpload from '../useUpload/useUpload';
 
 type HookProps = {
     containerRef: React.MutableRefObject<HTMLDivElement | null>;
-    allFilesRefs: React.MutableRefObject<(ActiveFiles | null)[]>;
 }
 
 function useDropHook({ containerRef }: HookProps) {
