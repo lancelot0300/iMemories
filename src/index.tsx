@@ -22,9 +22,7 @@ root.render(
 // root.render(
 //   <Router>
 //     <Provider store={store}>
-//       <QueryClientProvider client={queryClient}>
 //         <App />
-//       </QueryClientProvider>
 //     </Provider>
 //   </Router>
 // );

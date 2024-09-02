@@ -8,6 +8,7 @@ import useContext from "../../hooks/useContext/useContext";
 import CreateFolderOption from "../ContextComponents/CreateFolderOption/CreateFolderOption";
 import PasteContextOption from "../ContextComponents/PasteContextOption/PasteContextOption";
 import UploadContextOption from "../ContextComponents/UploadContextOption/UploadContextOption";
+import OpenContextOption from "../ContextComponents/OpenContextOption/OpenContextOption";
 
 type Props = {
   element: "Home" | "Folder" | "File";
@@ -27,17 +28,16 @@ const ContextMenu = forwardRef(({ element }: Props, ref) => {
       UploadContextOption,
     ],
     Folder: [
-      DeleteContextOption,
-      CopyContextOption,
+      OpenContextOption,
       DownloadContextOption,
-      CreateFolderOption,
+      CopyContextOption,
       PasteContextOption,
-      UploadContextOption,
+      DeleteContextOption,
     ],
     File: [
-      DeleteContextOption,
-      CopyContextOption,
       DownloadContextOption,
+      CopyContextOption,
+      DeleteContextOption,
     ]
   };
 

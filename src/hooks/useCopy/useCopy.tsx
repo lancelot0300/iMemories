@@ -10,6 +10,7 @@ function useCopy(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) {
     const handleCopyClick = () => {
         setIsOpened && setIsOpened(false);
         if(selectedFiles.length === 0) return
+        console.log(selectedFiles)
         dispatch(setLastCommand({files: selectedFiles, command: "copy"}))
     }
 

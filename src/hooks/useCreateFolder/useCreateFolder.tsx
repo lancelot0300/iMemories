@@ -30,7 +30,7 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
 
     const onSubmit = async ( {folder } : IFolderFormValues) => {
 
-      if(data.childFolders.some((child) => child.fileDetails.name === folder)) {
+      if(data.childFolders.some((child) => child.folderDetails.name === folder)) {
         setErrors({folder: "Folder with this name already exists"})
         return;
       }

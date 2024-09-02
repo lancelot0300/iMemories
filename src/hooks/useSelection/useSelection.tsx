@@ -145,7 +145,7 @@ function useSelection({ containerRef, allFilesRefs }: Props) {
     if (e?.ctrlKey) {
       return dispatch(addFiles(selectedItems.map((el) => el.item)));
     }
-
+    console.log(allFilesRefs);
     dispatch(selectFiles(selectedItems.map((el) => el.item)));
   };
 

@@ -20,7 +20,6 @@ import {
   setPreviousPath,
 } from "../../state/features/path/pathSlice";
 import { ActiveFiles } from "../../types";
-import { all } from "axios";
 
 type Props = {
   allFilesRefs: React.MutableRefObject<ActiveFiles[]>;
@@ -29,19 +28,16 @@ type Props = {
 function Menu({ allFilesRefs }: Props) {
   const { actualPath, history } = useAppSelector((state) => state.path);
   const dispatch = useAppDispatch();
-  const actualPathInHistory =
-    history?.findIndex(
-      (path) => path.path === actualPath[actualPath.length - 1].path
-    ) ?? -1;
-  const isPreviousPath = actualPathInHistory > 0;
-  const isNextPath = history && actualPathInHistory < history.length - 1;
 
-
+  const isPreviousPath = actualPath.length > 1;
+  const isNextPath = history.length > actualPath.length;
+  const previousPathIndex = actualPath.length - 2;
+  const nextPathIndex = actualPath.length;
 
   const handlePreviousPath = () => {
     if (!isPreviousPath) return;
     allFilesRefs.current = [];
-    dispatch(setPreviousPath());
+    dispatch(setPreviousPath(previousPathIndex));
   };
 
   const handleBackToPath = (index: number) => {
@@ -53,7 +49,7 @@ function Menu({ allFilesRefs }: Props) {
   const handleNextPath = () => {
     if (!isNextPath) return;
     allFilesRefs.current = [];
-    dispatch(setNextPath(actualPathInHistory + 1));
+    dispatch(setNextPath(nextPathIndex));
   };
 
   return (

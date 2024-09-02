@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
-import { ActiveFiles, ContextRef, Item } from "../../types";
+import { ActiveFiles, ContextRef, File, Item } from "../../types";
 import { FileElementContainer, Icon, Name } from "./fileElement.styles";
 import useFile from "../../hooks/useFile/useFile";
 import { useAppSelector } from "../../state/store"
@@ -7,7 +7,7 @@ import ContextMenu from "../ContextMenu/ContextMenu";
 import { renderIcon } from "../../utils/iconsUtils";
 
 interface IProps {
-  element: Item;
+  element: File;
   clearDrag: () => void;
 }
 
@@ -71,7 +71,6 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
 
     return (
       <>
-       {console.log("render file")}
         <FileElementContainer
           ref={fileElementRef}
           onClick={handleClick}
@@ -79,7 +78,7 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
           $isSelected={isActive}
           $isCopy={isCopy}
         >
-          <Icon><img width={45} height={45} src={renderIcon(element.fileDetails.extension)} draggable='false' alt="" /></Icon>
+          <Icon><img width={50} height={50} src={renderIcon(element.fileDetails.extension)} draggable='false' alt="" /></Icon>
           <Name>{element.fileDetails.name}</Name>
         </FileElementContainer>
         <ContextMenu element="File" ref={contextMenuRef} />

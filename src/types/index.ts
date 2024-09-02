@@ -5,7 +5,7 @@ export type Response = {
   parentFolderId: string | null;
   folderDetails: string | null;
   files: File[];
-  childFolders: File[];
+  childFolders: Folder[];
 };
 
 export type File = {
@@ -39,7 +39,29 @@ export type Folder = {
   };
 }
 
-export type Item = File 
+export type Item =  {
+  id: string;
+  fileDetails?: {
+    id: string;
+    name: string;
+    size: number;
+    extension: string;
+    description: string | null;
+    isStared: boolean;
+    createdDate: string;
+    lastOpenedDate: string;
+    lastModifiedDate: string;
+  };
+  folderDetails?: {
+    id: string;
+    createdDate: string;
+    lastModifiedDate: string;
+    name: string;
+    lastOpenedDate: string;
+    isStared: boolean;
+  };
+};
+
 
 
 export type ActiveFiles = {

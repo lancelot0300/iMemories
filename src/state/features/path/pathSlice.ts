@@ -30,7 +30,7 @@ const initialState: InitialState = {
     childFolders: []
   },
   actualPath: [{ path: "", name: "Home" }],
-  history: [{ path: "", name: "Home" }, { path: "51D45D81-EB86-4453-F301-08DCB7E6C0E9", name: "First" }],
+  history: [],
   status: "idle",
 };
 
@@ -40,14 +40,15 @@ const pathSlice = createSlice({
   reducers: {
     setPath: (state, action: PayloadAction<Path>) => {
       state.actualPath = [...state.actualPath, action.payload];
+      state.history = [...state.actualPath];
     },
     setNextPath: (state, action: PayloadAction<number>) => {
       if(!state.history) return;
       state.actualPath = state.history?.slice(0, action.payload + 1);
     },
-    setPreviousPath: (state) => {
+    setPreviousPath: (state, action: PayloadAction<number>) => {
       if(!state.history) return;
-      state.actualPath = state.history.slice(0, state.history.length - 1);
+      state.actualPath = state.history.slice(0, action.payload + 1);
     },
     goBackToPath: (state, action: PayloadAction<number>) => {
       if(!state.history) return;

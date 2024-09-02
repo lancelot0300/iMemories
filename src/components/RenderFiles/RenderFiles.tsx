@@ -1,5 +1,5 @@
 import React from "react";
-import { ActiveFiles, Item, Response } from "../../types";
+import { ActiveFiles, File, Item, Response } from "../../types";
 import FileElement from "../FileElement/FileElement";
 
 type Props = {
@@ -8,21 +8,22 @@ type Props = {
   clearDrag: () => void;
 };
 
-const RenderFiles = ({ data, clearDrag, allFilesRefs }: Props) => {
+const RenderFiles = ({ data, allFilesRefs, clearDrag }: Props) => {
   if (!data) return null;
 
   return (
     <>
-      {data.files.map((item: Item, index: number) => {
+      {data.files.map((item: File, index: number) => {
         return (
           <FileElement
-            key={item.id}
-            clearDrag={clearDrag}
-            element={item}
-            ref={(el) => {
-              if (!el) return;
-              allFilesRefs.current[index] = el;
-            }}
+          key={item.id}
+          clearDrag={clearDrag}
+          element={item}
+          ref={(el) => {
+            if (!el) return;
+            if(allFilesRefs.current.some((file) => file.item.id === item.id)) return;
+            allFilesRefs.current.push(el);
+          }}
           />
         );
       })}

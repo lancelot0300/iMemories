@@ -1,10 +1,8 @@
-import { ActionCreatorWithPayload, ListenerMiddleware, Middleware, configureStore, isAction } from '@reduxjs/toolkit'
+import {configureStore } from '@reduxjs/toolkit'
 import usersReducer from './features/auth/authSlice'
 import activeRequests from './features/requests/requestsSlice'
 import filesReducer from './features/files/filesSlice'
-import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
-import { Response } from '../types'
 import pathReducer from './features/path/pathSlice'
 import getPathMiddleware from './middleware/filePathMIddleware'
 

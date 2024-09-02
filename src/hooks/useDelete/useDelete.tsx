@@ -10,13 +10,15 @@ function useDelete(
   const dispatch = useAppDispatch();
 
   const handleDeleteClick = async () => {
-    const deletePromises = selectedFiles.map((file) =>
-      axios.delete(
+    const deletePromises = selectedFiles.map((file) => {
+      if (!file.fileDetails?.id) return null;
+      return axios.delete(
         `${process.env.REACT_APP_API_URL}/file/${file.fileDetails.id}`,
         {
           withCredentials: true,
         }
-      )
+      );
+    }
     );
 
     try {

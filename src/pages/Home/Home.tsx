@@ -26,6 +26,10 @@ function Home() {
     dispatch(setPathAsync(actualPath[actualPath.length - 1].path));
   }, [dispatch]);
 
+  useEffect(() => {
+    allFilesRefs.current = [];
+  }, [data]);
+
   useDropHook({ containerRef });
   const {
     handleMouseDown,
@@ -65,11 +69,7 @@ function Home() {
         ref={containerRef}
       >
         <FolderGridContainer>
-        <RenderFolders
-            data={data}
-            clearDrag={clearDrag}
-            allFilesRefs={allFilesRefs}
-          />
+          <RenderFolders data={data} allFilesRefs={allFilesRefs} clearDrag={clearDrag} />
           <RenderFiles
             data={data}
             clearDrag={clearDrag}
@@ -79,7 +79,7 @@ function Home() {
         <ContextMenu element={"Home"}  ref={contextMenuRef} />
         <Statuses />
       </HomeContainer>
-      {console.log(data)}
+
     </>
   );
 }

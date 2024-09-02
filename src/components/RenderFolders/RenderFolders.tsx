@@ -1,6 +1,5 @@
 import React from "react";
 import { ActiveFiles, Folder, Item, Response } from "../../types";
-import FileElement from "../FileElement/FileElement";
 import FolderElement from "../FolderElement/FolderElement";
 
 type Props = {
@@ -9,12 +8,12 @@ type Props = {
   clearDrag: () => void;
 };
 
-const RenderFiles = ({ data, clearDrag, allFilesRefs }: Props) => {
+const RenderFiles = ({ data, allFilesRefs, clearDrag }: Props) => {
   if (!data) return null;
 
   return (
     <>
-      {/* {data.childFolders.map((item: Folder, index: number) => {
+     {data.childFolders.map((item: Folder, index: number) => {
         return (
           <FolderElement
             key={item.id}
@@ -22,11 +21,12 @@ const RenderFiles = ({ data, clearDrag, allFilesRefs }: Props) => {
             element={item}
             ref={(el) => {
               if (!el) return;
-              allFilesRefs.current[index] = el;
+              if(allFilesRefs.current.some((file) => file.item.id === item.id)) return;
+              allFilesRefs.current.push(el);
             }}
           />
         );
-      })} */}
+      })}
     </>
   );
 };

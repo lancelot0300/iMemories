@@ -17,10 +17,10 @@ function PasteContextOption({setIsOpened}: Props) {
 
   const handlePasteClick = () => {
     setIsOpened(false)
-    console.log('Pasting files')
   }
 
     if(copyFiles.length === 0 || selectedFiles.length > 1 ) return null
+    if( copyFiles[0].folderDetails?.id === (selectedFiles.length > 1 && selectedFiles[0].folderDetails?.id)) return null
 
     return (
       <ContextOption onClick={handlePasteClick}><FontAwesomeIcon icon={faPaste} />  <span>Paste</span></ContextOption>
@@ -28,3 +28,4 @@ function PasteContextOption({setIsOpened}: Props) {
 }
 
 export default PasteContextOption
+
