@@ -1,14 +1,10 @@
-import React from 'react'
 import { useAppDispatch, useAppSelector } from '../../../state/store';
 import { isFolderSelected } from '../../../utils/homeUtils';
 import { ContextOption } from '../../FileElement/fileElement.styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faOpenid } from '@fortawesome/free-brands-svg-icons';
 import { setPath } from '../../../state/features/path/pathSlice';
-
-type Props = {
-    setIsOpened: React.Dispatch<React.SetStateAction<boolean>>
-}
+import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
+import { clearFiles } from '../../../state/features/files/filesSlice';
 
 function OpenContextOption() {
 
@@ -20,10 +16,11 @@ function OpenContextOption() {
 
   const handleOpenClick = () => {
     dispatch(setPath({path: selectedFiles[0].id, name: selectedFiles[0].folderDetails?.name || ""}));
+    dispatch(clearFiles());
   }
 
   return (
-    <ContextOption onClick={handleOpenClick}><FontAwesomeIcon icon={faOpenid} />  <span>Open</span></ContextOption>
+    <ContextOption onClick={handleOpenClick}><FontAwesomeIcon icon={faDoorOpen} />  <span>Open</span></ContextOption>
   )
 }
 

@@ -4,14 +4,14 @@ import {  Item, SelectedElements } from "../../../types";
 
 type InitialState = {
     selectedFiles: SelectedElements;
-    copyFiles: SelectedElements;  
+    storageFiles: SelectedElements;  
     lastCommand: string;
 };
 
 
 const initialState: InitialState = {
     selectedFiles: [],
-    copyFiles: [],
+    storageFiles: [],
     lastCommand: "",
 };
 
@@ -41,27 +41,27 @@ const filesSlice = createSlice({
     addFile: (state, action: PayloadAction<Item>) => {
       state.selectedFiles = [...state.selectedFiles, action.payload];
     },
-    removeFile : (state, action: PayloadAction<Item>) => {
+    removeFile: (state, action: PayloadAction<Item>) => {
       state.selectedFiles = state.selectedFiles.filter((el) => el.id !== action.payload.id);
+    },
+    clearFiles: (state) => {
+      state.selectedFiles = [];
     },
     setLastCommand: (state, action: PayloadAction<LastCommandPayload>) => {
       switch (action.payload.command) {
         case "copy":
-          state.copyFiles = action.payload.files || state.selectedFiles;
+          state.storageFiles = action.payload.files || state.selectedFiles;
           break;
         case "cut":
-          state.copyFiles = action.payload.files || state.selectedFiles;
-          break;
-        case "paste":
-          state.copyFiles = [];
+          state.storageFiles = action.payload.files || state.selectedFiles;
           break;
         case "delete":
-          state.copyFiles = state.copyFiles.filter((stateEl) => {
+          state.storageFiles = state.storageFiles.filter((stateEl) => {
             return !action.payload.files?.find((actionEl) => actionEl.id === stateEl.id);
           });
           break;
         default:
-          state.copyFiles = [];
+          state.storageFiles = [];
       }
 
       state.lastCommand = action.payload.command;
@@ -72,9 +72,9 @@ const filesSlice = createSlice({
 
 export const selectActualFiles = (state: { files: InitialState }) => state.files.selectedFiles;
 
-export const selectCopyFiles = (state: { files: InitialState }) => state.files.copyFiles;
+export const selectCopyFiles = (state: { files: InitialState }) => state.files.storageFiles;
 
 
 export default filesSlice.reducer;
-export const { selectFiles, addFile, addFiles, removeFile, setLastCommand} =
+export const { selectFiles, addFile, addFiles, removeFile, setLastCommand, clearFiles} =
 filesSlice.actions;

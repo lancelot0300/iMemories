@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {  useAppSelector } from '../../../state/store';
 import { ContextOption } from '../../FileElement/fileElement.styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -48,10 +48,10 @@ width: fit-content;
 function PreviewContextOption({ setIsOpened }: Props) {
 
   const { selectedFiles } = useAppSelector((state) => state.files);
-  const selectedElementId = selectedFiles[0].fileDetails?.id;
+  const selectedElementId = selectedFiles.length === 1 ? selectedFiles[0].id : null;
   const photoURL = `${process.env.REACT_APP_API_URL}/file/preview/${selectedElementId}`;
 
-  const [isOpenedModal, setIsOpenedModal] = React.useState(false);
+  const [isOpenedModal, setIsOpenedModal] = useState(false);
 
 
   const handleOpenClick = () => {

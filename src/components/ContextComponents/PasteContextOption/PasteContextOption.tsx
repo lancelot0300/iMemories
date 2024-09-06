@@ -12,15 +12,15 @@ type Props = {
 
 function PasteContextOption({setIsOpened}: Props) {
 
-  const {copyFiles, selectedFiles} = useAppSelector((state) => state.files)
+  const {storageFiles, selectedFiles} = useAppSelector((state) => state.files)
 
 
   const handlePasteClick = () => {
     setIsOpened(false)
   }
 
-    if(copyFiles.length === 0 || selectedFiles.length > 1 ) return null
-    if( copyFiles[0].folderDetails?.id === (selectedFiles.length > 1 && selectedFiles[0].folderDetails?.id)) return null
+    if(storageFiles.length === 0 || selectedFiles.length > 1 ) return null
+    if( storageFiles[0].folderDetails?.id === (selectedFiles.length > 1 && selectedFiles[0].folderDetails?.id)) return null
 
     return (
       <ContextOption onClick={handlePasteClick}><FontAwesomeIcon icon={faPaste} />  <span>Paste</span></ContextOption>

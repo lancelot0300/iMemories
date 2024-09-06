@@ -13,6 +13,8 @@ import { renderIcon } from "../../utils/iconsUtils";
 import InfoText from "../InfoText/InfoText";
 import { InfoElement } from "../InfoText/infoText.styles";
 import { getDateString } from "../../utils/homeUtils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBox } from "@fortawesome/free-solid-svg-icons";
 
 interface IProps {
   element: File;
@@ -38,16 +40,15 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
       }
     );
 
-    const { copyFiles } = useAppSelector(
+    const { storageFiles } = useAppSelector(
       (state) => state.files,
       (prev, next) => {
-        const wasSelected = prev.copyFiles.some((el) => el.id === element.id);
-        const isSelected = next.copyFiles.some((el) => el.id === element.id);
+        const wasSelected = prev.storageFiles.some((el) => el.id === element.id);
+        const isSelected = next.storageFiles.some((el) => el.id === element.id);
         return wasSelected === isSelected;
       }
     );
-
-    const { setActiveElement, isActive, isCopy, setActiveOnRightClick } =  useFile({ element, selectedFiles, copyFiles });
+    const { setActiveElement, isActive, isCopy, setActiveOnRightClick } =  useFile({ element, selectedFiles, storageFiles });
 
     useImperativeHandle(ref, () => ({
       element: fileElementRef.current as HTMLDivElement,

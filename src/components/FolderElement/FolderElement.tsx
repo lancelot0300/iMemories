@@ -10,6 +10,7 @@ import { setPath } from "../../state/features/path/pathSlice";
 import InfoText from "../InfoText/InfoText";
 import { InfoElement } from "../InfoText/infoText.styles";
 import { getDateString } from "../../utils/homeUtils";
+import { clearFiles } from "../../state/features/files/filesSlice";
 
 interface IProps {
   element: Folder;
@@ -25,9 +26,9 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
       return wasSelected === isSelected;
     });
 
-    const {copyFiles} = useAppSelector((state) => state.files, (prev, next) => {
-      const wasSelected = prev.copyFiles.some((el) => el.id === element.id);
-      const isSelected = next.copyFiles.some((el) => el.id === element.id);
+    const {storageFiles} = useAppSelector((state) => state.files, (prev, next) => {
+      const wasSelected = prev.storageFiles.some((el) => el.id === element.id);
+      const isSelected = next.storageFiles.some((el) => el.id === element.id);
       return wasSelected === isSelected;
     });
 
@@ -37,7 +38,7 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
     const infoTextRef = useRef<any>(null);
     const lastTimeClick = useRef(0);
     const dispatch = useAppDispatch();
-    const {setActiveElement, isActive, isCopy, setActiveOnRightClick} = useFile({element, selectedFiles, copyFiles});
+    const {setActiveElement, isActive, isCopy, setActiveOnRightClick} = useFile({element, selectedFiles, storageFiles});
 
 
     
@@ -51,6 +52,7 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
     const handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
       if(!element.folderDetails) return;
       dispatch(setPath({path: element.folderDetails.id, name: element.folderDetails.name}));
+      dispatch(clearFiles());
     };
 
 

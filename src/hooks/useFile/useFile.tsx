@@ -6,13 +6,15 @@ import { addFile, removeFile, selectFiles } from '../../state/features/files/fil
 type Props = {
     element: Item,
     selectedFiles: Item[],
-    copyFiles: Item[]
+    storageFiles: Item[]
 }
 
-function useFile({element, selectedFiles, copyFiles}: Props) {
+function useFile({element, selectedFiles, storageFiles}: Props) {
+
+  const {lastCommand} = useAppSelector((state) => state.files);
 
     const isActive = selectedFiles.some((el) => el.id === element.id);
-    const isCopy = copyFiles.some((el) => el.id === element.id);
+    const isCopy = storageFiles.some((el) => el.id === element.id) && lastCommand === "copy";
     
     const dispatch = useAppDispatch();
 
