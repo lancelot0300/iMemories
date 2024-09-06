@@ -16,7 +16,7 @@ export type File = {
   fileDetails: {
     id: string;
     name: string;
-    size: 9551713;
+    size: number;
     extension: string;
     description: string | null;
     isStared: boolean;

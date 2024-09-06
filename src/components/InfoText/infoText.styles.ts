@@ -1,0 +1,20 @@
+import styled from "styled-components";
+
+
+export const StyledInfoWrapper = styled.div<{ $posX: number, $posY: number }>`
+    position: absolute;
+    width: fit-content;
+    height: fit-content;
+    top: ${({ $posY }) => $posY}px;
+    left: ${({ $posX }) => $posX}px;
+    background-color: #373547;
+    padding: 5px;
+    font-size: 12px;
+    text-wrap: nowrap;
+`;
+
+export const InfoElement = styled.div`
+    font-size: 12px;
+    color: white;
+    text-wrap: nowrap;
+`;

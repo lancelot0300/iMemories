@@ -1,10 +1,18 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
-import { ActiveFiles, ContextRef, File, Item } from "../../types";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from "react";
+import { ActiveFiles, ContextRef, File } from "../../types";
 import { FileElementContainer, Icon, Name } from "./fileElement.styles";
 import useFile from "../../hooks/useFile/useFile";
-import { useAppSelector } from "../../state/store"
+import { useAppSelector } from "../../state/store";
 import ContextMenu from "../ContextMenu/ContextMenu";
 import { renderIcon } from "../../utils/iconsUtils";
+import InfoText from "../InfoText/InfoText";
+import { InfoElement } from "../InfoText/infoText.styles";
+import { getDateString } from "../../utils/homeUtils";
 
 interface IProps {
   element: File;
@@ -15,27 +23,35 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
   ({ element, clearDrag }, ref) => {
     const fileElementRef = useRef<HTMLDivElement>(null);
     const contextMenuRef = useRef<ContextRef>();
+    const infoTextRef = useRef<any>(null);
 
-    
-    const {selectedFiles} = useAppSelector((state) => state.files, (prev, next) => {
-      const wasSelected = prev.selectedFiles.some((el) => el.id === element.id);
-      const isSelected = next.selectedFiles.some((el) => el.id === element.id);
-      return wasSelected === isSelected;
-    });
+    const { selectedFiles } = useAppSelector(
+      (state) => state.files,
+      (prev, next) => {
+        const wasSelected = prev.selectedFiles.some(
+          (el) => el.id === element.id
+        );
+        const isSelected = next.selectedFiles.some(
+          (el) => el.id === element.id
+        );
+        return wasSelected === isSelected;
+      }
+    );
 
-    const {copyFiles} = useAppSelector((state) => state.files, (prev, next) => {
-      const wasSelected = prev.copyFiles.some((el) => el.id === element.id);
-      const isSelected = next.copyFiles.some((el) => el.id === element.id);
-      return wasSelected === isSelected;
-    });
+    const { copyFiles } = useAppSelector(
+      (state) => state.files,
+      (prev, next) => {
+        const wasSelected = prev.copyFiles.some((el) => el.id === element.id);
+        const isSelected = next.copyFiles.some((el) => el.id === element.id);
+        return wasSelected === isSelected;
+      }
+    );
 
-
-    const {setActiveElement, isActive, isCopy, setActiveOnRightClick} = useFile({element, selectedFiles, copyFiles});
-   
+    const { setActiveElement, isActive, isCopy, setActiveOnRightClick } =  useFile({ element, selectedFiles, copyFiles });
 
     useImperativeHandle(ref, () => ({
       element: fileElementRef.current as HTMLDivElement,
-      item: element
+      item: element,
     }));
 
     const handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -56,7 +72,6 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
       setActiveElement(event);
     };
 
-
     const handleRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
@@ -64,8 +79,6 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
       setActiveOnRightClick(e);
       contextMenuRef.current?.handleOpenContext(e, true);
     };
-
-
 
 
 
@@ -77,15 +90,29 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
           onContextMenu={handleRightClick}
           $isSelected={isActive}
           $isCopy={isCopy}
+          onMouseEnter={(event) => infoTextRef.current?.showInfo(event)}
+          onMouseLeave={() => infoTextRef.current?.hideInfo()}
         >
-          <Icon><img width={50} height={50} src={renderIcon(element.fileDetails.extension)} draggable='false' alt="" /></Icon>
+          <Icon>
+            <img
+              width={50}
+              height={50}
+              src={renderIcon(element.fileDetails.extension)}
+              draggable="false"
+              alt=""
+            />
+          </Icon>
           <Name>{element.fileDetails.name}</Name>
+        <InfoText ref={infoTextRef}>
+          <InfoElement>Name: {element.fileDetails.name}</InfoElement>
+          <InfoElement>Size: {element.fileDetails.size}</InfoElement>
+          <InfoElement>Created at: {getDateString(element.fileDetails.createdDate)}</InfoElement>
+        </InfoText>
         </FileElementContainer>
         <ContextMenu element="File" ref={contextMenuRef} />
       </>
     );
   }
 );
-
 
 export default FileElement;

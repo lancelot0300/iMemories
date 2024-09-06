@@ -24,7 +24,6 @@ function CreateModal({ isOpened, setIsOpened, withoutOverlay, children } : Creat
       <>
         <Overlay $wihoutOverlay={withoutOverlay} onClick={handleClickOutside} />
         {children}
-        {console.log("CreateModal")}
       </>,
       document.getElementById("modal-root") as HTMLElement
     );

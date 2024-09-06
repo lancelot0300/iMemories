@@ -7,6 +7,9 @@ import { faFolder } from "@fortawesome/free-solid-svg-icons";
 import useFile from "../../hooks/useFile/useFile";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { setPath } from "../../state/features/path/pathSlice";
+import InfoText from "../InfoText/InfoText";
+import { InfoElement } from "../InfoText/infoText.styles";
+import { getDateString } from "../../utils/homeUtils";
 
 interface IProps {
   element: Folder;
@@ -15,11 +18,7 @@ interface IProps {
 
 const FolderElement = forwardRef<ActiveFiles | null, IProps>(
   ({ element, clearDrag }, ref) => {
-    const fileElementRef = useRef<HTMLDivElement>(null);
-    const contextMenuRef = useRef<ContextRef>();
-    const dispatch = useAppDispatch();
 
-    
     const {selectedFiles} = useAppSelector((state) => state.files, (prev, next) => {
       const wasSelected = prev.selectedFiles.some((el) => el.id === element.id);
       const isSelected = next.selectedFiles.some((el) => el.id === element.id);
@@ -33,8 +32,16 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
     });
 
 
+    const fileElementRef = useRef<HTMLDivElement>(null);
+    const contextMenuRef = useRef<ContextRef>();
+    const infoTextRef = useRef<any>(null);
+    const lastTimeClick = useRef(0);
+    const dispatch = useAppDispatch();
     const {setActiveElement, isActive, isCopy, setActiveOnRightClick} = useFile({element, selectedFiles, copyFiles});
-   
+
+
+    
+
 
     useImperativeHandle(ref, () => ({
       element: fileElementRef.current as HTMLDivElement,
@@ -46,7 +53,6 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
       dispatch(setPath({path: element.folderDetails.id, name: element.folderDetails.name}));
     };
 
-    const lastTimeClick = useRef(0);
 
     const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
       const clickTime = new Date().getTime();
@@ -81,9 +87,15 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
           onContextMenu={handleRightClick}
           $isSelected={isActive}
           $isCopy={isCopy}
+          onMouseEnter={(event) => infoTextRef.current?.showInfo(event)}
+          onMouseLeave={() => infoTextRef.current?.hideInfo()}
         >
           <Icon><FontAwesomeIcon size="3x" color="#8ec8f3" icon={faFolder} /></Icon>
           <Name>{element.folderDetails.name}</Name>
+          <InfoText ref={infoTextRef}>
+            <InfoElement>Created at: {getDateString(element.folderDetails.createdDate)+ " UTC"}</InfoElement>
+            {element.folderDetails.lastModifiedDate && <InfoElement>Updated at: {getDateString(element.folderDetails.lastModifiedDate)+ " UTC"}</InfoElement>}
+          </InfoText>
         </FolderElementContainer>
         <ContextMenu element="Folder" ref={contextMenuRef} />
       </>

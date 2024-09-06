@@ -1,36 +1,31 @@
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../../state/store"
+import { useAppDispatch, useAppSelector } from "../../state/store";
 import { setLastCommand } from "../../state/features/files/filesSlice";
 import axios from "axios";
 
-function useDelete(
-  setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>
-) {
+function useDelete(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) {
   const { selectedFiles } = useAppSelector((state) => state.files);
   const dispatch = useAppDispatch();
 
   const handleDeleteClick = async () => {
-    const deletePromises = selectedFiles.map((file) => {
-      if (!file.fileDetails?.id) return null;
-      return axios.delete(
-        `${process.env.REACT_APP_API_URL}/file/${file.fileDetails.id}`,
-        {
+    const deletePromises = selectedFiles
+      .filter(file => file.fileDetails?.id)  
+      .map(file => 
+        axios.delete(`${process.env.REACT_APP_API_URL}/file/${file.fileDetails?.id}`, {
           withCredentials: true,
-        }
+        })
       );
-    }
-    );
 
     try {
       await Promise.all(deletePromises);
       dispatch(setLastCommand({ files: selectedFiles, command: "delete" }));
     } catch (error) {
       console.error("Error deleting files:", error);
-    }
-
-    if (setIsOpened) {
+    } finally {
+      if (setIsOpened) {
         setIsOpened(false);
       }
+    }
   };
 
   return { handleDeleteClick };
