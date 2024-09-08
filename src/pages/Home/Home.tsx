@@ -1,4 +1,4 @@
-import {  useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { FolderGridContainer, HomeContainer } from "./home.styles";
 import { ActiveFiles, ContextRef } from "../../types";
 import useDropHook from "../../hooks/useDrop/useDropFiles";
@@ -16,19 +16,23 @@ import RenderFolders from "../../components/RenderFolders/RenderFolders";
 
 function Home() {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const allFilesRefs = useRef<ActiveFiles[]>([]);
   const contextMenuRef = useRef<ContextRef>(null);
-  const { data, status, actualPath } = useAppSelector((state) => state.path);
+  const { data, status, actualPath, error } = useAppSelector((state) => state.path);
   const dispatch = useAppDispatch();
 
-
   useEffect(() => {
-    dispatch(setPathAsync(actualPath[actualPath.length - 1].path));
-  }, [dispatch]);
+    const promise = dispatch(
+      setPathAsync(actualPath[actualPath.length - 1].path)
+    );
 
-  useEffect(() => {
-    allFilesRefs.current = [];
-  }, [data]);
+    return () => {
+      if (promise) {
+        promise.abort();
+      }
+    };
+  }, [actualPath]);
+
+
 
   useDropHook({ containerRef });
   const {
@@ -38,7 +42,8 @@ function Home() {
     handleMouseLeave,
     draggingRef,
     clearDrag,
-  } = useSelection({ containerRef, allFilesRefs });
+    allFilesRefs,
+  } = useSelection({ containerRef, data });
 
   const handleContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -47,14 +52,16 @@ function Home() {
     contextMenuRef.current?.handleOpenContext(e, true);
     dispatch(selectFiles([]));
   };
+  
+  if (status === "loading" || error === "Aborted" ) {
+    return <LoadingHome />;
+  }
+
 
   if (status === "failed") {
     return <div>Failed to load data</div>;
   }
 
-  if (status === "loading") {
-    return <LoadingHome />;
-  }
 
   return (
     <>
@@ -69,17 +76,20 @@ function Home() {
         ref={containerRef}
       >
         <FolderGridContainer>
-          <RenderFolders data={data} allFilesRefs={allFilesRefs} clearDrag={clearDrag} />
+          <RenderFolders
+            data={data}
+            allFilesRefs={allFilesRefs}
+            clearDrag={clearDrag}
+          />
           <RenderFiles
             data={data}
             clearDrag={clearDrag}
             allFilesRefs={allFilesRefs}
           />
         </FolderGridContainer>
-        <ContextMenu element={"Home"}  ref={contextMenuRef} />
+        <ContextMenu element={"Home"} ref={contextMenuRef} />
         <Statuses />
       </HomeContainer>
-
     </>
   );
 }

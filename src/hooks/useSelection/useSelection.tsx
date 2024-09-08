@@ -1,16 +1,21 @@
 import React, { useEffect, useRef } from "react";
-import { ActiveFiles } from "../../types";
+import { ActiveFiles, Response } from "../../types";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import { addFiles, selectFiles } from "../../state/features/files/filesSlice";
 import { isClickedContainer } from "../../utils/homeUtils";
 
 type Props = {
   containerRef: React.MutableRefObject<HTMLDivElement | null>;
-  allFilesRefs: React.MutableRefObject<ActiveFiles[]>;
+  data: Response;
 };
 
-function useSelection({ containerRef, allFilesRefs }: Props) {
+function useSelection({ containerRef, data }: Props) {
   const dispatch = useAppDispatch();
+  const allFilesRefs = useRef<ActiveFiles[]>([]);
+
+  useEffect(() => {
+    allFilesRefs.current = [];
+  }, [data]);
 
   const draggingRef = useRef(false);
   let { current: isClickedFlag } = useRef(false);

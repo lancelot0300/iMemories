@@ -20,8 +20,7 @@ const ModalContent = styled.div`
 
 const ModalHeader = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: flex-end;
   margin-bottom: 20px;
   color: black;
 `;
@@ -32,19 +31,24 @@ const CloseModal = styled.div`
 `;
 
 const ModalBody = styled.div`
-  min-width: 50vw;
-  min-height: 30vh;
-  max-height: 80vh;
+  min-width: 200px;
+  min-height: 200px;
   overflow: hidden;
   color: black;
-  img {
-    max-width: 100%;
-    max-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+  img, video {
+    max-height: 80vh;
   }
-  video {
-    width: 100%;
-    max-width: 100%;
-    max-height: 100%;
+
+
+  @media (max-width: 768px) {
+    img, video {
+      max-width: 80vw;
+    }
   }
 `;
 
@@ -152,7 +156,6 @@ function usePreview({ setIsOpenedContext, selectedFiles, element }: UsePreviewPr
                 >
                     <ModalContent>
                         <ModalHeader>
-                            <span>Preview</span>
                             <CloseModal onClick={() => setIsOpened(false)}>
                                 <FontAwesomeIcon icon={faTimes} />
                             </CloseModal>

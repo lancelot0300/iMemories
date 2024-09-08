@@ -20,7 +20,7 @@ export const store = configureStore({
     activeRequests: activeRequests,
     files: filesReducer
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(getPathMiddleware)
+  // middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(getPathMiddleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>
