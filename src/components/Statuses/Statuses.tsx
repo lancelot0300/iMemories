@@ -13,14 +13,11 @@ function Statuses() {
   if (activeRequests.length === 0) return null;
 
   return (
-    <>
       <StatusesWrapper>
         {activeRequests.map((request) => (
           <Status key={request.index} request={request} />
         ))}
       </StatusesWrapper>
-      {console.log("Statuses rendered")}
-    </>
   );
 }
 

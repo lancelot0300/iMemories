@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StatusFileName, StatusWrapper } from "./statuses.styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
@@ -17,18 +17,32 @@ type Props = {
 };
 
 function Status({ request }: Props) {
-  const actualStatus = useAppSelector((state) =>
-    getActualElement(state.activeRequests, request.index)
-  );
 
+  const actualStatus = useAppSelector((state) => getActualElement(state.activeRequests, request.index));
   const dispatch = useAppDispatch();
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (actualStatus?.status === "Finished" || actualStatus?.status === "Error") {
+      setTimeout(() => {
+        dispatch(removeFileStatus(request.index));
+      }, 6000);
+    }
+
+    return () => {
+      if (actualStatus?.status === "Finished" || actualStatus?.status === "Error") {
+        wrapperRef.current?.classList.add("fade-out");
+      }
+    };
+  }, [actualStatus?.status, dispatch, request.index]);
+
   const handleCloseClick = (index: string) => {
     dispatch(removeFileStatus(index));
   };
 
   return (
     <>
-      <StatusWrapper $status={actualStatus?.status}>
+      <StatusWrapper $status={actualStatus?.status} ref={wrapperRef}>
         <StatusFileName>{request.fileName}</StatusFileName>
         <p>{actualStatus?.progress}</p>
         <FontAwesomeIcon

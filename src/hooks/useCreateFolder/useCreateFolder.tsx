@@ -2,12 +2,13 @@
 import { useRef, useState } from "react";
 import CreateModal from "../../components/CreateModal/CreateModal";
 import { UploadFormButton, UploadFormInput, UploadFormTitle, UploadModal } from "../../components/UploadOption/uploadOption.styles";
-import { useAppSelector } from "../../state/store"
+import { useAppDispatch, useAppSelector } from "../../state/store"
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { InputWrapper, StyledField } from "../../pages/Login/login.styles";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import axios from "axios";
+import { getActualPath, setPathAsync } from "../../state/features/path/pathSlice";
 
 type IFolderFormValues = {
   folder: string;
@@ -17,6 +18,8 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
 
     const { data } = useAppSelector((state) => state.path);
     const [isOpenedModal, setIsOpenedModal] = useState(false);
+    const actualPath = useAppSelector(state => getActualPath(state.path));
+    const dispatch = useAppDispatch();
 
     const schema = yup.object().shape({
       folder: yup.string().required("Folder name is required"),
@@ -50,8 +53,7 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
         console.error(error);
       }
       
-      resetForm();
-      handleCloseClick();
+      dispatch(setPathAsync(actualPath.path));
     }
 
     const {

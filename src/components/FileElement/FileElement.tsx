@@ -1,6 +1,5 @@
 import React, {
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useRef,
 } from "react";
@@ -13,8 +12,8 @@ import { renderIcon } from "../../utils/iconsUtils";
 import InfoText from "../InfoText/InfoText";
 import { InfoElement } from "../InfoText/infoText.styles";
 import { getDateString } from "../../utils/homeUtils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBox } from "@fortawesome/free-solid-svg-icons";
+
+import usePreview from "../../hooks/usePreview/usePreview";
 
 interface IProps {
   element: File;
@@ -23,9 +22,6 @@ interface IProps {
 
 const FileElement = forwardRef<ActiveFiles | null, IProps>(
   ({ element, clearDrag }, ref) => {
-    const fileElementRef = useRef<HTMLDivElement>(null);
-    const contextMenuRef = useRef<ContextRef>();
-    const infoTextRef = useRef<any>(null);
 
     const { selectedFiles } = useAppSelector(
       (state) => state.files,
@@ -48,15 +44,23 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
         return wasSelected === isSelected;
       }
     );
-    const { setActiveElement, isActive, isCopy, setActiveOnRightClick } =  useFile({ element, selectedFiles, storageFiles });
 
     useImperativeHandle(ref, () => ({
       element: fileElementRef.current as HTMLDivElement,
       item: element,
     }));
 
+
+    const fileElementRef = useRef<HTMLDivElement>(null);
+    const contextMenuRef = useRef<ContextRef>();
+    const infoTextRef = useRef<any>(null);
+    const { setActiveElement, isActive, isCopy, setActiveOnRightClick } =  useFile({ element, selectedFiles, storageFiles });
+    const {renderPreview, setIsOpened} = usePreview({selectedFiles, element});
+
+
+
     const handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-      console.log("double click");
+      setIsOpened(true);
     };
 
     const lastTimeClick = useRef(0);
@@ -106,11 +110,12 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
           <Name>{element.fileDetails.name}</Name>
         <InfoText ref={infoTextRef}>
           <InfoElement>Name: {element.fileDetails.name}</InfoElement>
-          <InfoElement>Size: {element.fileDetails.size}</InfoElement>
+          <InfoElement>Size: {(element.fileDetails.size / 1000000).toFixed(2)} MB</InfoElement>
           <InfoElement>Created at: {getDateString(element.fileDetails.createdDate)}</InfoElement>
         </InfoText>
         </FileElementContainer>
         <ContextMenu element="File" ref={contextMenuRef} />
+        {renderPreview()}
       </>
     );
   }

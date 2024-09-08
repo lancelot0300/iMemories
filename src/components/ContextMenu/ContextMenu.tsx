@@ -49,7 +49,7 @@ const ContextMenu = forwardRef(({ element }: Props, ref) => {
     <CreateModal isOpened={isOpenedContext} setIsOpened={setIsOpenedContex} withoutOverlay >
       <ContextWrapper $posX={posX.current} $posY={posY.current} ref={contextMenuRefs}>
         {options.map((OptionComponent, index) => (
-          <OptionComponent key={index} setIsOpened={setIsOpenedContex} />
+          <OptionComponent key={index} setIsOpened={setIsOpenedContex} setIsOpenedContext={setIsOpenedContex}/>
         ))}
       </ContextWrapper>
     </CreateModal>

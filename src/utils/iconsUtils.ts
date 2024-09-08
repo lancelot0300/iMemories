@@ -1,6 +1,9 @@
 
-export const renderIcon = (extensioen: string) => {
-  switch (extensioen) {
+export const renderIcon = (extension: string) => {
+
+  const extensionToLower = extension.toLowerCase();
+
+  switch (extensionToLower) {
     case ".pdf":
       return "icons/pdf.png";
     case ".doc":

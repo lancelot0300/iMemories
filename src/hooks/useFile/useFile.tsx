@@ -19,11 +19,7 @@ function useFile({element, selectedFiles, storageFiles}: Props) {
     const dispatch = useAppDispatch();
 
     const selectSingleElement = () => {
-        if (isActive && selectedFiles.length === 1) {
-          dispatch(selectFiles([]));
-        } else {
           dispatch(selectFiles([element]));
-        }
       };
   
       const selectMultipleElements = () => {
