@@ -5,6 +5,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import { useSelector } from "react-redux";
 import { RootState } from "./state/store";
 import PersistLogin from "./components/PersistLogin/PersistLogin";
+import Register from "./pages/Register/Register";
 
 
 function App() {
@@ -30,6 +31,17 @@ function App() {
                   redirectPath="/"
                 >
                   <Login />
+                </ProtectedRoute>
+              }
+            />
+             <Route
+              path="/register"
+              element={
+                <ProtectedRoute
+                  isAllowed={user?.token ? true : false}
+                  redirectPath="/"
+                >
+                  <Register />
                 </ProtectedRoute>
               }
             />

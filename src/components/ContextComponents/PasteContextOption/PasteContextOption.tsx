@@ -16,6 +16,7 @@ function PasteContextOption({setIsOpened}: Props) {
 
 
   const handlePasteClick = () => {
+    
     setIsOpened(false)
   }
 

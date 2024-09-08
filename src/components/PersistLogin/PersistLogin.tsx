@@ -1,5 +1,5 @@
-import {  useEffect, useRef, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import useRefresh from "../../hooks/useRefresh/useRefresh";
 
 function PersistLogin() {
@@ -8,29 +8,38 @@ function PersistLogin() {
 
   const refresh = useRefresh();
   const navigate = useNavigate();
-  
+  const location = useLocation();
+
   useEffect(() => {
     if (!isUseEffectMounted.current) {
       isUseEffectMounted.current = true;
-      refresh().then(() => {
-        navigate("/");
-      }).catch(() => {
-        navigate("/login");
-      }).finally(() => {
-        setLoading(false);
-      });
+      refresh()
+        .then(() => {
+          navigate("/");
+        })
+        .catch(() => {
+          if (
+            location.pathname !== "/login" &&
+            location.pathname !== "/register"
+          ) {
+            navigate("/login");
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [isUseEffectMounted.current]);
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
-
-
-  return <>
-    <Outlet />
-  </>;
+  return (
+    <>
+      <Outlet />
+    </>
+  );
 }
 
 export default PersistLogin;

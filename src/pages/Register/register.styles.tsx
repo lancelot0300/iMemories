@@ -35,6 +35,7 @@ export const InputWrapper = styled.div`
 `
 
 export const Button = styled.button`
+    width: 100%;
     padding: 10px;
     border-radius: 5px;
     border: none;
@@ -44,32 +45,18 @@ export const Button = styled.button`
 `
 export const StyledField = styled.input<{ $isError?: boolean }>`
     width: 100%;
-    max-width: 400px;
     padding: 5px;
     border-radius: 5px;
     border: ${(props) => (props.$isError ? "2px solid red" : "1px solid #ccc")};
-
-    &::placeholder {
+        &::placeholder {
         text-align: center;
-        color: #ccc;
-    }
-
-`
-
-export const RegisterInfo = styled.p`
-    color: #fff;
-    font-size: 1.5rem;
-    text-align: center;
-    margin-top: 10px;
-    cursor: pointer;
-    a {
-        color:  white;
     }
 `
 
-export const Header = styled.h1`
-    color: #fff;
-    font-size: 3rem;
-    text-align: center;
-    margin-bottom: 20px;
+export const StyledForm = styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;
 `
