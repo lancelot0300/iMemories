@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   CurrentPath,
+  LogoutButton,
   MenuWrapper,
   Navigation,
   NavigationOption,
@@ -12,7 +13,6 @@ import {
   faArrowRightLong,
 } from "@fortawesome/free-solid-svg-icons";
 import RightSideMenu from "../RightSideMenu/RightSideMenu";
-import UploadOption from "../UploadOption/UploadOption";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import {
   goBackToPath,
@@ -76,7 +76,7 @@ function Menu({ allFilesRefs }: Props) {
         ))}
       </CurrentPath>
       <RightSideMenu>
-        <UploadOption />
+       <LogoutButton> Logout </LogoutButton>
       </RightSideMenu>
     </MenuWrapper>
   );

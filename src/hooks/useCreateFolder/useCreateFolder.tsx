@@ -9,6 +9,7 @@ import { InputWrapper, StyledField } from "../../pages/Login/login.styles";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import axios from "axios";
 import { getActualPath, setPathAsync } from "../../state/features/path/pathSlice";
+import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
 
 type IFolderFormValues = {
   folder: string;
@@ -20,6 +21,7 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
     const [isOpenedModal, setIsOpenedModal] = useState(false);
     const actualPath = useAppSelector(state => getActualPath(state.path));
     const dispatch = useAppDispatch();
+    const axiosPrivate = useAxiosPrivate();
 
     const schema = yup.object().shape({
       folder: yup.string().required("Folder name is required"),
@@ -39,7 +41,7 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
       }
 
       try {
-        const response = await axios.post(
+        const response = await axiosPrivate.post(
           process.env.REACT_APP_API_URL + "/folder",
           {
             parentFolderId: data.id,
@@ -52,7 +54,6 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
       } catch (error) {
         console.error(error);
       }
-      
       dispatch(setPathAsync(actualPath.path));
     }
 

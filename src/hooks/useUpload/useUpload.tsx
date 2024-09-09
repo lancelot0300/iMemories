@@ -6,6 +6,7 @@ import CreateModal from "../../components/CreateModal/CreateModal";
 import { UploadModal } from "../../components/UploadOption/uploadOption.styles";
 import { UploadCustomButton, UploadFormButton, UploadFormInput, UploadFormTitle } from "./useUpload.styles";
 import { getActualPath, setPathAsync } from "../../state/features/path/pathSlice";
+import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
 
 
 function useUpload(setIsOpened? : (value: boolean) => void) {
@@ -15,7 +16,7 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
   const [isOpenedModal, setIsOpenedModal] = useState(false);
   const { data } = useAppSelector((state) => state.path);
   const actualPath = useAppSelector((state) => getActualPath(state.path));
-
+  const axiosPrivate = useAxiosPrivate();
   const uploadFiles = async (files: FileList | null) => {
     if (!files) {
       alert("Select a file to upload");
@@ -37,7 +38,7 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
         })
       );
 
-      return axios
+      return axiosPrivate
         .post(apiUrl, formData, {
           headers: { "Content-Type": "multipart/form-data" },
           withCredentials: true,

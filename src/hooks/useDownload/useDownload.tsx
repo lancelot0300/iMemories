@@ -1,10 +1,11 @@
 import React from 'react';
 import {  useAppSelector } from "../../state/store";
 import axios from 'axios';
+import useAxiosPrivate from '../useAxiosPrivate/useAxiosPrivate';
 
 function useDownload(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) {
     const { selectedFiles } = useAppSelector((state) => state.files);
-
+    const axiosPrivate = useAxiosPrivate();
     const handleDownloadClick = async () => {
         try {
             for (const file of selectedFiles) {
@@ -17,7 +18,7 @@ function useDownload(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>
                     ? `${process.env.REACT_APP_API_URL}/file/download/${fileId}`
                     : `${process.env.REACT_APP_API_URL}/folder/download/${folderId}`;
 
-                const response = await axios.get(url, {
+                const response = await axiosPrivate.get(url, {
                     withCredentials: true,
                     responseType: 'blob',
                 });

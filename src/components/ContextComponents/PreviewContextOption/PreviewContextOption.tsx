@@ -6,6 +6,7 @@ import CreateModal from '../../CreateModal/CreateModal';
 import styled from 'styled-components';
 import { faEye, faTimes } from '@fortawesome/free-solid-svg-icons';
 import usePreview from '../../../hooks/usePreview/usePreview';
+import { File } from '../../../types';
 
 type Props = {
   setIsOpenedContext: React.Dispatch<React.SetStateAction<boolean>>
@@ -13,11 +14,16 @@ type Props = {
 
 function PreviewContextOption({ setIsOpenedContext }: Props) {
   const selectedFiles = useAppSelector((state) => state.files.selectedFiles);
-  const {renderPreview, setIsOpened} = usePreview({setIsOpenedContext, selectedFiles});
+  const {renderPreview, handleOpen, canBePreview} = usePreview({setIsOpenedContext, selectedFiles});
+
+
+  if(selectedFiles.length === 0 || selectedFiles.length > 1) return null
+
+  if(!canBePreview(selectedFiles[0] as File)) return null
 
   return (
     <>
-      <ContextOption onClick={ () => setIsOpened(true)}><FontAwesomeIcon icon={faEye} />  <span>Preview</span></ContextOption>
+      <ContextOption onClick={ () => handleOpen(true)}><FontAwesomeIcon icon={faEye} />  <span>Preview</span></ContextOption>
       {renderPreview()}
     </>
   )

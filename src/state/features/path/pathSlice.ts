@@ -1,12 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { Response } from "../../../types";
+import { Path, Response } from "../../../types";
+import { loginSuccess } from "../auth/authSlice";
 
-// Typy danych
-type Path = {
-  path: string;
-  name: string;
-};
 
 type InitialState = {
   data: Response;
@@ -18,25 +14,46 @@ type InitialState = {
 
 export const setPathAsync = createAsyncThunk(
   "path/setPath",
-  async (path: string, { signal, rejectWithValue }) => {
+  async (path: string, { signal, rejectWithValue, dispatch }) => {
+    try {
+      const source = axios.CancelToken.source();
+      signal.addEventListener("abort", () => {
+        source.cancel();
+        rejectWithValue("Request was aborted");
+      });
 
-    const source = axios.CancelToken.source();
-    signal.addEventListener("abort", () => {
-      source.cancel();
-      rejectWithValue("Request was aborted");
-    });
+      const fetchPath = async () => {
+        const { data } = await axios.get(
+          `${process.env.REACT_APP_API_URL}/folder/${path}`,
+          {
+            withCredentials: true,
+            cancelToken: source.token,
+          }
+        );
+        return data;
+      };
 
-      const {data } = await axios.get(
-        `${process.env.REACT_APP_API_URL}/folder/${path}`, {
-          withCredentials: true,
-          cancelToken: source.token,
-        });
-      return data;
-  
+      try {
+        return await fetchPath();
+      } catch (error: any) {
+        if (error.response?.status === 401) {
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/token/refresh`, {
+            withCredentials: true,
+          });
+          if (response.data) {
+            dispatch(loginSuccess(response.data));
+            return await fetchPath();
+          }
+          return rejectWithValue("Unauthorized");
+        }
+        throw error;
+      }
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || "Something went wrong");
+    }
   }
 );
 
-// Stan początkowy
 const initialState: InitialState = {
   data: {
     id: "",
@@ -51,25 +68,21 @@ const initialState: InitialState = {
   error: null,
 };
 
-// Slice
 const pathSlice = createSlice({
   name: "path",
   initialState,
   reducers: {
     setPath: (state, action: PayloadAction<Path>) => {
-      state.actualPath = [...state.actualPath, action.payload];
+      state.actualPath.push(action.payload);
       state.history = [...state.actualPath];
     },
     setNextPath: (state, action: PayloadAction<number>) => {
-      if (!state.history) return;
-      state.actualPath = state.history?.slice(0, action.payload + 1);
+      state.actualPath = state.history.slice(0, action.payload + 1);
     },
     setPreviousPath: (state, action: PayloadAction<number>) => {
-      if (!state.history) return;
       state.actualPath = state.history.slice(0, action.payload + 1);
     },
     goBackToPath: (state, action: PayloadAction<number>) => {
-      if (!state.history) return;
       state.actualPath = state.history.slice(0, action.payload + 1);
     },
     setData: (state, action: PayloadAction<Response>) => {
@@ -78,26 +91,27 @@ const pathSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(setPathAsync.fulfilled, (state, action) => {
-      state.data = action.payload;
-      state.status = "completed";
-      state.error = null;
-    });
-    builder.addCase(setPathAsync.rejected, (state, payload) => {
-      state.status = "failed";
-      state.error = payload.error.message || "Request was aborted";
-    });
-    builder.addCase(setPathAsync.pending, (state) => {
-      state.status = "loading";
-      state.error = null;
-    });
+    builder
+      .addCase(setPathAsync.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.status = "completed";
+        state.error = null;
+      })
+      .addCase(setPathAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Request was aborted";
+      })
+      .addCase(setPathAsync.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      });
   },
 });
 
 export const getActualPath = (state: InitialState) =>
   state.actualPath[state.actualPath.length - 1];
 
-export const { setNextPath, setPreviousPath, setPath, goBackToPath, setData} =
+export const { setNextPath, setPreviousPath, setPath, goBackToPath, setData } =
   pathSlice.actions;
 
 export default pathSlice.reducer;

@@ -70,3 +70,23 @@ export const PathSpan = styled.span`
         text-decoration: underline;
     }
 `;
+
+export const LogoutButton = styled.button`
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    user-select: none;
+    font-size: 16px;
+    background-color:   rgba(255,255,255,0.1);
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: rgba(255,255,255,0.2);
+    }
+
+    &:active {
+        background-color: rgba(255,255,255,0.3);
+    }
+`;

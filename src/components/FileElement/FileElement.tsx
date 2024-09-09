@@ -55,12 +55,12 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
     const contextMenuRef = useRef<ContextRef>();
     const infoTextRef = useRef<any>(null);
     const { setActiveElement, isActive, isCopy, setActiveOnRightClick } =  useFile({ element, selectedFiles, storageFiles });
-    const {renderPreview, setIsOpened} = usePreview({selectedFiles, element});
+    const {renderPreview, handleOpen} = usePreview({selectedFiles, element});
 
 
 
     const handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-      setIsOpened(true);
+      handleOpen(true);
     };
 
     const lastTimeClick = useRef(0);

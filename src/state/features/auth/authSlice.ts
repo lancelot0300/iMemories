@@ -28,6 +28,9 @@ const authSlice = createSlice({
     userUpdated: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
+    refreshedToken: (state, action: PayloadAction<User>) => {
+      state.user = action.payload;
+    }
   },
 });
 

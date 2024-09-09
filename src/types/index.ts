@@ -79,3 +79,9 @@ export type ContextRef = {
     isOpen: boolean
   ) => void;
 };
+
+
+export type Path = {
+  path: string;
+  name: string;
+};
