@@ -12,10 +12,10 @@ type Props = {
 function useSelection({ containerRef, data }: Props) {
   const dispatch = useAppDispatch();
   const allFilesRefs = useRef<ActiveFiles[]>([]);
-
+  
   useEffect(() => {
     allFilesRefs.current = [];
-  }, [data]);
+  }, [data.childFolders, data.files]);
 
   const draggingRef = useRef(false);
   let { current: isClickedFlag } = useRef(false);

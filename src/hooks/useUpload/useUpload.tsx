@@ -76,6 +76,9 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
     }
   };
 
+
+    
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setFiles(event.target.files);
   };

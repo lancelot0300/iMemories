@@ -66,7 +66,6 @@ function Home() {
 
   return (
     <>
-    {console.log("Home")}
       <Menu allFilesRefs={allFilesRefs} />
       <HomeContainer
         onMouseDown={handleMouseDown}

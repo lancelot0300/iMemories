@@ -13,17 +13,23 @@ function useDelete(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) 
   const dispatch = useAppDispatch();
 
   const handleDeleteClick = async () => {
-    const deletePromises = selectedFiles
-      .filter(file => file.fileDetails?.id)  
-      .map(file => 
-        axiosPrivate.delete(`${process.env.REACT_APP_API_URL}/file/${file.fileDetails?.id}`, {
-          withCredentials: true,
-        })
-      );
+
+    const filesToDelete = selectedFiles.map((file) => file.fileDetails?.id).filter((id) => id);
+    const foldersToDelete = selectedFiles.map((file) => file.folderDetails?.id).filter((id) => id);
+
+    const deleteFilesPromises = filesToDelete.map((id) => {
+      const URL = `${process.env.REACT_APP_API_URL}/file/${id}`;
+      return axiosPrivate.delete(URL, { withCredentials: true });
+    });
+
+    // const deleteFoldersPromises = foldersToDelete.map((id) => {
+    //   const URL = `${process.env.REACT_APP_API_URL}/folder/${id}`;
+    //   return axiosPrivate.delete(URL, { withCredentials: true });
+    // });
 
     try {
-      await Promise.all(deletePromises);
       dispatch(setLastCommand({ files: selectedFiles, command: "delete" }));
+      await Promise.all([...deleteFilesPromises]);
     } catch (error) {
       console.error("Error deleting files:", error);
     } finally {

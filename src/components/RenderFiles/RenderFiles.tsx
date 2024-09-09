@@ -21,7 +21,10 @@ const RenderFiles = ({ data, allFilesRefs, clearDrag }: Props) => {
           element={item}
           ref={(el) => {
             if (!el) return;
-            if(allFilesRefs.current.some((file) => file.item.id === item.id)) return;
+            if(allFilesRefs.current.some((file) => file.item.id === item.id)) {
+              const index = allFilesRefs.current.findIndex((file) => file.item.id === item.id);
+              return allFilesRefs.current[index] = el;
+             }
             allFilesRefs.current.push(el);
           }}
           />
