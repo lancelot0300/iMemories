@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import useRefresh from "../../hooks/useRefresh/useRefresh";
+import LoadingHome from "../../pages/Home/LoadingHome";
 
 function PersistLogin() {
   const [loading, setLoading] = useState(true);
@@ -32,7 +33,7 @@ function PersistLogin() {
   }, [isUseEffectMounted.current]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingHome />;
   }
 
   return (
