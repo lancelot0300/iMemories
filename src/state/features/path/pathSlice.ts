@@ -94,6 +94,7 @@ const pathSlice = createSlice({
     builder
       .addCase(setPathAsync.fulfilled, (state, action) => {
         state.data = action.payload;
+
         state.status = "completed";
         state.error = null;
       })
@@ -111,7 +112,11 @@ const pathSlice = createSlice({
 export const getActualPath = (state: InitialState) =>
   state.actualPath[state.actualPath.length - 1];
 
-export const { setNextPath, setPreviousPath, setPath, goBackToPath, setData } =
-  pathSlice.actions;
+export const isNextPathInHistory = (state: InitialState) =>
+  state.history.length > state.actualPath.length;
+
+
+
+export const { setNextPath, setPreviousPath, setPath, goBackToPath, setData } = pathSlice.actions;
 
 export default pathSlice.reducer;

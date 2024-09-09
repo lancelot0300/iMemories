@@ -70,9 +70,7 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
 
     try {
       await Promise.all(uploadPromises);
-      if (data?.id) {
-        dispatch(setPathAsync(actualPath.path));
-      }
+      dispatch(setPathAsync(actualPath.path));
     } catch (error) {
       console.error("Error uploading files:", error);
     }

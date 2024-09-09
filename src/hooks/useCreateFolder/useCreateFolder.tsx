@@ -1,14 +1,13 @@
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import CreateModal from "../../components/CreateModal/CreateModal";
-import { UploadFormButton, UploadFormInput, UploadFormTitle, UploadModal } from "../../components/UploadOption/uploadOption.styles";
+import { UploadFormButton, UploadModal } from "../../components/UploadOption/uploadOption.styles";
 import { useAppDispatch, useAppSelector } from "../../state/store"
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { InputWrapper, StyledField } from "../../pages/Login/login.styles";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
-import axios from "axios";
-import { getActualPath, setPathAsync } from "../../state/features/path/pathSlice";
+import { setPathAsync } from "../../state/features/path/pathSlice";
 import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
 
 type IFolderFormValues = {
@@ -19,7 +18,6 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
 
     const { data } = useAppSelector((state) => state.path);
     const [isOpenedModal, setIsOpenedModal] = useState(false);
-    const actualPath = useAppSelector(state => getActualPath(state.path));
     const dispatch = useAppDispatch();
     const axiosPrivate = useAxiosPrivate();
 
@@ -54,7 +52,7 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
       } catch (error) {
         console.error(error);
       }
-      dispatch(setPathAsync(actualPath.path));
+      dispatch(setPathAsync(data.id));
     }
 
     const {

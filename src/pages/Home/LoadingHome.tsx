@@ -4,14 +4,14 @@ import { FolderGridContainer, HomeContainer } from "./home.styles";
 import LoadingFileElement from "../../components/FileElement/LoadingFileElement";
 import { ActiveFiles } from "../../types";
 
-function LoadingHome() {
+function LoadingHome({withMenu}: {withMenu?: boolean}) {
 
   const allFilesRefs = React.useRef<ActiveFiles[]>([]);
 
 
   return (
     <>
-      <Menu allFilesRefs={allFilesRefs} />
+       {withMenu  && <Menu allFilesRefs={allFilesRefs} />}
       <HomeContainer>
         <FolderGridContainer>
                 <LoadingFileElement />

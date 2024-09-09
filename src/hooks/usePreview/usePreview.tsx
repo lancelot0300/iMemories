@@ -84,8 +84,9 @@ function usePreview({
   };
 
   const createPreview = (file: File) => {
+    const selectedFile = element || (selectedFiles[0] as File);
     const selectedElementId =
-      element?.fileDetails.id || selectedFiles[0]?.fileDetails?.id;
+    selectedFile.fileDetails.id || selectedFile.fileDetails?.id;
     const URL = `${process.env.REACT_APP_API_URL}/file/preview/${selectedElementId}`;
 
     if (!selectedElementId) return null;

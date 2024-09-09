@@ -1,34 +1,33 @@
 import React from "react";
 import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
-import { useAppDispatch } from "../../state/store";
+import { useAppDispatch, useAppSelector } from "../../state/store";
 import { setLastCommand } from "../../state/features/files/filesSlice";
 import { setPathAsync } from "../../state/features/path/pathSlice";
-import { Path, SelectedElements } from "../../types";
+import { File, Folder, Path, SelectedElements } from "../../types";
 
 type Props = {
   storageFiles: SelectedElements;
   selectedFiles: SelectedElements;
-  actialPath: Path;
   setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function usePaste({
   selectedFiles,
   storageFiles,
-  actialPath,
   setIsOpened,
 }: Props) {
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useAppDispatch();
+  const { data } = useAppSelector((state) => state.path);
 
   const handlePasteClick = async () => {
     const URL = `${process.env.REACT_APP_API_URL}/copy/foldersandfiles`;
 
     const filesids = storageFiles
-      .map((file) => file.fileDetails?.id)
+      .map((file) => (file as File).fileDetails?.id)
       .filter((id) => id);
     const foldersids = storageFiles
-      .map((file) => file.folderDetails?.id)
+      .map((file) => (file as Folder).folderDetails?.id)
       .filter((id) => id);
 
     const requset = axiosPrivate.post(
@@ -36,7 +35,7 @@ function usePaste({
       {
         filesids,
         foldersids,
-        targetFolderId: actialPath.path,
+        targetFolderId: data.id,
       },
       {
         withCredentials: true,
@@ -45,7 +44,7 @@ function usePaste({
     dispatch(setLastCommand({ files: selectedFiles, command: "paste" }));
     await requset
       .then(() => {
-        dispatch(setPathAsync(actialPath.path));
+        dispatch(setPathAsync(data.id));
       })
       .catch((error) => {
         console.log(error);

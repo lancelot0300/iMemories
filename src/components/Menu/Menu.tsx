@@ -16,6 +16,7 @@ import RightSideMenu from "../RightSideMenu/RightSideMenu";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import {
   goBackToPath,
+  isNextPathInHistory,
   setNextPath,
   setPreviousPath,
 } from "../../state/features/path/pathSlice";
@@ -26,11 +27,11 @@ type Props = {
 };
 
 function Menu({ allFilesRefs }: Props) {
-  const { actualPath, history } = useAppSelector((state) => state.path);
+  const { actualPath } = useAppSelector((state) => state.path);
+  const isNextPath = useAppSelector((state) => isNextPathInHistory(state.path));
   const dispatch = useAppDispatch();
 
   const isPreviousPath = actualPath.length > 1;
-  const isNextPath = history.length > actualPath.length;
   const previousPathIndex = actualPath.length - 2;
   const nextPathIndex = actualPath.length;
 
@@ -52,33 +53,59 @@ function Menu({ allFilesRefs }: Props) {
     dispatch(setNextPath(nextPathIndex));
   };
 
+  const renderPath = () => {
+    if (actualPath.length > 4) {
+      return (
+        <>
+          <PathSpan onClick={() => handleBackToPath(0)}>
+            {actualPath[0].name}
+          </PathSpan>
+          <span> / ... / </span>
+          <PathSpan onClick={() => handleBackToPath(actualPath.length - 2)}>
+            {actualPath[actualPath.length - 2].name}
+          </PathSpan>
+          <span> / </span>
+          <PathSpan onClick={() => handleBackToPath(actualPath.length - 1)}>
+            {actualPath[actualPath.length - 1].name}
+          </PathSpan>
+        </>
+      );
+    }
+    else {
+      return actualPath.map((path, index) => (
+        <React.Fragment key={index}>
+          <PathSpan onClick={() => handleBackToPath(index)}>
+            {path.name}
+          </PathSpan>
+          {index < actualPath.length - 1 && <span> / </span>}
+        </React.Fragment>
+      ));
+    }
+  };
+
   return (
-    <MenuWrapper>
-      <Navigation>
-        <NavigationOption
-          $disabled={!isPreviousPath}
-          onClick={handlePreviousPath}
-        >
-          <FontAwesomeIcon icon={faArrowLeftLong} />
-        </NavigationOption>
-        <NavigationOption $disabled={!isNextPath} onClick={handleNextPath}>
-          <FontAwesomeIcon icon={faArrowRightLong} />
-        </NavigationOption>
-      </Navigation>
-      <CurrentPath>
-        {actualPath.map((path, index) => (
-          <React.Fragment key={index}>
-            <PathSpan onClick={() => handleBackToPath(index)}>
-              {path.name}
-            </PathSpan>
-            {index < actualPath.length - 1 && <span> / </span>}
-          </React.Fragment>
-        ))}
-      </CurrentPath>
-      <RightSideMenu>
-       <LogoutButton> Logout </LogoutButton>
-      </RightSideMenu>
-    </MenuWrapper>
+    <>
+    {console.log("Menu")}
+      <MenuWrapper>
+        <Navigation>
+          <NavigationOption
+            $disabled={!isPreviousPath}
+            onClick={handlePreviousPath}
+          >
+            <FontAwesomeIcon icon={faArrowLeftLong} />
+          </NavigationOption>
+          <NavigationOption $disabled={!isNextPath} onClick={handleNextPath}>
+            <FontAwesomeIcon icon={faArrowRightLong} />
+          </NavigationOption>
+        </Navigation>
+        <CurrentPath>
+          {renderPath()}
+        </CurrentPath>
+        <RightSideMenu>
+          <LogoutButton> Logout </LogoutButton>
+        </RightSideMenu>
+      </MenuWrapper>
+    </>
   );
 }
 

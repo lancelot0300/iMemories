@@ -40,14 +40,18 @@ export const NavigationOption = styled.div<NavigationOptionProps>`
 `;
 
 export const CurrentPath = styled.span`
+    width: 444px;
     font-size: 16px;
     font-weight: 500;
     margin-left: 20px;
     user-select: none;
-    min-width: 200px;
     background-color: rgba(255,255,255,0.1);
     padding: 5px 10px;
     border-radius: 5px;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
 `;
 
 
@@ -65,7 +69,6 @@ export const PathSpan = styled.span`
     cursor: pointer;
     color: var(--text-color);
     user-select: none;
-
     &:hover {
         text-decoration: underline;
     }

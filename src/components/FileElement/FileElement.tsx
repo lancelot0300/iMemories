@@ -1,8 +1,4 @@
-import React, {
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-} from "react";
+import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { ActiveFiles, ContextRef, File } from "../../types";
 import { FileElementContainer, Icon, Name } from "./fileElement.styles";
 import useFile from "../../hooks/useFile/useFile";
@@ -22,7 +18,6 @@ interface IProps {
 
 const FileElement = forwardRef<ActiveFiles | null, IProps>(
   ({ element, clearDrag }, ref) => {
-
     const { selectedFiles } = useAppSelector(
       (state) => state.files,
       (prev, next) => {
@@ -39,7 +34,9 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
     const { storageFiles } = useAppSelector(
       (state) => state.files,
       (prev, next) => {
-        const wasSelected = prev.storageFiles.some((el) => el.id === element.id);
+        const wasSelected = prev.storageFiles.some(
+          (el) => el.id === element.id
+        );
         const isSelected = next.storageFiles.some((el) => el.id === element.id);
         return wasSelected === isSelected;
       }
@@ -50,20 +47,20 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
       item: element,
     }));
 
-
     const fileElementRef = useRef<HTMLDivElement>(null);
     const contextMenuRef = useRef<ContextRef>();
     const infoTextRef = useRef<any>(null);
-    const { setActiveElement, isActive, isCopy, setActiveOnRightClick } =  useFile({ element, selectedFiles, storageFiles });
-    const {renderPreview, handleOpen} = usePreview({selectedFiles, element});
-
-
+    const { setActiveElement, isActive, isCopy, setActiveOnRightClick } =
+      useFile({ element, selectedFiles, storageFiles });
+    const { renderPreview, handleOpen } = usePreview({
+      selectedFiles,
+      element,
+    });
+    const lastTimeClick = useRef(0);
 
     const handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
       handleOpen(true);
     };
-
-    const lastTimeClick = useRef(0);
 
     const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
       const clickTime = new Date().getTime();
@@ -84,9 +81,7 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
       setActiveOnRightClick(e);
       contextMenuRef.current?.handleOpenContext(e, true);
     };
-
-
-
+    
     return (
       <>
         <FileElementContainer
@@ -95,7 +90,7 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
           onContextMenu={handleRightClick}
           $isSelected={isActive}
           $isCopy={isCopy}
-          onMouseEnter={(event) => infoTextRef.current?.showInfo(event)}
+          onMouseEnter={() => infoTextRef.current?.showInfo(fileElementRef.current)}
           onMouseLeave={() => infoTextRef.current?.hideInfo()}
         >
           <Icon>
@@ -108,11 +103,15 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
             />
           </Icon>
           <Name>{element.fileDetails.name}</Name>
-        <InfoText ref={infoTextRef}>
-          <InfoElement>Name: {element.fileDetails.name}</InfoElement>
-          <InfoElement>Size: {(element.fileDetails.size / 1000000).toFixed(2)} MB</InfoElement>
-          <InfoElement>Created at: {getDateString(element.fileDetails.createdDate)}</InfoElement>
-        </InfoText>
+          <InfoText ref={infoTextRef}>
+            <InfoElement>Name: {element.fileDetails.name}</InfoElement>
+            <InfoElement>
+              Size: {(element.fileDetails.size / 1000000).toFixed(2)} MB
+            </InfoElement>
+            <InfoElement>
+              Created at: {getDateString(element.fileDetails.createdDate)}
+            </InfoElement>
+          </InfoText>
         </FileElementContainer>
         <ContextMenu element="File" ref={contextMenuRef} />
         {renderPreview()}

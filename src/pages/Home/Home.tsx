@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { FolderGridContainer, HomeContainer } from "./home.styles";
-import { ActiveFiles, ContextRef } from "../../types";
+import { ContextRef } from "../../types";
 import useDropHook from "../../hooks/useDrop/useDropFiles";
 import useSelection from "../../hooks/useSelection/useSelection";
 import { isClickedContainer } from "../../utils/homeUtils";
@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "../../state/store";
 import { selectFiles } from "../../state/features/files/filesSlice";
 import Menu from "../../components/Menu/Menu";
 import Statuses from "../../components/Statuses/Statuses";
-import { setPathAsync } from "../../state/features/path/pathSlice";
+import { getActualPath, setPathAsync } from "../../state/features/path/pathSlice";
 import LoadingHome from "./LoadingHome";
 import RenderFiles from "../../components/RenderFiles/RenderFiles";
 import ContextMenu from "../../components/ContextMenu/ContextMenu";
@@ -17,12 +17,13 @@ import RenderFolders from "../../components/RenderFolders/RenderFolders";
 function Home() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const contextMenuRef = useRef<ContextRef>(null);
-  const { data, status, actualPath, error } = useAppSelector((state) => state.path);
+  const { data, status, error } = useAppSelector((state) => state.path);
+  const actualPath = useAppSelector((state) => getActualPath(state.path));
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const promise = dispatch(
-      setPathAsync(actualPath[actualPath.length - 1].path)
+      setPathAsync(actualPath.path)
     );
 
     return () => {
@@ -30,7 +31,7 @@ function Home() {
         promise.abort();
       }
     };
-  }, [actualPath]);
+  }, [actualPath.path, dispatch]);
 
 
 
@@ -54,17 +55,18 @@ function Home() {
   };
   
   if (status === "loading" || error === "Aborted" ) {
-    return <LoadingHome />;
+    return <LoadingHome withMenu />;
   }
 
 
   if (status === "failed") {
-    return <div>Failed to load data</div>;
+    return <div>Failed to load data</div>; 
   }
 
 
   return (
     <>
+    {console.log("Home")}
       <Menu allFilesRefs={allFilesRefs} />
       <HomeContainer
         onMouseDown={handleMouseDown}

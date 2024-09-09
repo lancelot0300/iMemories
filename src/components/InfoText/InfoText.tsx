@@ -13,8 +13,8 @@ const InfoText = forwardRef<any, InfoTextProps>(
     const wrapperRef = useRef<HTMLDivElement>(null);
     const timeoutRef = useRef<number | null>(null);
 
-    const showInfo = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
+    const showInfo = (element: HTMLElement) => {
+      const target = element;
       const targetWidth = target.offsetWidth;
       const targetHeight = target.offsetHeight;
       const x = target.getBoundingClientRect().left + targetWidth - 10;
