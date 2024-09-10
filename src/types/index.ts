@@ -75,7 +75,7 @@ export type SelectedElements = Item[];
 
 export type ContextRef = {
   handleOpenContext: (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    e: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>,
     isOpen: boolean
   ) => void;
 };

@@ -1,6 +1,5 @@
 import React, {
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useRef,
 } from "react";
@@ -105,10 +104,9 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
       e.preventDefault();
       e.stopPropagation();
       clearDrag();
-      setActiveOnRightClick(e);
+      setActiveOnRightClick();
       contextMenuRef.current?.handleOpenContext(e, true);
     };
-
 
     return (
       <>
@@ -126,8 +124,9 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
             </Icon>
             <Name>{element.folderDetails.name}</Name>
             <InfoText ref={infoTextRef}>
+            <InfoElement>Name: {element.folderDetails.name}</InfoElement>
               <InfoElement>
-                Created at:
+                Created: 
                 {getDateString(element.folderDetails.createdDate) + " UTC"}
               </InfoElement>
               {element.folderDetails.lastModifiedDate && (

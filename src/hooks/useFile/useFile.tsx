@@ -38,7 +38,7 @@ function useFile({element, selectedFiles, storageFiles}: Props) {
         }
       };
 
-      const setActiveOnRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      const setActiveOnRightClick = () => {
         if (!isActive) {
           selectSingleElement();
         }

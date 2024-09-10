@@ -5,6 +5,7 @@ export const StyledInfoWrapper = styled.div<{ $posX: number, $posY: number }>`
     position: absolute;
     width: fit-content;
     height: fit-content;
+    max-width: 200px;
     top: ${({ $posY }) => $posY}px;
     left: ${({ $posX }) => $posX}px;
     background-color: #373547;
@@ -16,5 +17,6 @@ export const StyledInfoWrapper = styled.div<{ $posX: number, $posY: number }>`
 export const InfoElement = styled.div`
     font-size: 12px;
     color: white;
-    text-wrap: nowrap;
+    text-wrap: wrap;
+    overflow-wrap: break-word;
 `;

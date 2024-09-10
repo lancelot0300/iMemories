@@ -1,11 +1,16 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from "react";
 import { StyledInfoWrapper } from "./infoText.styles";
 
-interface InfoTextProps {
+type InfoTextProps = {
   children: React.ReactNode;
 }
 
-const InfoText = forwardRef<any, InfoTextProps>(
+type InfoTextRef = {
+  showInfo: (element: HTMLElement) => void;
+  hideInfo: () => void;
+}
+
+const InfoText = forwardRef<InfoTextRef, InfoTextProps>(
   ({ children }, ref) => {
 
     const [pos, setPos] = useState({ x: 0, y: 0 });

@@ -32,8 +32,9 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
     }
 
     const onSubmit = async ( {folder } : IFolderFormValues) => {
+      const cleanedFolderName = folder.trim();
 
-      if(data.childFolders.some((child) => child.folderDetails.name === folder)) {
+      if(data.childFolders.some((child) => child.folderDetails.name === cleanedFolderName)) {
         setErrors({folder: "Folder with this name already exists"})
         return;
       }
@@ -44,7 +45,7 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
           {
             parentFolderId: data.id,
             folderDetails: {
-              Name: folder,
+              Name: cleanedFolderName,
             },
           },
           { withCredentials: true }
@@ -62,7 +63,6 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
       handleChange,
       handleSubmit,
       setErrors,
-      resetForm,
     } = useFormik<{folder: string}>({
       initialValues: {
         folder: "",

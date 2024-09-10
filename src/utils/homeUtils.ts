@@ -29,3 +29,15 @@ export const getDateString = (date: string) => {
 
   return `${day}/${month}/${year} ${hours}:${minutes}`;
 };
+
+export const returnSize = (size: number) => {
+  if (size < 1000) {
+    return `${size} B`;
+  } else if (size < 1000000) {
+    return `${(size / 1000).toFixed(2)} KB`;
+  } else if (size < 1000000000) {
+    return `${(size / 1000000).toFixed(2)} MB`;
+  } else {
+    return `${(size / 1000000000).toFixed(2)} GB`;
+  }
+};

@@ -7,13 +7,18 @@ import ContextMenu from "../ContextMenu/ContextMenu";
 import { renderIcon } from "../../utils/iconsUtils";
 import InfoText from "../InfoText/InfoText";
 import { InfoElement } from "../InfoText/infoText.styles";
-import { getDateString } from "../../utils/homeUtils";
+import { getDateString, returnSize } from "../../utils/homeUtils";
 
 import usePreview from "../../hooks/usePreview/usePreview";
 
 interface IProps {
   element: File;
   clearDrag: () => void;
+}
+
+type InfoTextRef = {
+  showInfo: (element: HTMLElement) => void;
+  hideInfo: () => void;
 }
 
 const FileElement = forwardRef<ActiveFiles | null, IProps>(
@@ -49,7 +54,7 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
 
     const fileElementRef = useRef<HTMLDivElement>(null);
     const contextMenuRef = useRef<ContextRef>();
-    const infoTextRef = useRef<any>(null);
+    const infoTextRef = useRef<InfoTextRef>(null);
     const { setActiveElement, isActive, isCopy, setActiveOnRightClick } =
       useFile({ element, selectedFiles, storageFiles });
     const { renderPreview, handleOpen } = usePreview({
@@ -78,9 +83,14 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
       e.preventDefault();
       e.stopPropagation();
       clearDrag();
-      setActiveOnRightClick(e);
+      setActiveOnRightClick();
       contextMenuRef.current?.handleOpenContext(e, true);
     };
+
+    const handleMouseEnter = () => {
+      if(!fileElementRef.current) return;
+      infoTextRef.current?.showInfo(fileElementRef.current);
+    }
     
     return (
       <>
@@ -90,7 +100,7 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
           onContextMenu={handleRightClick}
           $isSelected={isActive}
           $isCopy={isCopy}
-          onMouseEnter={() => infoTextRef.current?.showInfo(fileElementRef.current)}
+          onMouseEnter={handleMouseEnter}
           onMouseLeave={() => infoTextRef.current?.hideInfo()}
         >
           <Icon>
@@ -106,10 +116,10 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
           <InfoText ref={infoTextRef}>
             <InfoElement>Name: {element.fileDetails.name}</InfoElement>
             <InfoElement>
-              Size: {(element.fileDetails.size / 1000000).toFixed(2)} MB
+              Size: {returnSize(element.fileDetails.size)}
             </InfoElement>
             <InfoElement>
-              Created at: {getDateString(element.fileDetails.createdDate)}
+              Created: {getDateString(element.fileDetails.createdDate)} UTC
             </InfoElement>
           </InfoText>
         </FileElementContainer>
