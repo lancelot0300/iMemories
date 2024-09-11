@@ -1,10 +1,8 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { File, SelectedElements } from "../../types";
+import { FileType, SelectedElements } from "../../types";
 import CreateModal from "../../components/CreateModal/CreateModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowLeft,
-  faArrowRight,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
@@ -14,14 +12,12 @@ import {
   ModalBody,
   ModalContent,
   ModalHeader,
-  NextArrow,
-  PrevArrow,
 } from "../../components/ContextComponents/PreviewContextOption/preview.styles";
 
 type UsePreviewProps = {
   setIsOpenedContext?: Dispatch<SetStateAction<boolean>>;
   selectedFiles: SelectedElements;
-  element?: File;
+  element?: FileType;
 };
 
 function usePreview({
@@ -33,7 +29,7 @@ function usePreview({
   const [isLoading, setIsLoading] = useState(true);
   const axiosPrivate = useAxiosPrivate();
 
-  const isVideo = (file: File) => {
+  const isVideo = (file: FileType) => {
     return (
       file.fileDetails?.extension === ".mp4" ||
       file.fileDetails?.extension === ".webm" ||
@@ -41,7 +37,7 @@ function usePreview({
     );
   };
 
-  const isImage = (file: File) => {
+  const isImage = (file: FileType) => {
     return (
       file.fileDetails?.extension === ".png" ||
       file.fileDetails?.extension === ".jpg" ||
@@ -50,12 +46,12 @@ function usePreview({
     );
   };
 
-  const canBePreview = (file: File) => {
+  const canBePreview = (file: FileType) => {
     return isVideo(file) || isImage(file);
   };
 
   const handleOpen = (value: boolean) => {
-    if (!canBePreview(element || (selectedFiles[0] as File))) return;
+    if (!canBePreview(element || (selectedFiles[0] as FileType))) return;
 
     setIsOpened(value);
   };
@@ -83,8 +79,8 @@ function usePreview({
     });
   };
 
-  const createPreview = (file: File) => {
-    const selectedFile = element || (selectedFiles[0] as File);
+  const createPreview = (file: FileType) => {
+    const selectedFile = element || (selectedFiles[0] as FileType);
     const selectedElementId =
     selectedFile.fileDetails.id || selectedFile.fileDetails?.id;
     const URL = `${process.env.REACT_APP_API_URL}/file/preview/${selectedElementId}`;
@@ -134,7 +130,7 @@ function usePreview({
               </CloseModal>
             </ModalHeader>
             <ModalBody>
-              {createPreview(element || (selectedFiles[0] as File))}
+              {createPreview(element || (selectedFiles[0] as FileType))}
             </ModalBody>
           </ModalContent>
         </CreateModal>

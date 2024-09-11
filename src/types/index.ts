@@ -1,14 +1,12 @@
-import exp from "constants";
-
 export type Response = {
   id: string;
   parentFolderId: string | null;
   folderDetails: string | null;
-  files: File[];
-  childFolders: Folder[];
+  files: FileType[];
+  childFolders: FolderType[];
 };
 
-export type File = {
+export type FileType = {
   id: string;
   folderId: string;
   tags: [];
@@ -26,7 +24,7 @@ export type File = {
   };
 };
 
-export type Folder = {
+export type FolderType = {
   id: string;
   parentFolderId: string | null;
   folderDetails: {

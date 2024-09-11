@@ -1,5 +1,5 @@
 import React from "react";
-import { ActiveFiles, Folder, Response } from "../../types";
+import { ActiveFiles, FolderType, Response } from "../../types";
 import FolderElement from "../FolderElement/FolderElement";
 
 type Props = {
@@ -13,7 +13,7 @@ const RenderFiles = ({ data, allFilesRefs, clearDrag }: Props) => {
 
   return (
     <>
-     {data.childFolders.map((item: Folder) => {
+     {data.childFolders.map((item: FolderType) => {
         return (
           <FolderElement
             key={item.id}

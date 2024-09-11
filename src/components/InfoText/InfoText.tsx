@@ -67,7 +67,7 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(
 
         setPos({ x, y });
       }
-    }, [pos.x, pos.y, visible]);
+    }, [pos, visible]);
 
     if (!visible) return null;
 

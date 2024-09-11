@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useRef } from "react";
-import { ActiveFiles, ContextRef, File } from "../../types";
+import { ActiveFiles, ContextRef, FileType } from "../../types";
 import { FileElementContainer, Icon, Name } from "./fileElement.styles";
 import useFile from "../../hooks/useFile/useFile";
 import { useAppSelector } from "../../state/store";
@@ -12,7 +12,7 @@ import { getDateString, returnSize } from "../../utils/homeUtils";
 import usePreview from "../../hooks/usePreview/usePreview";
 
 interface IProps {
-  element: File;
+  element: FileType;
   clearDrag: () => void;
 }
 

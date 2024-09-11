@@ -3,7 +3,7 @@ import React, {
   useImperativeHandle,
   useRef,
 } from "react";
-import { ActiveFiles, ContextRef, Folder, Item } from "../../types";
+import { ActiveFiles, ContextRef, FolderType } from "../../types";
 import { FolderElementContainer, Icon, Name } from "./folderElement.styles";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import ContextMenu from "../ContextMenu/ContextMenu";
@@ -17,26 +17,10 @@ import { getDateString } from "../../utils/homeUtils";
 import { clearFiles } from "../../state/features/files/filesSlice";
 
 interface IProps {
-  element: Folder;
+  element: FolderType;
   clearDrag: () => void;
 }
 
-type Props = {
-  children: React.ReactNode;
-};
-
-export const ResetComponent = ({ children }: Props) => {
-  const resetEvents = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  return (
-    <div onClick={resetEvents} onMouseEnter={resetEvents}>
-      {children}
-    </div>
-  );
-};
 
 const FolderElement = forwardRef<ActiveFiles | null, IProps>(
   ({ element, clearDrag }, ref) => {

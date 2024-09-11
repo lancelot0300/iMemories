@@ -1,5 +1,5 @@
 import React from "react";
-import { ActiveFiles, File, Item, Response } from "../../types";
+import { ActiveFiles, FileType,  Response } from "../../types";
 import FileElement from "../FileElement/FileElement";
 
 type Props = {
@@ -13,7 +13,7 @@ const RenderFiles = ({ data, allFilesRefs, clearDrag }: Props) => {
 
   return (
     <>
-      {data.files.map((item: File, index: number) => {
+      {data.files.map((item: FileType, index: number) => {
         return (
           <FileElement
           key={item.id}
