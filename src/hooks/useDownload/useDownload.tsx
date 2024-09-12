@@ -1,6 +1,5 @@
 import React from 'react';
 import {  useAppSelector } from "../../state/store";
-import axios from 'axios';
 import useAxiosPrivate from '../useAxiosPrivate/useAxiosPrivate';
 
 function useDownload(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) {

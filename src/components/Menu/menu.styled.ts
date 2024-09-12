@@ -41,6 +41,7 @@ export const NavigationOption = styled.div<NavigationOptionProps>`
 
 export const CurrentPath = styled.span`
     width: 444px;
+
     font-size: 16px;
     font-weight: 500;
     margin-left: 20px;
@@ -48,6 +49,7 @@ export const CurrentPath = styled.span`
     background-color: rgba(255,255,255,0.1);
     padding: 5px 10px;
     border-radius: 5px;
+    display: flex;
 
     @media (max-width: 768px) {
         display: none;
@@ -72,6 +74,12 @@ export const PathSpan = styled.span`
     &:hover {
         text-decoration: underline;
     }
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+    height: 25px;
+    overflow-wrap: break-word;
+    white-space: nowrap;
 `;
 
 export const LogoutButton = styled.button`
@@ -92,4 +100,27 @@ export const LogoutButton = styled.button`
     &:active {
         background-color: rgba(255,255,255,0.3);
     }
+`;
+
+export const NavBarContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #0a1329;
+    color: #fff;
+    height: var(--navBarHeight);
+`;
+
+
+
+
+export const RightOptionsWrapper = styled.div`
+    margin-left: auto;
+    display: flex;
+    gap: 20px;
+`;
+
+export const LeftOptionsWrapper = styled.div`
+    display: flex;
+    gap: 20px;
 `;

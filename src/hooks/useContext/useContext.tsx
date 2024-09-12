@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useLayoutEffect, useRef, useState } from 'react'
 
 function useContext() {
 
@@ -14,7 +14,6 @@ function useContext() {
 
       const contextMenu = contextMenuRefs.current;
 
-      console.log(window.innerWidth, posX.current + contextMenu.offsetWidth)
       if(posX.current + contextMenu.offsetWidth > window.innerWidth) {
         posX.current = posX.current - contextMenu.offsetWidth;
         contextMenu.style.left = `${posX.current}px`;

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from "react";
+import React, { forwardRef, useImperativeHandle, useLayoutEffect, useRef, useState } from "react";
 import { StyledInfoWrapper } from "./infoText.styles";
 
 type InfoTextProps = {
@@ -67,7 +67,7 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(
 
         setPos({ x, y });
       }
-    }, [pos, visible]);
+    }, [pos.x, pos.y, visible]);
 
     if (!visible) return null;
 

@@ -103,24 +103,15 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
           onMouseEnter={() => infoTextRef.current?.showInfo(fileElementRef.current)}
           onMouseLeave={() => infoTextRef.current?.hideInfo()}
         >
-            <Icon>
-              <FontAwesomeIcon size="3x" color="#8ec8f3" icon={faFolder} />
-            </Icon>
-            <Name>{element.folderDetails.name}</Name>
-            <InfoText ref={infoTextRef}>
+          <Icon>
+            <FontAwesomeIcon size="3x" color="#8ec8f3" icon={faFolder} />
+          </Icon>
+          <Name>{element.folderDetails.name}</Name>
+          <InfoText ref={infoTextRef}>
             <InfoElement>Name: {element.folderDetails.name}</InfoElement>
-              <InfoElement>
-                Created: 
-                {getDateString(element.folderDetails.createdDate) + " UTC"}
-              </InfoElement>
-              {element.folderDetails.lastModifiedDate && (
-                <InfoElement>
-                  Updated at:
-                  {getDateString(element.folderDetails.lastModifiedDate) +
-                    " UTC"}
-                </InfoElement>
-              )}
-            </InfoText>
+            <InfoElement>Created: {getDateString(element.folderDetails.createdDate) + " UTC"}</InfoElement>
+            { element.folderDetails.lastModifiedDate && <InfoElement> Updated at: {getDateString(element.folderDetails.lastModifiedDate) + " UTC"} </InfoElement>}
+          </InfoText>
         </FolderElementContainer>
         <ContextMenu element="Folder" ref={contextMenuRef} />
       </>

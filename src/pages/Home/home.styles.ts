@@ -30,6 +30,10 @@ export const HomeContainer = styled.div<ContainerProps>`
     &.dragging ${FolderGridContainer} {
       border: 2px dashed #212121;
     }
+
+    @media (max-width: 768px) {
+        align-items: center;
+    } 
 `;
 
 

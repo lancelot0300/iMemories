@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { ActiveFiles, Response } from "../../types";
-import { useAppDispatch, useAppSelector } from "../../state/store";
+import { useAppDispatch } from "../../state/store";
 import { addFiles, selectFiles } from "../../state/features/files/filesSlice";
 import { isClickedContainer } from "../../utils/homeUtils";
 

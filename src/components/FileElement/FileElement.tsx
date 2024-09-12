@@ -8,7 +8,6 @@ import { renderIcon } from "../../utils/iconsUtils";
 import InfoText from "../InfoText/InfoText";
 import { InfoElement } from "../InfoText/infoText.styles";
 import { getDateString, returnSize } from "../../utils/homeUtils";
-
 import usePreview from "../../hooks/usePreview/usePreview";
 
 interface IProps {
@@ -19,10 +18,11 @@ interface IProps {
 type InfoTextRef = {
   showInfo: (element: HTMLElement) => void;
   hideInfo: () => void;
-}
+};
 
 const FileElement = forwardRef<ActiveFiles | null, IProps>(
   ({ element, clearDrag }, ref) => {
+
     const { selectedFiles } = useAppSelector(
       (state) => state.files,
       (prev, next) => {
@@ -47,51 +47,45 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
       }
     );
 
+    const fileElementRef = useRef<HTMLDivElement>(null);
+    const contextMenuRef = useRef<ContextRef>(null);
+    const infoTextRef = useRef<InfoTextRef>(null);
+    const lastClickTime = useRef(0);
+
+    const { setActiveElement, isActive, isCopy, setActiveOnRightClick } = useFile({
+      element,
+      selectedFiles,
+      storageFiles,
+    });
+
+    const { renderPreview, handleOpen } = usePreview({ selectedFiles, element });
+
     useImperativeHandle(ref, () => ({
       element: fileElementRef.current as HTMLDivElement,
       item: element,
     }));
 
-    const fileElementRef = useRef<HTMLDivElement>(null);
-    const contextMenuRef = useRef<ContextRef>();
-    const infoTextRef = useRef<InfoTextRef>(null);
-    const { setActiveElement, isActive, isCopy, setActiveOnRightClick } =
-      useFile({ element, selectedFiles, storageFiles });
-    const { renderPreview, handleOpen } = usePreview({
-      selectedFiles,
-      element,
-    });
-    const lastTimeClick = useRef(0);
-
-    const handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-      handleOpen(true);
-    };
-
     const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-      const clickTime = new Date().getTime();
-      const timeSinceLastClick = clickTime - lastTimeClick.current;
-
-      if (timeSinceLastClick < 300) {
-        return handleDoubleClick(event);
+      const currentClickTime = Date.now();
+      if (currentClickTime - lastClickTime.current < 300) {
+        handleOpen(true); 
+      } else {
+        setActiveElement(event);
       }
-
-      lastTimeClick.current = clickTime;
-      setActiveElement(event);
+      lastClickTime.current = currentClickTime;
     };
 
-    const handleRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
+    const handleRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
+      event.preventDefault();
       clearDrag();
       setActiveOnRightClick();
-      contextMenuRef.current?.handleOpenContext(e, true);
+      contextMenuRef.current?.handleOpenContext(event, true);
     };
 
     const handleMouseEnter = () => {
-      if(!fileElementRef.current) return;
-      infoTextRef.current?.showInfo(fileElementRef.current);
-    }
-    
+      if (fileElementRef.current) infoTextRef.current?.showInfo(fileElementRef.current);
+    };
+
     return (
       <>
         <FileElementContainer
@@ -108,19 +102,15 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
               width={50}
               height={50}
               src={renderIcon(element.fileDetails.extension)}
-              draggable="false"
               alt=""
+              draggable="false"
             />
           </Icon>
           <Name>{element.fileDetails.name}</Name>
           <InfoText ref={infoTextRef}>
             <InfoElement>Name: {element.fileDetails.name}</InfoElement>
-            <InfoElement>
-              Size: {returnSize(element.fileDetails.size)}
-            </InfoElement>
-            <InfoElement>
-              Created: {getDateString(element.fileDetails.createdDate)} UTC
-            </InfoElement>
+            <InfoElement>Size: {returnSize(element.fileDetails.size)}</InfoElement>
+            <InfoElement>Created: {getDateString(element.fileDetails.createdDate)} UTC</InfoElement>
           </InfoText>
         </FileElementContainer>
         <ContextMenu element="File" ref={contextMenuRef} />

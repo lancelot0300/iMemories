@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import CreateModal from "../../components/CreateModal/CreateModal";
-import { UploadFormButton, UploadModal } from "../../components/UploadOption/uploadOption.styles";
 import { useAppDispatch, useAppSelector } from "../../state/store"
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -9,6 +8,7 @@ import { InputWrapper, StyledField } from "../../pages/Login/login.styles";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import { setPathAsync } from "../../state/features/path/pathSlice";
 import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
+import { UploadFormButton, UploadModal } from "./useCreateFolder.styles";
 
 type IFolderFormValues = {
   folder: string;
@@ -40,7 +40,7 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
       }
 
       try {
-        const response = await axiosPrivate.post(
+        await axiosPrivate.post(
           process.env.REACT_APP_API_URL + "/folder",
           {
             parentFolderId: data.id,

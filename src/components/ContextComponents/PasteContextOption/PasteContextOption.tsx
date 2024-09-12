@@ -3,7 +3,6 @@ import { ContextOption } from "../../FileElement/fileElement.styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaste } from "@fortawesome/free-regular-svg-icons";
 import { useAppSelector } from "../../../state/store";
-import { getActualPath } from "../../../state/features/path/pathSlice";
 import usePaste from "../../../hooks/usePaste/usePaste";
 
 type Props = {
@@ -12,7 +11,6 @@ type Props = {
 
 function PasteContextOption({ setIsOpened }: Props) {
   const { storageFiles, selectedFiles } = useAppSelector((state) => state.files);
-  const actialPath = useAppSelector((state) => getActualPath(state.path));
 
   const { handlePasteClick } = usePaste({ selectedFiles, storageFiles, setIsOpened });
   

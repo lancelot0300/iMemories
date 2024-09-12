@@ -21,21 +21,6 @@ export const UploadModal = styled.div`
     border: 1px solid rgba(255, 255, 255, 0.125);
 `;
 
-export const UploadForm = styled.form`
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-`;
-
-export const UploadFormTitle = styled.h1`
-    font-size: 20px;
-    color: #fff;
-`;
-
-export const UploadFormInput = styled.input`
-    display: none;
-`;
-
 export const UploadFormButton = styled.button`
     padding: 10px;
     background-color: #212121;
@@ -44,12 +29,4 @@ export const UploadFormButton = styled.button`
     cursor: pointer;
     display: block;
     margin: 20px auto 0;
-`;
-
-export const UploadCustomButton = styled.label`
-    padding: 10px;
-    background-color: #212121;
-    color: #fff;
-    border: none;
-    cursor: pointer;
 `;

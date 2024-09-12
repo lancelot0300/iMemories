@@ -12,35 +12,38 @@ function PersistLogin() {
   const location = useLocation();
 
   useEffect(() => {
-    if (!isUseEffectMounted.current) {
-      isUseEffectMounted.current = true;
-      refresh()
-        .then(() => {
-          navigate("/");
-        })
-        .catch(() => {
-          if (
-            location.pathname !== "/login" &&
-            location.pathname !== "/register"
-          ) {
-            navigate("/login");
-          }
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+    if (isUseEffectMounted.current) return;
+    isUseEffectMounted.current = true;
+
+    const date = new Date();
+    const sessionTill = new Date(localStorage.getItem("sessionTill") || "0");
+    const isRemembered = localStorage.getItem("isRemembered") === "true";
+
+    if (!isRemembered && sessionTill < date) {
+      navigate("/login");
+      setLoading(false);
+      return;
     }
-  }, [isUseEffectMounted.current]);
+
+    refresh()
+      .then(() => {
+        const dateWith30Minutes = new Date(date.getTime() + 30 * 60000);
+        localStorage.setItem("sessionTill", dateWith30Minutes.toString());
+        navigate("/");
+      })
+      .catch(() => {
+        if (!["/login", "/register"].includes(location.pathname)) {
+          navigate("/login");
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [location.pathname, navigate, refresh]);
 
   if (loading) {
     return <LoadingHome />;
   }
 
-  return (
-    <>
-      <Outlet />
-    </>
-  );
+  return <Outlet />;
 }
 
 export default PersistLogin;

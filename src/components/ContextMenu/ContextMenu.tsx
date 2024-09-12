@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle } from "react";
+import  { forwardRef, useImperativeHandle } from "react";
 import CreateModal from "../CreateModal/CreateModal";
 import { ContextWrapper } from "../FileElement/fileElement.styles";
 import DeleteContextOption from "../ContextComponents/DeleteContextOption/DeleteContextOption";

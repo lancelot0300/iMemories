@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import {
   CurrentPath,
   LogoutButton,
@@ -6,13 +6,10 @@ import {
   Navigation,
   NavigationOption,
   PathSpan,
+  RightOptionsWrapper,
 } from "./menu.styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeftLong,
-  faArrowRightLong,
-} from "@fortawesome/free-solid-svg-icons";
-import RightSideMenu from "../RightSideMenu/RightSideMenu";
+import { faArrowLeftLong, faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import {
   goBackToPath,
@@ -26,87 +23,67 @@ type Props = {
   allFilesRefs: React.MutableRefObject<ActiveFiles[]>;
 };
 
-function Menu({ allFilesRefs }: Props) {
+const Menu: React.FC<Props> = ({ allFilesRefs }) => {
   const { actualPath } = useAppSelector((state) => state.path);
   const isNextPath = useAppSelector((state) => isNextPathInHistory(state.path));
   const dispatch = useAppDispatch();
 
   const isPreviousPath = actualPath.length > 1;
-  const previousPathIndex = actualPath.length - 2;
-  const nextPathIndex = actualPath.length;
 
-  const handlePreviousPath = () => {
-    if (!isPreviousPath) return;
+  const handlePathChange = (pathIndex: number, action: Function) => {
     allFilesRefs.current = [];
-    dispatch(setPreviousPath(previousPathIndex));
-  };
-
-  const handleBackToPath = (index: number) => {
-    if (index === actualPath.length - 1) return;
-    allFilesRefs.current = [];
-    dispatch(goBackToPath(index));
-  };
-
-  const handleNextPath = () => {
-    if (!isNextPath) return;
-    allFilesRefs.current = [];
-    dispatch(setNextPath(nextPathIndex));
+    dispatch(action(pathIndex));
   };
 
   const renderPath = () => {
     if (actualPath.length > 4) {
       return (
         <>
-          <PathSpan onClick={() => handleBackToPath(0)}>
+          <PathSpan onClick={() => handlePathChange(0, goBackToPath)}>
             {actualPath[0].name}
           </PathSpan>
           <span> / ... / </span>
-          <PathSpan onClick={() => handleBackToPath(actualPath.length - 2)}>
+          <PathSpan onClick={() => handlePathChange(actualPath.length - 2, goBackToPath)}>
+            {actualPath[actualPath.length - 3].name}
+          </PathSpan>
+          <span> / </span>
+          <PathSpan onClick={() => handlePathChange(actualPath.length - 1, goBackToPath)}>
             {actualPath[actualPath.length - 2].name}
           </PathSpan>
           <span> / </span>
-          <PathSpan onClick={() => handleBackToPath(actualPath.length - 1)}>
+          <PathSpan onClick={() => handlePathChange(actualPath.length - 1, goBackToPath)}>
             {actualPath[actualPath.length - 1].name}
           </PathSpan>
         </>
       );
     }
-    else {
-      return actualPath.map((path, index) => (
-        <React.Fragment key={index}>
-          <PathSpan onClick={() => handleBackToPath(index)}>
-            {path.name}
-          </PathSpan>
-          {index < actualPath.length - 1 && <span> / </span>}
-        </React.Fragment>
-      ));
-    }
+
+    return actualPath.map((path, index) => (
+      <React.Fragment key={index}>
+        <PathSpan onClick={() => handlePathChange(index, goBackToPath)}>
+          {path.name}
+        </PathSpan>
+        {index < actualPath.length - 1 && <span> / </span>}
+      </React.Fragment>
+    ));
   };
 
   return (
-    <>
-    {console.log("Menu")}
-      <MenuWrapper>
-        <Navigation>
-          <NavigationOption
-            $disabled={!isPreviousPath}
-            onClick={handlePreviousPath}
-          >
-            <FontAwesomeIcon icon={faArrowLeftLong} />
-          </NavigationOption>
-          <NavigationOption $disabled={!isNextPath} onClick={handleNextPath}>
-            <FontAwesomeIcon icon={faArrowRightLong} />
-          </NavigationOption>
-        </Navigation>
-        <CurrentPath>
-          {renderPath()}
-        </CurrentPath>
-        <RightSideMenu>
-          <LogoutButton> Logout </LogoutButton>
-        </RightSideMenu>
-      </MenuWrapper>
-    </>
+    <MenuWrapper>
+      <Navigation>
+        <NavigationOption $disabled={!isPreviousPath} onClick={() => handlePathChange(actualPath.length - 2, setPreviousPath)}>
+          <FontAwesomeIcon icon={faArrowLeftLong} />
+        </NavigationOption>
+        <NavigationOption $disabled={!isNextPath} onClick={() => handlePathChange(actualPath.length, setNextPath)}>
+          <FontAwesomeIcon icon={faArrowRightLong} />
+        </NavigationOption>
+      </Navigation>
+      <CurrentPath>{renderPath()}</CurrentPath>
+      <RightOptionsWrapper>
+        <LogoutButton>Logout</LogoutButton>
+      </RightOptionsWrapper>
+    </MenuWrapper>
   );
-}
+};
 
 export default Menu;

@@ -3,7 +3,7 @@ import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import { setLastCommand } from "../../state/features/files/filesSlice";
 import { setPathAsync } from "../../state/features/path/pathSlice";
-import { FileType, FolderType, Path, SelectedElements } from "../../types";
+import { FileType, FolderType, SelectedElements } from "../../types";
 
 type Props = {
   storageFiles: SelectedElements;

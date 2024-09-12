@@ -1,10 +1,8 @@
-import React, { useEffect, useState, useRef, ChangeEvent } from "react";
+import { useEffect, useState, useRef, ChangeEvent } from "react";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import { addFileStatus, updateFileStatus } from "../../state/features/requests/requestsSlice";
-import axios from "axios";
 import CreateModal from "../../components/CreateModal/CreateModal";
-import { UploadModal } from "../../components/UploadOption/uploadOption.styles";
-import { UploadCustomButton, UploadFormButton, UploadFormInput, UploadFormTitle } from "./useUpload.styles";
+import { UploadCustomButton, UploadFormButton, UploadFormInput, UploadFormTitle, UploadModal } from "./useUpload.styles";
 import { getActualPath, setPathAsync } from "../../state/features/path/pathSlice";
 import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
 
@@ -17,26 +15,95 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
   const { data } = useAppSelector((state) => state.path);
   const actualPath = useAppSelector((state) => getActualPath(state.path));
   const axiosPrivate = useAxiosPrivate();
-  const uploadFiles = async (files: FileList | null) => {
+  // const uploadFiles = async (files: FileList | null) => {
+  //   if (!files) {
+  //     alert("Select a file to upload");
+  //     return;
+  //   }
+
+  //   const apiUrl = `${process.env.REACT_APP_API_URL}/file/${data?.id}`;
+  //   const uploadPromises = Array.from(files).map((file) => {
+  //     const formData = new FormData();
+  //     formData.append("fileData", file);
+
+  //     const fileId = `${file.name}-${Date.now()}`;
+  //     dispatch(
+  //       addFileStatus({
+  //         index: fileId,
+  //         fileName: file.name,
+  //         progress: "0%",
+  //         status: "Uploading",
+  //       })
+  //     );
+
+  //     return axiosPrivate
+  //       .post(apiUrl, formData, {
+  //         headers: { "Content-Type": "multipart/form-data" },
+  //         withCredentials: true,
+  //         onUploadProgress: (progressEvent) => {
+  //           if (progressEvent && progressEvent.total) {
+  //             const percent = (progressEvent.loaded / progressEvent.total) * 100;
+  //             dispatch(
+  //               updateFileStatus({
+  //                 index: fileId,
+  //                 fileName: file.name,
+  //                 progress: `${Math.round(percent)}%`,
+  //                 status: percent === 100 ? "Finished" : "Uploading",
+  //               })
+  //             );
+  //           }
+  //         },
+  //       })
+  //       .catch(() => {
+  //         dispatch(
+  //           updateFileStatus({
+  //             index: fileId,
+  //             fileName: file.name,
+  //             progress: "Failed",
+  //             status: "Error",
+  //           })
+  //         );
+  //       });
+  //   });
+
+  //   try {
+  //     await Promise.all(uploadPromises);
+  //     dispatch(setPathAsync(actualPath.path));
+  //   } catch (error) {
+  //     console.error("Error uploading files:", error);
+  //   }
+  // };
+
+  const uploadFilesAsChunks = async (files: FileList | null) => {
+
+    const apiUrl = `${process.env.REACT_APP_API_URL}/file/${data?.id}`;
+
     if (!files) {
       alert("Select a file to upload");
       return;
     }
 
-    const apiUrl = `${process.env.REACT_APP_API_URL}/file/${data?.id}`;
-    const uploadPromises = Array.from(files).map((file) => {
-      const formData = new FormData();
-      formData.append("fileData", file);
+    const file = files[0];
+    const chunkSize = 1024 * 1024 * 2; // 2MB
+    const numberOfChunks = Math.ceil(file.size / chunkSize);
+    const totalSize = file.size;
+    const fileId = `${file.name}-${Date.now()}`;
 
-      const fileId = `${file.name}-${Date.now()}`;
-      dispatch(
-        addFileStatus({
-          index: fileId,
-          fileName: file.name,
-          progress: "0%",
-          status: "Uploading",
-        })
-      );
+
+    dispatch(
+      addFileStatus({
+        index: fileId,
+        fileName: file.name,
+        progress: "0%",
+        status: "Uploading",
+      })
+    );
+
+    const uploadChunk = async (start: number, end: number) => {
+      const chunk = file.slice(start, end);
+      const chunkIndex = start / chunkSize;
+      const formData = new FormData();
+      formData.append("fileData", chunk);
 
       return axiosPrivate
         .post(apiUrl, formData, {
@@ -44,13 +111,13 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
           withCredentials: true,
           onUploadProgress: (progressEvent) => {
             if (progressEvent && progressEvent.total) {
-              const percent = (progressEvent.loaded / progressEvent.total) * 100;
+              const progress = (chunkIndex * chunkSize + progressEvent.loaded) / totalSize;
               dispatch(
                 updateFileStatus({
                   index: fileId,
-                  fileName: file.name,
-                  progress: `${Math.round(percent)}%`,
-                  status: percent === 100 ? "Finished" : "Uploading",
+                  fileName: file.name + " - chunk " + chunkIndex,
+                  progress: `${Math.round(progress * 100)}%`,
+                  status: progress >= 1 ? "Finished" : "Uploading",
                 })
               );
             }
@@ -66,15 +133,17 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
             })
           );
         });
-    });
+    };
 
-    try {
-      await Promise.all(uploadPromises);
-      dispatch(setPathAsync(actualPath.path));
-    } catch (error) {
-      console.error("Error uploading files:", error);
+    for (let i = 0; i < numberOfChunks; i++) {
+      const start = i * chunkSize;
+      const end = Math.min(start + chunkSize, file.size);
+      await uploadChunk(start, end);
     }
+
+    dispatch(setPathAsync(actualPath.path));
   };
+  
 
 
     
@@ -90,7 +159,7 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
 
   const handleUploadClick = () => {
     if (files) {
-      uploadFiles(files);
+      uploadFilesAsChunks(files);
       handleCloseClick();
     } else {
       alert("Select a file to upload");
@@ -100,6 +169,8 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
   const handleCustomButtonClick = () => {
     inputRef.current?.click();
   };
+
+  const uploadFiles = (files: FileList | null) => {}
 
   useEffect(() => {
     if (!isOpenedModal && files) {
@@ -123,7 +194,7 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
     </CreateModal>
   );
 
-  return { uploadFiles, createModal, setIsOpenedModal };
+  return { uploadFiles, createModal, setIsOpenedModal, uploadFilesAsChunks };
 }
 
 export default useUpload;

@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react'
+import  { useEffect } from 'react'
 import useRefresh from '../useRefresh/useRefresh';
-import { useAppDispatch } from '../../state/store';
-import { ref } from 'yup';
 import axios from 'axios';
 
 function useAxiosPrivate() {
@@ -35,7 +33,7 @@ function useAxiosPrivate() {
             axiosPrivate.interceptors.response.eject(responseInterceptor);
         }
         
-    }, [refresh])
+    }, [refresh, axiosPrivate])
 
     return axiosPrivate;
 }

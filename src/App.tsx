@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "./state/store";
 import PersistLogin from "./components/PersistLogin/PersistLogin";
 import Register from "./pages/Register/Register";
+import NotFound from "./pages/NotFound/NotFound";
 
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
             />
             <Route path="/" element={<Home />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </>

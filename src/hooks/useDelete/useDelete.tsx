@@ -1,7 +1,6 @@
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import { setLastCommand } from "../../state/features/files/filesSlice";
-import axios from "axios";
 import { getActualPath, setPathAsync } from "../../state/features/path/pathSlice";
 import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
 
@@ -15,7 +14,7 @@ function useDelete(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) 
   const handleDeleteClick = async () => {
 
     const filesToDelete = selectedFiles.map((file) => file.fileDetails?.id).filter((id) => id);
-    const foldersToDelete = selectedFiles.map((file) => file.folderDetails?.id).filter((id) => id);
+    // const foldersToDelete = selectedFiles.map((file) => file.folderDetails?.id).filter((id) => id);
 
     const deleteFilesPromises = filesToDelete.map((id) => {
       const URL = `${process.env.REACT_APP_API_URL}/file/${id}`;

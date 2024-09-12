@@ -1,10 +1,7 @@
-import React, { useState } from 'react'
 import {  useAppSelector } from '../../../state/store';
 import { ContextOption } from '../../FileElement/fileElement.styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import CreateModal from '../../CreateModal/CreateModal';
-import styled from 'styled-components';
-import { faEye, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
 import usePreview from '../../../hooks/usePreview/usePreview';
 import { FileType } from '../../../types';
 
