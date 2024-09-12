@@ -1,13 +1,15 @@
 import styled from "styled-components";
 
 export const LoginContainer = styled.div`
-  height: 100vh;
+  height: 100svh;
+  min-height: 650px;
   background: url("./images/background.jpg") no-repeat center center/cover;
+
 `;
 
 export const FormWrapper = styled.div`
-  width: 400px;
-  height: 400px;
+  position: relative;
+  width: 350px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -17,6 +19,7 @@ export const FormWrapper = styled.div`
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   border-radius: 10px;
+  padding: 20px;
 
   form {
     display: flex;
@@ -79,7 +82,7 @@ export const Header = styled.h1`
   color: #6c2d27;
   font-size: 4rem;
   text-align: center;
-  margin-bottom: 20px;
+  margin: 40px 0 0;
 `;
 
 export const RememberMe = styled.div`
@@ -100,22 +103,13 @@ export const RememberMe = styled.div`
 
 export const Logo = styled.img`
   position: absolute;
-  width: 200px;
-  height: 200px;
-  margin-bottom: 20px;
-  left: 50%;
-  top: 10%;
-  transform: translateX(-50%);
   border-radius: 50%;
   opacity: 0.9;
   filter: drop-shadow(0 0 10px #000);
   z-index: 1;
-
-  @media (max-width: 768px) {
-    width: 150px;
-    height: 150px;
-    top: 5%;
-  }
+  width: 150px;
+  height: 150px;
+  top: -95px;
 `;
 
 export const InformationWrapper = styled.div`
@@ -125,11 +119,15 @@ export const InformationWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 110px;
-  position: relative;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 20px;
+
+  @media (max-width: 450px) {
+    flex-direction: column;
+  }
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -137,6 +135,12 @@ export const InformationWrapper = styled.div`
 
   @media (max-width: 1024px) {
     gap: 50px;
+  }
+
+    @media (max-height: 600px) {
+    transform: translateX(-50%);
+    top: 100px;
+    left: 50%;
   }
 `;
 

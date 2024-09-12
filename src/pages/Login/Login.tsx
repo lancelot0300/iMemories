@@ -93,9 +93,10 @@ function Login() {
 
   return (
     <LoginContainer>
-      <Logo src="./images/logo-color.svg" alt="logo" />
       <InformationWrapper>
+
         <FormWrapper>
+        <Logo src="./images/logo-color.svg" alt="logo" />
           <Header>Log in</Header>
           <form onSubmit={handleSubmit} title="Login">
             <InputWrapper>
