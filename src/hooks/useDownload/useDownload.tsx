@@ -8,8 +8,8 @@ function useDownload(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>
     const handleDownloadClick = async () => {
         try {
             for (const file of selectedFiles) {
-                const fileId = file.fileDetails?.id;
-                const folderId = file.folderDetails?.id;
+                const fileId = "fileDetails" in file && file.fileDetails.id;
+                const folderId = "folderDetails" in file && file.folderDetails.id;
                 
                 if (!fileId && !folderId) continue; 
                 
@@ -26,7 +26,7 @@ function useDownload(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>
                 const link = document.createElement('a');
                 link.href = downloadUrl;
 
-                const fileName = file.fileDetails?.name || 'downloaded-file';
+                const fileName = fileId ? file.fileDetails.name : folderId ? file.folderDetails.name : '';
                 link.setAttribute('download', fileName);
                 document.body.appendChild(link);
                 link.click();

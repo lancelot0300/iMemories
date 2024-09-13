@@ -21,17 +21,17 @@ function Home() {
   const actualPath = useAppSelector((state) => getActualPath(state.path));
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    const promise = dispatch(
-      setPathAsync(actualPath.path)
-    );
+  // useEffect(() => {
+  //   const promise = dispatch(
+  //     setPathAsync(actualPath.path)
+  //   );
 
-    return () => {
-      if (promise) {
-        promise.abort();
-      }
-    };
-  }, [actualPath.path, dispatch]);
+  //   return () => {
+  //     if (promise) {
+  //       promise.abort();
+  //     }
+  //   };
+  // }, [actualPath.path, dispatch]);
 
 
 

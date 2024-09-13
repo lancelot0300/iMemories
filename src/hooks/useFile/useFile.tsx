@@ -1,12 +1,12 @@
 import React from 'react'
-import { Item } from '../../types';
 import { useAppDispatch, useAppSelector } from "../../state/store"
 import { addFile, removeFile, selectFiles } from '../../state/features/files/filesSlice';
+import { FileType, FolderType, SelectedElements } from '../../types';
 
 type Props = {
-    element: Item,
-    selectedFiles: Item[],
-    storageFiles: Item[]
+    element: FileType | FolderType,
+    selectedFiles: SelectedElements,
+    storageFiles: SelectedElements
 }
 
 function useFile({element, selectedFiles, storageFiles}: Props) {

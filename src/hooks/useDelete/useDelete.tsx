@@ -13,9 +13,9 @@ function useDelete(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) 
 
   const handleDeleteClick = async () => {
 
-    const filesToDelete = selectedFiles.map((file) => file.fileDetails?.id).filter((id) => id);
-    // const foldersToDelete = selectedFiles.map((file) => file.folderDetails?.id).filter((id) => id);
-
+    const filesToDelete = selectedFiles.map((file) => "fileDetails" in file && file.fileDetails.id).filter((id) => id);
+    // const foldersToDelete = selectedFiles.map((file) => "folderDetails" in file && file.folderDetails.id).filter((id) => id);
+    
     const deleteFilesPromises = filesToDelete.map((id) => {
       const URL = `${process.env.REACT_APP_API_URL}/file/${id}`;
       return axiosPrivate.delete(URL, { withCredentials: true });

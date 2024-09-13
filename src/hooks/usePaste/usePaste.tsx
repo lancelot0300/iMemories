@@ -19,6 +19,7 @@ function usePaste({
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useAppDispatch();
   const { data } = useAppSelector((state) => state.path);
+  const selectedElement = selectedFiles.length === 1 && selectedFiles[0].id;
 
   const handlePasteClick = async () => {
     const URL = `${process.env.REACT_APP_API_URL}/copy/foldersandfiles`;
@@ -35,13 +36,13 @@ function usePaste({
       {
         filesids,
         foldersids,
-        targetFolderId: data.id,
+        targetFolderId: selectedElement || data.id,
       },
       {
         withCredentials: true,
       }
     );
-    dispatch(setLastCommand({ files: selectedFiles, command: "paste" }));
+    dispatch(setLastCommand({ command: "paste" }));
     await requset
       .then(() => {
         dispatch(setPathAsync(data.id));

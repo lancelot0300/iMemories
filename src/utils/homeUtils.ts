@@ -13,7 +13,7 @@ export const isClickedContainer = (
 
 export const isFolderSelected = (selectedElements: SelectedElements) => {
   const folderSelected = selectedElements.some(
-    (folder) => folder.folderDetails
+    (folder) => "folderDetails" in folder
   );
   return folderSelected && selectedElements.length > 1;
 };

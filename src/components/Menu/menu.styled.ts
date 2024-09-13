@@ -17,7 +17,6 @@ export const MenuWrapper = styled.div`
 export const Navigation = styled.div`
     display: flex;
     gap: 10px;
-    cursor: pointer;
     color: var(--text-color);
 `;
 
@@ -37,11 +36,13 @@ export const NavigationOption = styled.div<NavigationOptionProps>`
         background-color: ${({ $disabled }) => $disabled ? 'transparent' : 'rgba(255,255,255,0.1)'};
     }
     color: ${({ $disabled }) => $disabled ? 'rgba(255,255,255,0.5)' : 'inherit'};
+    ${({ $disabled }) => !$disabled && 'cursor: pointer;'}
+
 `;
 
 export const CurrentPath = styled.span`
     width: 444px;
-
+    min-height: 35px;
     font-size: 16px;
     font-weight: 500;
     margin-left: 20px;

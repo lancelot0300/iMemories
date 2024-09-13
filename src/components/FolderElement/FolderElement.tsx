@@ -10,11 +10,12 @@ import ContextMenu from "../ContextMenu/ContextMenu";
 import { faFolder } from "@fortawesome/free-solid-svg-icons";
 import useFile from "../../hooks/useFile/useFile";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { setPath } from "../../state/features/path/pathSlice";
+import { setNewPathAndFetchAsync } from "../../state/features/path/pathSlice";
 import InfoText from "../InfoText/InfoText";
 import { InfoElement } from "../InfoText/infoText.styles";
 import { getDateString } from "../../utils/homeUtils";
 import { clearFiles } from "../../state/features/files/filesSlice";
+import { useNavigate } from "react-router-dom";
 
 interface IProps {
   element: FolderType;
@@ -53,6 +54,7 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
     const infoTextRef = useRef<any>(null);
     const lastTimeClick = useRef(0);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const { setActiveElement, isActive, isCopy, setActiveOnRightClick } =
       useFile({ element, selectedFiles, storageFiles });
 
@@ -64,12 +66,13 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
     const handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
       if (!element.folderDetails) return;
       dispatch(
-        setPath({
+        setNewPathAndFetchAsync({
           path: element.folderDetails.id,
           name: element.folderDetails.name,
         })
       );
       dispatch(clearFiles());
+      navigate(`/${selectedFiles[0].id}`);
     };
 
     const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {

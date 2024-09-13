@@ -2,21 +2,26 @@ import { useAppDispatch, useAppSelector } from '../../../state/store';
 import { isFolderSelected } from '../../../utils/homeUtils';
 import { ContextOption } from '../../FileElement/fileElement.styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { setPath } from '../../../state/features/path/pathSlice';
 import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { clearFiles } from '../../../state/features/files/filesSlice';
+import { FileType, FolderType } from '../../../types';
+import { setNewPathAndFetchAsync } from '../../../state/features/path/pathSlice';
+import { useNavigate } from 'react-router-dom';
 
 function OpenContextOption() {
 
   const dispatch = useAppDispatch();
   const { selectedFiles } = useAppSelector((state) => state.files);
-  console.log(selectedFiles)
+  const navigate = useNavigate();
 
   if(isFolderSelected(selectedFiles)) return null
 
   const handleOpenClick = () => {
-    dispatch(setPath({path: selectedFiles[0].id, name: selectedFiles[0].folderDetails?.name || ""}));
+    const folder =  "folderDetails" in selectedFiles[0] && selectedFiles[0] as FolderType;
+    if(!folder ) return
+    dispatch(setNewPathAndFetchAsync({path: selectedFiles[0].id, name: folder.folderDetails.name}));
     dispatch(clearFiles());
+    navigate(`/${selectedFiles[0].id}`);
   }
 
   return (

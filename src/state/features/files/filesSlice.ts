@@ -1,9 +1,9 @@
 import {  createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {  Item, SelectedElements } from "../../../types";
+import {  FileType, FolderType, SelectedElements } from "../../../types";
 
 
 type InitialState = {
-    selectedFiles: SelectedElements;
+    selectedFiles: SelectedElements
     storageFiles: SelectedElements;  
     lastCommand: string;
 };
@@ -38,10 +38,10 @@ const filesSlice = createSlice({
       if(newFiles.length === 0) return;
       state.selectedFiles = [...state.selectedFiles, ...newFiles];
     },
-    addFile: (state, action: PayloadAction<Item>) => {
+    addFile: (state, action: PayloadAction<FolderType | FileType>) => {
       state.selectedFiles = [...state.selectedFiles, action.payload];
     },
-    removeFile: (state, action: PayloadAction<Item>) => {
+    removeFile: (state, action: PayloadAction<FolderType | FileType>) => {
       state.selectedFiles = state.selectedFiles.filter((el) => el.id !== action.payload.id);
     },
     clearFiles: (state) => {

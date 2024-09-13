@@ -3,6 +3,7 @@ import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import useRefresh from "../../hooks/useRefresh/useRefresh";
 import LoadingHome from "../../pages/Home/LoadingHome";
 import { useAppDispatch } from "../../state/store";
+import { setNewPathAndFetchAsync, setPathAsync, setUnkownPathAndFetchAsync } from "../../state/features/path/pathSlice";
 
 function PersistLogin() {
   const [loading, setLoading] = useState(true);
@@ -12,6 +13,7 @@ function PersistLogin() {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (isUseEffectMounted.current) return;
@@ -32,7 +34,7 @@ function PersistLogin() {
         const dateWith30Minutes = new Date(date.getTime() + 30 * 60000);
         localStorage.setItem("sessionTill", dateWith30Minutes.toString());
 
-        navigate(id ? `/${id}` : "/");
+        dispatch(setUnkownPathAndFetchAsync({path: id || ""}));
       })
       .catch(() => {
         if (!["/login", "/register"].includes(location.pathname)) {

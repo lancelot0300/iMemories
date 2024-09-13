@@ -1,9 +1,34 @@
+export type User = { 
+  id: string;
+  email: string;
+  name: string;
+};
+
 export type Response = {
   id: string;
   parentFolderId: string | null;
-  folderDetails: string | null;
+  folderDetails: {
+    id: string;
+    createdDate: string;
+    lastModifiedDate: string;
+    name: string;
+    lastOpenedDate: string;
+    isStared: boolean;
+  } | null;
   files: FileType[];
   childFolders: FolderType[];
+};
+
+export type LoginResponse = {
+  user: User;
+  accessToken: {
+    expireDate: string;
+    value: string;
+  },
+  refreshToken: {
+    expireDate: string;
+    value: string;
+  }
 };
 
 export type FileType = {
@@ -37,39 +62,15 @@ export type FolderType = {
   };
 }
 
-export type Item =  {
-  id: string;
-  fileDetails?: {
-    id: string;
-    name: string;
-    size: number;
-    extension: string;
-    description: string | null;
-    isStared: boolean;
-    createdDate: string;
-    lastOpenedDate: string;
-    lastModifiedDate: string;
-  };
-  folderDetails?: {
-    id: string;
-    createdDate: string;
-    lastModifiedDate: string;
-    name: string;
-    lastOpenedDate: string;
-    isStared: boolean;
-  };
-};
-
-
 
 export type ActiveFiles = {
   element: HTMLDivElement | null;
-  item: Item;
+  item: FileType | FolderType;
   setActive?: (isActive: boolean) => void;
   setIsCopied?: (isCopied: boolean) => void;
 };
 
-export type SelectedElements = Item[];
+export type SelectedElements = FileType[] | FolderType[] | (FileType | FolderType)[];
 
 export type ContextRef = {
   handleOpenContext: (

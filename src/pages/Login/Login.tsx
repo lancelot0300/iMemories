@@ -19,6 +19,7 @@ import { useAppDispatch } from "../../state/store";
 import { loginSuccess } from "../../state/features/auth/authSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { setNewPath, setNewPathAndFetchAsync, setPathAsync } from "../../state/features/path/pathSlice";
 
 type ILoginFormValues = {
   Username: string;
@@ -57,6 +58,7 @@ function Login() {
       localStorage.setItem("sessionTill", sessionExpiry.toString());
 
       dispatch(loginSuccess(data));
+      dispatch(setNewPathAndFetchAsync({path: "", name: "Home"}));
       navigate("/");
     } catch (error) {
       if (axios.isAxiosError<IError>(error) && error.response) {
