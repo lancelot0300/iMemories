@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import useRefresh from "../../hooks/useRefresh/useRefresh";
 import LoadingHome from "../../pages/Home/LoadingHome";
+import { useAppDispatch } from "../../state/store";
 
 function PersistLogin() {
   const [loading, setLoading] = useState(true);
@@ -10,6 +11,7 @@ function PersistLogin() {
   const refresh = useRefresh();
   const navigate = useNavigate();
   const location = useLocation();
+  const { id } = useParams();
 
   useEffect(() => {
     if (isUseEffectMounted.current) return;
@@ -29,7 +31,8 @@ function PersistLogin() {
       .then(() => {
         const dateWith30Minutes = new Date(date.getTime() + 30 * 60000);
         localStorage.setItem("sessionTill", dateWith30Minutes.toString());
-        navigate("/");
+
+        navigate(id ? `/${id}` : "/");
       })
       .catch(() => {
         if (!["/login", "/register"].includes(location.pathname)) {

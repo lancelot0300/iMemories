@@ -1,10 +1,8 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { FileType, SelectedElements } from "../../types";
 import CreateModal from "../../components/CreateModal/CreateModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faTimes,
-} from "@fortawesome/free-solid-svg-icons";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
 import {
   CloseModal,
@@ -28,6 +26,7 @@ function usePreview({
   const [isOpened, setIsOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const axiosPrivate = useAxiosPrivate();
+  const refreshCount = useRef(0);
 
   const isVideo = (file: FileType) => {
     return (
@@ -56,33 +55,33 @@ function usePreview({
     setIsOpened(value);
   };
 
-  const handleImageError = (event: any) => {
+  const handleImageError = async (event: any) => {
+    if (refreshCount.current >= 2) return;
+  
+    refreshCount.current++;
+  
     const imgElement = event.target;
-
-    imgElement.src = `${process.env.REACT_APP_API_URL}/file/preview/${
-      element?.fileDetails.id
-    }?${Date.now()}`;
-
-    const request = axiosPrivate.get(
-      `${process.env.REACT_APP_API_URL}/file/preview/${
-        element?.fileDetails.id
-      }?${Date.now()}`,
-      {
-        withCredentials: true,
-      }
-    );
-
-    request.then(() => {
-      imgElement.src = `${process.env.REACT_APP_API_URL}/file/preview/${
-        element?.fileDetails.id
-      }?${Date.now()}`;
-    });
+  
+    imgElement.src = `${process.env.REACT_APP_API_URL}/file/preview/${element?.fileDetails.id}`;
+  
+    try {
+      await axiosPrivate.get(
+        `${process.env.REACT_APP_API_URL}/file/preview/${element?.fileDetails.id}`,
+        {
+          withCredentials: true,
+        }
+      );
+      imgElement.src = `${process.env.REACT_APP_API_URL}/file/preview/${element?.fileDetails.id}`;
+    } catch (error) {
+      console.error("Image loading error: ", error);
+    }
   };
+  
 
   const createPreview = (file: FileType) => {
     const selectedFile = element || (selectedFiles[0] as FileType);
     const selectedElementId =
-    selectedFile.fileDetails.id || selectedFile.fileDetails?.id;
+      selectedFile.fileDetails.id || selectedFile.fileDetails?.id;
     const URL = `${process.env.REACT_APP_API_URL}/file/preview/${selectedElementId}`;
 
     if (!selectedElementId) return null;
@@ -112,7 +111,7 @@ function usePreview({
     return () => {
       setIsLoading(true);
     };
-  }, [selectedFiles]);
+  }, []);
 
   const renderPreview = () => {
     if (!isOpened) return null;

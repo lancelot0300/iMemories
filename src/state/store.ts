@@ -4,7 +4,6 @@ import activeRequests from './features/requests/requestsSlice'
 import filesReducer from './features/files/filesSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import pathReducer from './features/path/pathSlice'
-import getPathMiddleware from './middleware/filePathMIddleware'
 
 
 
@@ -20,7 +19,6 @@ export const store = configureStore({
     activeRequests: activeRequests,
     files: filesReducer
   },
-  // middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(getPathMiddleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>

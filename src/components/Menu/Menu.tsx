@@ -63,7 +63,7 @@ const Menu: React.FC<Props> = ({ allFilesRefs }) => {
         <PathSpan onClick={() => handlePathChange(index, goBackToPath)}>
           {path.name}
         </PathSpan>
-        {index < actualPath.length - 1 && <span> / </span>}
+        {index < actualPath.length - 1 && <span>\</span>}
       </React.Fragment>
     ));
   };
