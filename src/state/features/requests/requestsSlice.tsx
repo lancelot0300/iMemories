@@ -43,7 +43,7 @@ const activeRequests = createSlice({
         if (file.index === action.payload.index) {
           return {
             index: file.index,
-            fileName: action.payload.fileName,
+            fileName: file.fileName,
             progress: action.payload.progress,
             status: action.payload.status,
           };

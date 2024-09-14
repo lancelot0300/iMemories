@@ -19,6 +19,11 @@ export type Response = {
   childFolders: FolderType[];
 };
 
+export type UnknownPathResponse = {
+  folder: FolderType;
+  path: Path[];
+};
+
 export type LoginResponse = {
   user: User;
   accessToken: {
@@ -81,6 +86,6 @@ export type ContextRef = {
 
 
 export type Path = {
-  path: string;
+  id: string;
   name: string;
 };

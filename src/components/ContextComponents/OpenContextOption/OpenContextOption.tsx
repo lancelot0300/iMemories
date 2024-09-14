@@ -19,7 +19,7 @@ function OpenContextOption() {
   const handleOpenClick = () => {
     const folder =  "folderDetails" in selectedFiles[0] && selectedFiles[0] as FolderType;
     if(!folder ) return
-    dispatch(setNewPathAndFetchAsync({path: selectedFiles[0].id, name: folder.folderDetails.name}));
+    dispatch(setNewPathAndFetchAsync({id: selectedFiles[0].id, name: folder.folderDetails.name}));
     dispatch(clearFiles());
     navigate(`/${selectedFiles[0].id}`);
   }

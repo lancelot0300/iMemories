@@ -37,7 +37,7 @@ const Menu: React.FC<Props> = ({ allFilesRefs }) => {
 
     allFilesRefs.current = [];
     dispatch(action(pathIndex));
-    navigate(`/${history[pathIndex].path}`);
+    navigate(`/${history[pathIndex].id}`);
   };
 
   const setPreviousPath = (pathIndex: number) => {
@@ -50,13 +50,13 @@ const Menu: React.FC<Props> = ({ allFilesRefs }) => {
 
     if(pathIndex < 0)  return;
     dispatch(setActualPathAndFetchAsync(pathIndex));
-    navigate(`/${history[pathIndex].path}`);
+    navigate(`/${history[pathIndex].id}`);
   }
 
   const setNextPath = (pathIndex: number) => {
     if(!isNextPath) return;
     dispatch(setActualPathAndFetchAsync( pathIndex));
-    navigate(`/${history[pathIndex].path}`);
+    navigate(`/${history[pathIndex].id}`);
   }
 
   const renderPath = () => {

@@ -66,11 +66,61 @@ export const setPathAsync = createAsyncThunk(
   }
 );
 
+export const setUnknownPathAsync = createAsyncThunk(
+  "path/setPath",
+  async (path: string, { signal, rejectWithValue, dispatch }) => {
+    try {
+      const source = axios.CancelToken.source();
+      signal.addEventListener("abort", () => {
+        source.cancel();
+        rejectWithValue("Request was aborted");
+      });
+
+      const fetchPath = async () => {
+        const { data } = await axios.get<Response>(
+          `${process.env.REACT_APP_API_URL}/folder/${path}`,
+          {
+            withCredentials: true,
+            cancelToken: source.token,
+          }
+        );
+        return data;
+      };
+
+      try {
+        return await fetchPath();
+      } catch (e) {
+        const error = e as AxiosError;
+        if (error.response?.status === 401) {
+          const response = await axios.get<LoginResponse>(
+            `${process.env.REACT_APP_API_URL}/token/refresh`,
+            {
+              withCredentials: true,
+            }
+          );
+          if (response.data) {
+            dispatch(loginSuccess(response.data.user));
+            return await fetchPath();
+          }
+          return rejectWithValue("Unauthorized");
+        }
+        throw error;
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data || "Something went wrong");
+      }
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+
 export const setNewPathAndFetchAsync = createAsyncThunk(
   "path/setPathAndFetch",
   async (path: Path, { dispatch }) => {
     dispatch(setNewPath(path));
-    await dispatch(setPathAsync(path.path));
+    await dispatch(setPathAsync(path.id));
   }
 );
 
@@ -79,7 +129,7 @@ export const setActualPathAndFetchAsync = createAsyncThunk(
   async (index: number, { dispatch, getState }) => {
     if(index === (getState() as {path: InitialState}).path.actualPath.length - 1) return;
     dispatch(setActualPath(index));
-    await dispatch(setPathAsync((getState() as {path: InitialState}).path.actualPath[index].path));
+    await dispatch(setPathAsync((getState() as {path: InitialState}).path.actualPath[index].id));
   }
 );
 
@@ -87,7 +137,7 @@ export const setActualPathAndFetchAsync = createAsyncThunk(
 export const setUnkownPathAndFetchAsync = createAsyncThunk(
   "path/setUnkownPathAndFetch",
   async (path: PathWithoutName, { dispatch }) => {
-     return await dispatch(setPathAsync(path.path));
+     return await dispatch(setUnknownPathAsync(path.path));
   }
 );
 
@@ -97,8 +147,8 @@ export const refreshPathAsync = createAsyncThunk(
   "path/refreshPath",
   async (pathToRefresh: string, { getState, dispatch }) => {
     const { actualPath } = (getState() as { path: InitialState }).path;
-    if (actualPath[actualPath.length - 1].path === pathToRefresh) {
-      await dispatch(setPathAsync(actualPath[actualPath.length - 1].path));
+    if (actualPath[actualPath.length - 1].id === pathToRefresh) {
+      await dispatch(setPathAsync(actualPath[actualPath.length - 1].id));
     }
   }
 );
@@ -149,7 +199,7 @@ const pathSlice = createSlice({
       })
       .addCase(setUnkownPathAndFetchAsync.fulfilled, (state, action) => {
         const payload = action.payload.payload as Response;
-        state.actualPath = [{ path: payload.folderDetails?.id || "", name: payload.folderDetails?.name || "Home" }];
+        state.actualPath = [{ id: payload.folderDetails?.id || "", name: payload.folderDetails?.name || "Home" }];
         state.history = [...state.actualPath];
       })
   },

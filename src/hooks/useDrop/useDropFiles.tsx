@@ -6,7 +6,7 @@ type HookProps = {
 }
 
 function useDropHook({ containerRef }: HookProps) {
-    const { uploadFiles } = useUpload();
+    const { uploadFilesAsChunks } = useUpload();
 
     const ifNotFiles = (e: DragEvent) => {
         return !e.dataTransfer?.types.includes("Files");
@@ -46,7 +46,7 @@ function useDropHook({ containerRef }: HookProps) {
                 return;
             }
 
-            uploadFiles(files);
+            uploadFilesAsChunks(files);
         };
 
         const handleDragLeave = (e: DragEvent) => {
@@ -67,7 +67,7 @@ function useDropHook({ containerRef }: HookProps) {
             container.removeEventListener("drop", handleDrop);
             container.removeEventListener("dragleave", handleDragLeave);
         };
-    }, [containerRef, uploadFiles]);
+    }, [containerRef, uploadFilesAsChunks]);
 
     return null; 
 }

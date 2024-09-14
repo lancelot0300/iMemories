@@ -67,7 +67,7 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
       if (!element.folderDetails) return;
       dispatch(
         setNewPathAndFetchAsync({
-          path: element.folderDetails.id,
+          id: element.folderDetails.id,
           name: element.folderDetails.name,
         })
       );

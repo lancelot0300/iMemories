@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import { setLastCommand } from "../../state/features/files/filesSlice";
-import { getActualPath, setPathAsync } from "../../state/features/path/pathSlice";
+import { getActualPath, refreshPathAsync } from "../../state/features/path/pathSlice";
 import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
 
 function useDelete(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) {
@@ -33,7 +33,7 @@ function useDelete(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) 
       console.error("Error deleting files:", error);
     } finally {
       if (setIsOpened) {
-        dispatch(setPathAsync(actualPath.path));
+        dispatch(refreshPathAsync(actualPath.id));
       }
     }
   };

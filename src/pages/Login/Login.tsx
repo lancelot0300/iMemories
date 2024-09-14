@@ -58,7 +58,7 @@ function Login() {
       localStorage.setItem("sessionTill", sessionExpiry.toString());
 
       dispatch(loginSuccess(data));
-      dispatch(setNewPathAndFetchAsync({path: "", name: "Home"}));
+      dispatch(setNewPathAndFetchAsync({id: "", name: "Home"}));
       navigate("/");
     } catch (error) {
       if (axios.isAxiosError<IError>(error) && error.response) {

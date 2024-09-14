@@ -1,13 +1,26 @@
 import { useEffect, useState, useRef, ChangeEvent } from "react";
 import { useAppDispatch, useAppSelector } from "../../state/store";
-import { addFileStatus, updateFileStatus } from "../../state/features/requests/requestsSlice";
+import {
+  addFileStatus,
+  updateFileStatus,
+} from "../../state/features/requests/requestsSlice";
 import CreateModal from "../../components/CreateModal/CreateModal";
-import { UploadCustomButton, UploadFormButton, UploadFormInput, UploadFormTitle, UploadModal } from "./useUpload.styles";
-import { getActualPath, setPathAsync } from "../../state/features/path/pathSlice";
+import {
+  UploadCustomButton,
+  UploadFormButton,
+  UploadFormInput,
+  UploadFormTitle,
+  UploadModal,
+} from "./useUpload.styles";
+import {
+  getActualPath,
+  refreshPathAsync,
+  setPathAsync,
+} from "../../state/features/path/pathSlice";
 import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
+import { AxiosError } from "axios";
 
-
-function useUpload(setIsOpened? : (value: boolean) => void) {
+function useUpload(setIsOpened?: (value: boolean) => void) {
   const dispatch = useAppDispatch();
   const [files, setFiles] = useState<FileList | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -75,8 +88,7 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
   // };
 
   const uploadFilesAsChunks = async (files: FileList | null) => {
-
-    const apiUrl = `${process.env.REACT_APP_API_URL}/file/${data?.id}`;
+    const apiUrl = `${process.env.REACT_APP_API_URL}/file/chunk`;
 
     if (!files) {
       alert("Select a file to upload");
@@ -84,11 +96,10 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
     }
 
     const file = files[0];
-    const chunkSize = 1024 * 1024 * 2; // 2MB
+    const chunkSize = 1024 * 1024 *  1 ;
     const numberOfChunks = Math.ceil(file.size / chunkSize);
     const totalSize = file.size;
-    const fileId = `${file.name}-${Date.now()}`;
-
+    const fileId =  crypto.randomUUID();
 
     dispatch(
       addFileStatus({
@@ -104,49 +115,74 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
       const chunkIndex = start / chunkSize;
       const formData = new FormData();
       formData.append("fileData", chunk);
+      formData.append("chunkIndex", chunkIndex.toString());
+      formData.append("totalChunks", numberOfChunks.toString());
+      formData.append("fileName", file.name);
+      formData.append("fileId", fileId);
+      formData.append("folderId", data.id);
+      let hasRetried = 0;
 
-      return axiosPrivate
-        .post(apiUrl, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
-          onUploadProgress: (progressEvent) => {
-            if (progressEvent && progressEvent.total) {
-              const progress = (chunkIndex * chunkSize + progressEvent.loaded) / totalSize;
-              dispatch(
-                updateFileStatus({
-                  index: fileId,
-                  fileName: file.name + " - chunk " + chunkIndex,
-                  progress: `${Math.round(progress * 100)}%`,
-                  status: progress >= 1 ? "Finished" : "Uploading",
-                })
-              );
-            }
-          },
-        })
-        .catch(() => {
-          dispatch(
-            updateFileStatus({
-              index: fileId,
-              fileName: file.name,
-              progress: "Failed",
-              status: "Error",
-            })
-          );
-        });
+      const sendRequest = async () => {
+        try {
+          await axiosPrivate.post(apiUrl, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+            withCredentials: true,
+            timeout: 15000,
+            onUploadProgress: (progressEvent) => {
+              if (progressEvent && progressEvent.total) {
+                const progress =
+                  (chunkIndex * chunkSize + progressEvent.loaded) / totalSize;
+                dispatch(
+                  updateFileStatus({
+                    index: fileId,
+                    fileName: file.name,
+                    progress: `${Math.round(progress * 100)}%`,
+                    status: progress >= 1 ? "Finished" : "Uploading",
+                  })
+                );
+              }
+            },
+          });
+        } catch (e) {
+          const error = e as AxiosError;
+          if (hasRetried < 2 && error.code === "ECONNABORTED") {
+            hasRetried++;
+            await sendRequest();
+          } else {
+            throw error;
+          }
+        }
+      };
+
+      try {
+        await sendRequest();
+      } catch (error) {
+        dispatch(
+          updateFileStatus({
+            index: fileId,
+            fileName: file.name,
+            progress: "Failed",
+            status: "Error",
+          })
+        );
+        throw error;
+      }
     };
 
     for (let i = 0; i < numberOfChunks; i++) {
       const start = i * chunkSize;
       const end = Math.min(start + chunkSize, file.size);
-      await uploadChunk(start, end);
+
+      try {
+        await uploadChunk(start, end);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        break;
+      }
     }
 
-    dispatch(setPathAsync(actualPath.path));
+    dispatch(refreshPathAsync(actualPath.id));
   };
-  
-
-
-    
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setFiles(event.target.files);
@@ -155,7 +191,7 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
   const handleCloseClick = () => {
     setIsOpenedModal(false);
     setIsOpened && setIsOpened(false);
-  }
+  };
 
   const handleUploadClick = () => {
     if (files) {
@@ -170,7 +206,7 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
     inputRef.current?.click();
   };
 
-  const uploadFiles = (files: FileList | null) => {}
+  const uploadFiles = (files: FileList | null) => {};
 
   useEffect(() => {
     if (!isOpenedModal && files) {
@@ -185,7 +221,12 @@ function useUpload(setIsOpened? : (value: boolean) => void) {
         <UploadCustomButton onClick={handleCustomButtonClick}>
           Choose File
         </UploadCustomButton>
-        <UploadFormInput ref={inputRef} type="file" multiple onChange={handleInputChange} />
+        <UploadFormInput
+          ref={inputRef}
+          type="file"
+          multiple
+          onChange={handleInputChange}
+        />
         {files && <b>{files.length} file(s) selected</b>}
         <UploadFormButton type="button" onClick={handleUploadClick}>
           Upload
