@@ -20,7 +20,7 @@ export type Response = {
 };
 
 export type UnknownPathResponse = {
-  folder: FolderType;
+  folder: Response;
   path: Path[];
 };
 
@@ -87,5 +87,5 @@ export type ContextRef = {
 
 export type Path = {
   id: string;
-  name: string;
+  name: string | null;
 };

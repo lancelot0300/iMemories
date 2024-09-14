@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction, AsyncThunkAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
-import { LoginResponse, Path, Response } from "../../../types";
+import { LoginResponse, Path, Response, UnknownPathResponse } from "../../../types";
 import { loginSuccess } from "../auth/authSlice";
-import { AsyncThunkConfig } from "@reduxjs/toolkit/dist/createAsyncThunk";
 
 type InitialState = {
   data: Response;
@@ -13,7 +12,7 @@ type InitialState = {
 };
 
 type PathWithoutName = {
-  path: string;
+  id: string;
   name?: string;
 };
 
@@ -67,7 +66,7 @@ export const setPathAsync = createAsyncThunk(
 );
 
 export const setUnknownPathAsync = createAsyncThunk(
-  "path/setPath",
+  "path/setUnknownPathAsync",
   async (path: string, { signal, rejectWithValue, dispatch }) => {
     try {
       const source = axios.CancelToken.source();
@@ -78,7 +77,7 @@ export const setUnknownPathAsync = createAsyncThunk(
 
       const fetchPath = async () => {
         const { data } = await axios.get<Response>(
-          `${process.env.REACT_APP_API_URL}/folder/${path}`,
+          `${process.env.REACT_APP_API_URL}/folder/path/${path}`,
           {
             withCredentials: true,
             cancelToken: source.token,
@@ -137,7 +136,8 @@ export const setActualPathAndFetchAsync = createAsyncThunk(
 export const setUnkownPathAndFetchAsync = createAsyncThunk(
   "path/setUnkownPathAndFetch",
   async (path: PathWithoutName, { dispatch }) => {
-     return await dispatch(setUnknownPathAsync(path.path));
+     if(path.id === "") return await dispatch(setPathAsync(""));
+     return await dispatch(setUnknownPathAsync(path.id));
   }
 );
 
@@ -198,9 +198,10 @@ const pathSlice = createSlice({
         state.error = null;
       })
       .addCase(setUnkownPathAndFetchAsync.fulfilled, (state, action) => {
-        const payload = action.payload.payload as Response;
-        state.actualPath = [{ id: payload.folderDetails?.id || "", name: payload.folderDetails?.name || "Home" }];
-        state.history = [...state.actualPath];
+        const payload = action.payload.payload as UnknownPathResponse;
+        state.data = payload.folder;
+        state.actualPath = payload.path;
+        state.history = payload.path;
       })
   },
 });

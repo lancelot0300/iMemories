@@ -34,7 +34,7 @@ function PersistLogin() {
         const dateWith30Minutes = new Date(date.getTime() + 30 * 60000);
         localStorage.setItem("sessionTill", dateWith30Minutes.toString());
 
-        dispatch(setUnkownPathAndFetchAsync({path: id || ""}));
+        dispatch(setUnkownPathAndFetchAsync({id: id || ""}));
       })
       .catch(() => {
         if (!["/login", "/register"].includes(location.pathname)) {

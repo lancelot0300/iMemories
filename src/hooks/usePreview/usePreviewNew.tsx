@@ -76,7 +76,7 @@ function usePreviewNew({
       const response = await axiosPrivate.get(
         `/file/preview/${fileId}`,
         {
-          responseType: "blob", 
+          responseType: "blob",
         }
       );
 

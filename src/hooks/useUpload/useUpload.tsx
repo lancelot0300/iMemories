@@ -26,7 +26,6 @@ function useUpload(setIsOpened?: (value: boolean) => void) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOpenedModal, setIsOpenedModal] = useState(false);
   const { data } = useAppSelector((state) => state.path);
-  const actualPath = useAppSelector((state) => getActualPath(state.path));
   const axiosPrivate = useAxiosPrivate();
   // const uploadFiles = async (files: FileList | null) => {
   //   if (!files) {
@@ -181,7 +180,7 @@ function useUpload(setIsOpened?: (value: boolean) => void) {
       }
     }
 
-    dispatch(refreshPathAsync(actualPath.id));
+    dispatch(refreshPathAsync(data.id));
   };
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
