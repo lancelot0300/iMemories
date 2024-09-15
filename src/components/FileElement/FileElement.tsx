@@ -9,7 +9,6 @@ import InfoText from "../InfoText/InfoText";
 import { InfoElement } from "../InfoText/infoText.styles";
 import { getDateString, returnSize } from "../../utils/homeUtils";
 import usePreview from "../../hooks/usePreview/usePreview";
-import usePreviewNew from "../../hooks/usePreview/usePreviewNew";
 
 interface IProps {
   element: FileType;
@@ -59,7 +58,7 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
       storageFiles,
     });
 
-    const { renderPreview, handleOpen } = usePreviewNew({ selectedFiles, element });
+    const { renderPreview, handleOpen } = usePreview({ selectedFiles, element });
 
     useImperativeHandle(ref, () => ({
       element: fileElementRef.current as HTMLDivElement,

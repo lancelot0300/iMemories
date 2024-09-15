@@ -25,10 +25,9 @@ type Props = {
 };
 
 const Menu: React.FC<Props> = ({ allFilesRefs }) => {
-  const { actualPath, history, data } = useAppSelector((state) => state.path);
+  const { actualPath, history } = useAppSelector((state) => state.path);
   const isNextPath = useAppSelector((state) => isNextPathInHistory(state.path));
   const navigate = useNavigate();
-  const parentPath = data.parentFolderId
   const dispatch = useAppDispatch();
   console.log(isNextPath);
 
@@ -39,21 +38,14 @@ const Menu: React.FC<Props> = ({ allFilesRefs }) => {
 
   const isPreviousPath = actualPath.length > 1;
 
-  const handlePathChange = (pathIndex: number, action: Function) => {
+  const handlePathChange = (pathIndex: number) => {
 
     allFilesRefs.current = [];
-    dispatch(action(pathIndex));
+    dispatch(setActualPathAndFetchAsync(pathIndex));
     navigate(`/${history[pathIndex].id}`);
   };
 
   const setPreviousPath = (pathIndex: number) => {
-
-    if(parentPath && pathIndex < 0) {
-      dispatch(setUnkownPathAndFetchAsync({id: parentPath}));
-      navigate(`/${parentPath}`);
-      return;
-    }
-
     if(pathIndex < 0)  return;
     dispatch(setActualPathAndFetchAsync(pathIndex));
     navigate(`/${history[pathIndex].id}`);
@@ -69,19 +61,19 @@ const Menu: React.FC<Props> = ({ allFilesRefs }) => {
     if (actualPath.length > 4) {
       return (
         <>
-          <PathSpan onClick={() => handlePathChange(0, setActualPathAndFetchAsync)}>
+          <PathSpan onClick={() => handlePathChange(0)}>
             {checkIfPathNameIsNullOrUndefined(actualPath[0].name)}
           </PathSpan>
           <Divider><span> / ... / </span></Divider>
-          <PathSpan onClick={() => handlePathChange(actualPath.length - 2, setActualPathAndFetchAsync)}>
+          <PathSpan onClick={() => handlePathChange(actualPath.length - 2)}>
             {actualPath[actualPath.length - 3].name}
           </PathSpan>
           <Divider><FontAwesomeIcon icon={faArrowRight} /></Divider>
-          <PathSpan onClick={() => handlePathChange(actualPath.length - 1, setActualPathAndFetchAsync)}>
+          <PathSpan onClick={() => handlePathChange(actualPath.length - 1)}>
             {actualPath[actualPath.length - 2].name}
           </PathSpan>
           <Divider><FontAwesomeIcon icon={faArrowRight} /></Divider>
-          <PathSpan onClick={() => handlePathChange(actualPath.length - 1, setActualPathAndFetchAsync)}>
+          <PathSpan onClick={() => handlePathChange(actualPath.length - 1)}>
             {actualPath[actualPath.length - 1].name}
           </PathSpan>
         </>
@@ -90,7 +82,7 @@ const Menu: React.FC<Props> = ({ allFilesRefs }) => {
 
     return actualPath.map((path, index) => (
       <React.Fragment key={index}>
-        <PathSpan onClick={() => handlePathChange(index, setActualPathAndFetchAsync)}>
+        <PathSpan onClick={() => handlePathChange(index)}>
           {checkIfPathNameIsNullOrUndefined(path.name)}
         </PathSpan>
         {index < actualPath.length - 1 && <Divider><FontAwesomeIcon icon={faArrowRight} /></Divider>}
@@ -101,7 +93,7 @@ const Menu: React.FC<Props> = ({ allFilesRefs }) => {
   return (
     <MenuWrapper>
       <Navigation>
-        <NavigationOption $disabled={!isPreviousPath && !parentPath} onClick={() => setPreviousPath(actualPath.length - 2)}>
+        <NavigationOption $disabled={!isPreviousPath} onClick={() => setPreviousPath(actualPath.length - 2)}>
           <FontAwesomeIcon icon={faArrowLeftLong} />
         </NavigationOption>
         <NavigationOption $disabled={!isNextPath} onClick={() => setNextPath(actualPath.length)}>

@@ -11,7 +11,7 @@ import NotFound from "./pages/NotFound/NotFound";
 
 function App() {
 
-  const { user } = useSelector((state: RootState) => state.user);
+  const { user } = useSelector((state: RootState) => state.auth);
   
   const disableContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();

@@ -11,18 +11,18 @@ type InitialState = {
   error: string | null;
 };
 
-type PathWithoutName = {
-  id: string;
-  name?: string;
-};
-
+let cancelSource: any = null;
 export const setPathAsync = createAsyncThunk(
-  "path/setPath",
+  "path/setPathAsync",
   async (path: string, { signal, rejectWithValue, dispatch }) => {
     try {
-      const source = axios.CancelToken.source();
+      if (cancelSource) {
+        cancelSource.cancel("New request initiated");
+      }
+      cancelSource = axios.CancelToken.source();
+
       signal.addEventListener("abort", () => {
-        source.cancel();
+        cancelSource.cancel("Request was aborted");
         rejectWithValue("Request was aborted");
       });
 
@@ -31,7 +31,7 @@ export const setPathAsync = createAsyncThunk(
           `${process.env.REACT_APP_API_URL}/folder/${path}`,
           {
             withCredentials: true,
-            cancelToken: source.token,
+            cancelToken: cancelSource.token,
           }
         );
         return data;
@@ -69,21 +69,30 @@ export const setUnknownPathAsync = createAsyncThunk(
   "path/setUnknownPathAsync",
   async (path: string, { signal, rejectWithValue, dispatch }) => {
     try {
-      const source = axios.CancelToken.source();
+      if (cancelSource) {
+        cancelSource.cancel("New request initiated");
+      }
+      cancelSource = axios.CancelToken.source();
+
       signal.addEventListener("abort", () => {
-        source.cancel();
+        cancelSource.cancel("Request was aborted");
         rejectWithValue("Request was aborted");
       });
 
       const fetchPath = async () => {
-        const { data } = await axios.get<Response>(
-          `${process.env.REACT_APP_API_URL}/folder/path/${path}`,
-          {
-            withCredentials: true,
-            cancelToken: source.token,
-          }
-        );
-        return data;
+        const url = path
+          ? `${process.env.REACT_APP_API_URL}/folder/path/${path}`
+          : `${process.env.REACT_APP_API_URL}/folder`;
+        const { data } = await axios.get(url, {
+          withCredentials: true,
+          cancelToken: cancelSource.token,
+        });
+
+        const newState = {
+          folder: path ? data.folder : data,
+          path: path ? data.path : [{ id: data.id, name: "Home" }],
+        };
+        return newState;
       };
 
       try {
@@ -114,9 +123,8 @@ export const setUnknownPathAsync = createAsyncThunk(
   }
 );
 
-
 export const setNewPathAndFetchAsync = createAsyncThunk(
-  "path/setPathAndFetch",
+  "path/setNewPathAndFetchAsync",
   async (path: Path, { dispatch }) => {
     dispatch(setNewPath(path));
     await dispatch(setPathAsync(path.id));
@@ -124,24 +132,20 @@ export const setNewPathAndFetchAsync = createAsyncThunk(
 );
 
 export const setActualPathAndFetchAsync = createAsyncThunk(
-  "path/setNextPathAndFetch",
+  "path/setActualPathAndFetchAsync",
   async (index: number, { dispatch, getState }) => {
-    if(index === (getState() as {path: InitialState}).path.actualPath.length - 1) return;
+    if (index === (getState() as { path: InitialState }).path.actualPath.length - 1) return;
     dispatch(setActualPath(index));
-    await dispatch(setPathAsync((getState() as {path: InitialState}).path.actualPath[index].id));
+    await dispatch(setPathAsync((getState() as { path: InitialState }).path.actualPath[index].id));
   }
 );
-
 
 export const setUnkownPathAndFetchAsync = createAsyncThunk(
-  "path/setUnkownPathAndFetch",
-  async (path: PathWithoutName, { dispatch }) => {
-     if(path.id === "") return await dispatch(setPathAsync(""));
-     return await dispatch(setUnknownPathAsync(path.id));
+  "path/setUnkownPathAndFetchAsync",
+  async (id: string, { dispatch }) => {
+    return await dispatch(setUnknownPathAsync(id));
   }
 );
-
-
 
 export const refreshPathAsync = createAsyncThunk(
   "path/refreshPath",
@@ -152,6 +156,7 @@ export const refreshPathAsync = createAsyncThunk(
     }
   }
 );
+
 
 const initialState: InitialState = {
   data: {
@@ -190,10 +195,14 @@ const pathSlice = createSlice({
         }
       )
       .addCase(setPathAsync.rejected, (state, action) => {
-        state.status = "failed";
+        state.status = action.error.message === "Rejected" ? "loading" : "failed";
         state.error = action.error.message || "Request was aborted";
       })
       .addCase(setPathAsync.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(setUnkownPathAndFetchAsync.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
@@ -202,6 +211,12 @@ const pathSlice = createSlice({
         state.data = payload.folder;
         state.actualPath = payload.path;
         state.history = payload.path;
+        state.error = null;
+        state.status = "completed";
+      })
+      .addCase(setUnkownPathAndFetchAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Request was aborted";
       })
   },
 });

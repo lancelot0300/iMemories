@@ -14,7 +14,7 @@ import pathReducer from './features/path/pathSlice'
 
 export const store = configureStore({
   reducer: {
-    user: usersReducer,
+    auth: usersReducer,
     path: pathReducer,
     activeRequests: activeRequests,
     files: filesReducer
