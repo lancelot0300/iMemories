@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from "../../state/store";
 import { selectFiles } from "../../state/features/files/filesSlice";
 import Menu from "../../components/Menu/Menu";
 import Statuses from "../../components/Statuses/Statuses";
-import { getActualPath, setPathAsync } from "../../state/features/path/pathSlice";
 import LoadingHome from "./LoadingHome";
 import RenderFiles from "../../components/RenderFiles/RenderFiles";
 import ContextMenu from "../../components/ContextMenu/ContextMenu";
@@ -18,21 +17,7 @@ function Home() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const contextMenuRef = useRef<ContextRef>(null);
   const { data, status, error } = useAppSelector((state) => state.path);
-  const actualPath = useAppSelector((state) => getActualPath(state.path));
   const dispatch = useAppDispatch();
-
-  // useEffect(() => {
-  //   const promise = dispatch(
-  //     setPathAsync(actualPath.path)
-  //   );
-
-  //   return () => {
-  //     if (promise) {
-  //       promise.abort();
-  //     }
-  //   };
-  // }, [actualPath.path, dispatch]);
-
 
 
   useDropHook({ containerRef });
