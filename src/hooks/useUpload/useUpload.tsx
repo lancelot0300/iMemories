@@ -13,9 +13,7 @@ import {
   UploadModal,
 } from "./useUpload.styles";
 import {
-  getActualPath,
   refreshPathAsync,
-  setPathAsync,
 } from "../../state/features/path/pathSlice";
 import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
 import { AxiosError } from "axios";
@@ -213,8 +211,12 @@ function useUpload(setIsOpened?: (value: boolean) => void) {
     }
   }, [isOpenedModal, files]);
 
-  const createModal = () => (
-    <CreateModal isOpened={isOpenedModal} setIsOpened={handleCloseClick}>
+  const createModal = () => {
+
+    if(!isOpenedModal) return null;
+
+    return (
+      <CreateModal isOpened={isOpenedModal} setIsOpened={handleCloseClick}>
       <UploadModal>
         <UploadFormTitle>Upload File</UploadFormTitle>
         <UploadCustomButton onClick={handleCustomButtonClick}>
@@ -232,7 +234,8 @@ function useUpload(setIsOpened?: (value: boolean) => void) {
         </UploadFormButton>
       </UploadModal>
     </CreateModal>
-  );
+    );
+  }
 
   return { uploadFiles, createModal, setIsOpenedModal, uploadFilesAsChunks };
 }

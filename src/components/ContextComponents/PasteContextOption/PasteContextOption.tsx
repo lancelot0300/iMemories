@@ -10,9 +10,7 @@ type Props = {
 };
 
 function PasteContextOption({ setIsOpened }: Props) {
-  const { storageFiles, selectedFiles } = useAppSelector((state) => state.files);
-  const { handlePasteClick } = usePaste({ selectedFiles, storageFiles, setIsOpened });
-  
+  const { handlePasteClick, storageFiles, selectedFiles } = usePaste(setIsOpened);
 
   if (storageFiles.length === 0 || selectedFiles.length > 1) return null;
 

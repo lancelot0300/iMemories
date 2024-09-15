@@ -10,6 +10,7 @@ type Props = {
 }
 
 function PreviewContextOption({ setIsOpenedContext }: Props) {
+  //can't add selectedFiles into hook because it will re-render all files when selectedFiles change
   const selectedFiles = useAppSelector((state) => state.files.selectedFiles);
   const {renderPreview, handleOpen, canBePreview} = usePreview({setIsOpenedContext, selectedFiles});
 

@@ -71,8 +71,6 @@ export type FolderType = {
 export type ActiveFiles = {
   element: HTMLDivElement | null;
   item: FileType | FolderType;
-  setActive?: (isActive: boolean) => void;
-  setIsCopied?: (isCopied: boolean) => void;
 };
 
 export type SelectedElements = FileType[] | FolderType[] | (FileType | FolderType)[];

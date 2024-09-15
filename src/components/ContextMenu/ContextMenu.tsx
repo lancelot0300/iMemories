@@ -10,6 +10,7 @@ import PasteContextOption from "../ContextComponents/PasteContextOption/PasteCon
 import UploadContextOption from "../ContextComponents/UploadContextOption/UploadContextOption";
 import OpenContextOption from "../ContextComponents/OpenContextOption/OpenContextOption";
 import PreviewContextOption from "../ContextComponents/PreviewContextOption/PreviewContextOption";
+import RenameContextOption from "../ContextComponents/RenameContextOption/RenameContextOption";
 
 type Props = {
   element: "Home" | "Folder" | "File";
@@ -30,6 +31,7 @@ const ContextMenu = forwardRef(({ element }: Props, ref) => {
     ],
     Folder: [
       OpenContextOption,
+      RenameContextOption,
       DownloadContextOption,
       CopyContextOption,
       PasteContextOption,
@@ -44,6 +46,8 @@ const ContextMenu = forwardRef(({ element }: Props, ref) => {
   };
 
   const options = optionsConfig[element];
+
+  if(!isOpenedContext) return null;
 
   return (
     <CreateModal isOpened={isOpenedContext} setIsOpened={setIsOpenedContex} withoutOverlay >

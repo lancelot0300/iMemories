@@ -25,38 +25,15 @@ interface IProps {
 
 const FolderElement = forwardRef<ActiveFiles | null, IProps>(
   ({ element, clearDrag }, ref) => {
-    const { selectedFiles } = useAppSelector(
-      (state) => state.files,
-      (prev, next) => {
-        const wasSelected = prev.selectedFiles.some(
-          (el) => el.id === element.id
-        );
-        const isSelected = next.selectedFiles.some(
-          (el) => el.id === element.id
-        );
-        return wasSelected === isSelected;
-      }
-    );
 
-    const { storageFiles } = useAppSelector(
-      (state) => state.files,
-      (prev, next) => {
-        const wasSelected = prev.storageFiles.some(
-          (el) => el.id === element.id
-        );
-        const isSelected = next.storageFiles.some((el) => el.id === element.id);
-        return wasSelected === isSelected;
-      }
-    );
 
+    const { setActiveElement, isActive, isCopy, setActiveOnRightClick, selectedFiles } = useFile({ element});
     const fileElementRef = useRef<HTMLDivElement>(null);
     const contextMenuRef = useRef<ContextRef>();
     const infoTextRef = useRef<any>(null);
     const lastTimeClick = useRef(0);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const { setActiveElement, isActive, isCopy, setActiveOnRightClick } =
-      useFile({ element, selectedFiles, storageFiles });
 
     useImperativeHandle(ref, () => ({
       element: fileElementRef.current as HTMLDivElement,
@@ -113,7 +90,6 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
           <InfoText ref={infoTextRef}>
             <InfoElement>Name: {element.folderDetails.name}</InfoElement>
             <InfoElement>Created: {getDateString(element.folderDetails.createdDate) + " UTC"}</InfoElement>
-            { element.folderDetails.lastModifiedDate && <InfoElement> Updated at: {getDateString(element.folderDetails.lastModifiedDate) + " UTC"} </InfoElement>}
           </InfoText>
         </FolderElementContainer>
         <ContextMenu element="Folder" ref={contextMenuRef} />

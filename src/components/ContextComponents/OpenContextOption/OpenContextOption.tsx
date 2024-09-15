@@ -4,7 +4,7 @@ import { ContextOption } from '../../FileElement/fileElement.styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { clearFiles } from '../../../state/features/files/filesSlice';
-import { FileType, FolderType } from '../../../types';
+import { FolderType } from '../../../types';
 import { setNewPathAndFetchAsync } from '../../../state/features/path/pathSlice';
 import { useNavigate } from 'react-router-dom';
 

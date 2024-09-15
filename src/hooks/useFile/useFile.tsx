@@ -5,13 +5,33 @@ import { FileType, FolderType, SelectedElements } from '../../types';
 
 type Props = {
     element: FileType | FolderType,
-    selectedFiles: SelectedElements,
-    storageFiles: SelectedElements
 }
 
-function useFile({element, selectedFiles, storageFiles}: Props) {
+function useFile({element}: Props) {
 
-  const {lastCommand} = useAppSelector((state) => state.files);
+  const { selectedFiles } = useAppSelector(
+    (state) => state.files,
+    (prev, next) => {
+      const wasSelected = prev.selectedFiles.some(
+        (el) => el.id === element.id
+      );
+      const isSelected = next.selectedFiles.some(
+        (el) => el.id === element.id
+      );
+      return wasSelected === isSelected;
+    }
+  );
+
+  const { storageFiles, lastCommand } = useAppSelector(
+    (state) => state.files,
+    (prev, next) => {
+      const wasSelected = prev.storageFiles.some(
+        (el) => el.id === element.id
+      );
+      const isSelected = next.storageFiles.some((el) => el.id === element.id);
+      return wasSelected === isSelected;
+    }
+  );
 
     const isActive = selectedFiles.some((el) => el.id === element.id);
     const isCopy = storageFiles.some((el) => el.id === element.id) && lastCommand === "copy";
@@ -44,7 +64,7 @@ function useFile({element, selectedFiles, storageFiles}: Props) {
         }
       };
 
-      return { setActiveElement, isActive, isCopy, setActiveOnRightClick}
+      return { setActiveElement, isActive, isCopy, setActiveOnRightClick, selectedFiles}
 }
 
 export default useFile

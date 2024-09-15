@@ -88,11 +88,13 @@ export const setUnknownPathAsync = createAsyncThunk(
           cancelToken: cancelSource.token,
         });
 
+        const dataIsUnknownPathResponse = "path" in data;
+
         const newState = {
-          folder: path ? data.folder : data,
-          path: path ? data.path : [{ id: data.id, name: "Home" }],
+          folder: (dataIsUnknownPathResponse ? data.folder : data) as Response,
+          path: (dataIsUnknownPathResponse ? data.path : [{ id: data.id, name: null }]) as Path[],
         };
-        return newState;
+        return newState as UnknownPathResponse;
       };
 
       try {

@@ -41,7 +41,6 @@ function Status({ request }: Props) {
   };
 
   return (
-    <>
       <StatusWrapper $status={actualStatus?.status} ref={wrapperRef}>
         <StatusFileName>{request.fileName}</StatusFileName>
         <p>{actualStatus?.progress}</p>
@@ -51,7 +50,6 @@ function Status({ request }: Props) {
           style={{ cursor: "pointer" }}
         />
       </StatusWrapper>
-    </>
   );
 }
 

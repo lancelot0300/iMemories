@@ -71,8 +71,11 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
       validationSchema: schema,
     });
 
-    const createModal = () => (
-      <CreateModal isOpened={isOpenedModal} setIsOpened={handleCloseClick}>
+    const createModal = () => {
+      if(!isOpenedModal) return null
+      
+      return (
+        <CreateModal isOpened={isOpenedModal} setIsOpened={handleCloseClick}>
         <UploadModal>
         <form onSubmit={handleSubmit} title="Folder">
           <InputWrapper>
@@ -87,7 +90,8 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
         </form>
         </UploadModal>
       </CreateModal>
-    );
+      )
+    }
 
     return {setIsOpenedModal, createModal}
 

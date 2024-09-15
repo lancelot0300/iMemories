@@ -15,7 +15,6 @@ import { useAppDispatch, useAppSelector } from "../../state/store";
 import {
   isNextPathInHistory,
   setActualPathAndFetchAsync,
-  setUnkownPathAndFetchAsync,
 } from "../../state/features/path/pathSlice";
 import { ActiveFiles } from "../../types";
 import { useNavigate } from "react-router-dom";
@@ -29,26 +28,25 @@ const Menu: React.FC<Props> = ({ allFilesRefs }) => {
   const isNextPath = useAppSelector((state) => isNextPathInHistory(state.path));
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  console.log(isNextPath);
-
+  const isPreviousPath = actualPath.length > 1;
+ 
   const checkIfPathNameIsNullOrUndefined = (path: string | undefined | null) => {
     if(!path) return "Home";
     return path;
   }
 
-  const isPreviousPath = actualPath.length > 1;
 
   const handlePathChange = (pathIndex: number) => {
 
     allFilesRefs.current = [];
     dispatch(setActualPathAndFetchAsync(pathIndex));
-    navigate(`/${history[pathIndex].id}`);
+    history[pathIndex].name === null ? navigate("/") : navigate(`/${history[pathIndex].id}`);
   };
 
   const setPreviousPath = (pathIndex: number) => {
     if(pathIndex < 0)  return;
     dispatch(setActualPathAndFetchAsync(pathIndex));
-    navigate(`/${history[pathIndex].id}`);
+    history[pathIndex].name === null ? navigate("/") : navigate(`/${history[pathIndex].id}`);
   }
 
   const setNextPath = (pathIndex: number) => {
@@ -91,7 +89,8 @@ const Menu: React.FC<Props> = ({ allFilesRefs }) => {
   };
 
   return (
-    <MenuWrapper>
+<>
+<MenuWrapper>
       <Navigation>
         <NavigationOption $disabled={!isPreviousPath} onClick={() => setPreviousPath(actualPath.length - 2)}>
           <FontAwesomeIcon icon={faArrowLeftLong} />
@@ -104,7 +103,7 @@ const Menu: React.FC<Props> = ({ allFilesRefs }) => {
       <RightOptionsWrapper>
         <LogoutButton>Logout</LogoutButton>
       </RightOptionsWrapper>
-    </MenuWrapper>
+    </MenuWrapper></>
   );
 };
 

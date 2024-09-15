@@ -3,22 +3,15 @@ import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import { setLastCommand } from "../../state/features/files/filesSlice";
 import { setPathAsync } from "../../state/features/path/pathSlice";
-import { FileType, FolderType, SelectedElements } from "../../types";
+import { FileType, FolderType } from "../../types";
 
-type Props = {
-  storageFiles: SelectedElements;
-  selectedFiles: SelectedElements;
-  setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
-};
 
-function usePaste({
-  selectedFiles,
-  storageFiles,
-  setIsOpened,
-}: Props) {
+function usePaste(setIsOpened: React.Dispatch<React.SetStateAction<boolean>>) {
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useAppDispatch();
   const { data } = useAppSelector((state) => state.path);
+  const { storageFiles, selectedFiles } = useAppSelector((state) => state.files);
+
   const selectedElement = selectedFiles.length === 1 && selectedFiles[0].id;
 
   const handlePasteClick = async () => {
@@ -53,7 +46,7 @@ function usePaste({
     setIsOpened(false);
   };
 
-  return { handlePasteClick };
+  return { handlePasteClick, storageFiles, selectedFiles };
 }
 
 export default usePaste;

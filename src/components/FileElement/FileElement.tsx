@@ -23,40 +23,13 @@ type InfoTextRef = {
 const FileElement = forwardRef<ActiveFiles | null, IProps>(
   ({ element, clearDrag }, ref) => {
 
-    const { selectedFiles } = useAppSelector(
-      (state) => state.files,
-      (prev, next) => {
-        const wasSelected = prev.selectedFiles.some(
-          (el) => el.id === element.id
-        );
-        const isSelected = next.selectedFiles.some(
-          (el) => el.id === element.id
-        );
-        return wasSelected === isSelected;
-      }
-    );
-
-    const { storageFiles } = useAppSelector(
-      (state) => state.files,
-      (prev, next) => {
-        const wasSelected = prev.storageFiles.some(
-          (el) => el.id === element.id
-        );
-        const isSelected = next.storageFiles.some((el) => el.id === element.id);
-        return wasSelected === isSelected;
-      }
-    );
 
     const fileElementRef = useRef<HTMLDivElement>(null);
     const contextMenuRef = useRef<ContextRef>(null);
     const infoTextRef = useRef<InfoTextRef>(null);
     const lastClickTime = useRef(0);
 
-    const { setActiveElement, isActive, isCopy, setActiveOnRightClick } = useFile({
-      element,
-      selectedFiles,
-      storageFiles,
-    });
+    const { setActiveElement, isActive, isCopy, setActiveOnRightClick, selectedFiles } = useFile({ element });
 
     const { renderPreview, handleOpen } = usePreview({ selectedFiles, element });
 
