@@ -1,17 +1,19 @@
 import styled from "styled-components";
 
 export const FolderGridContainer = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: left;
-    align-items: flex-start;
-    align-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+    justify-content: center;
+    justify-items: center;
+    grid-auto-rows: 95px;
     gap: 20px;
-    margin: 20px;
-    width: calc(100% - 40px);
-    min-height: calc(100vh - 100px);
+    padding: 20px;
+    width: 100%;
+    margin: 0 auto;
+
     border: 2px dashed var(--background-color);
+
+   
 `;
 
 
@@ -21,8 +23,8 @@ type ContainerProps = {
 export const HomeContainer = styled.div<ContainerProps>`
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-start;
     min-height: var(--appHeight);
     cursor: ${({ $isDragging }) => $isDragging ? 'crosshair' : 'default'};
 
@@ -30,10 +32,6 @@ export const HomeContainer = styled.div<ContainerProps>`
     &.dragging ${FolderGridContainer} {
       border: 2px dashed #212121;
     }
-
-    @media (max-width: 768px) {
-        align-items: center;
-    } 
 `;
 
 
