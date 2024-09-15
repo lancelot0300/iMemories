@@ -26,7 +26,7 @@ function Status({ request }: Props) {
     if (actualStatus?.status === "Finished" || actualStatus?.status === "Error") {
       setTimeout(() => {
         dispatch(removeFileStatus(request.index));
-      }, 6000);
+      }, 12000);
     }
 
     return () => {

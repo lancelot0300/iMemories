@@ -25,64 +25,6 @@ function useUpload(setIsOpened?: (value: boolean) => void) {
   const [isOpenedModal, setIsOpenedModal] = useState(false);
   const { data } = useAppSelector((state) => state.path);
   const axiosPrivate = useAxiosPrivate();
-  // const uploadFiles = async (files: FileList | null) => {
-  //   if (!files) {
-  //     alert("Select a file to upload");
-  //     return;
-  //   }
-
-  //   const apiUrl = `${process.env.REACT_APP_API_URL}/file/${data?.id}`;
-  //   const uploadPromises = Array.from(files).map((file) => {
-  //     const formData = new FormData();
-  //     formData.append("fileData", file);
-
-  //     const fileId = `${file.name}-${Date.now()}`;
-  //     dispatch(
-  //       addFileStatus({
-  //         index: fileId,
-  //         fileName: file.name,
-  //         progress: "0%",
-  //         status: "Uploading",
-  //       })
-  //     );
-
-  //     return axiosPrivate
-  //       .post(apiUrl, formData, {
-  //         headers: { "Content-Type": "multipart/form-data" },
-  //         withCredentials: true,
-  //         onUploadProgress: (progressEvent) => {
-  //           if (progressEvent && progressEvent.total) {
-  //             const percent = (progressEvent.loaded / progressEvent.total) * 100;
-  //             dispatch(
-  //               updateFileStatus({
-  //                 index: fileId,
-  //                 fileName: file.name,
-  //                 progress: `${Math.round(percent)}%`,
-  //                 status: percent === 100 ? "Finished" : "Uploading",
-  //               })
-  //             );
-  //           }
-  //         },
-  //       })
-  //       .catch(() => {
-  //         dispatch(
-  //           updateFileStatus({
-  //             index: fileId,
-  //             fileName: file.name,
-  //             progress: "Failed",
-  //             status: "Error",
-  //           })
-  //         );
-  //       });
-  //   });
-
-  //   try {
-  //     await Promise.all(uploadPromises);
-  //     dispatch(setPathAsync(actualPath.path));
-  //   } catch (error) {
-  //     console.error("Error uploading files:", error);
-  //   }
-  // };
 
   const uploadFilesAsChunks = async (files: FileList | null) => {
     const apiUrl = `${process.env.REACT_APP_API_URL}/file/chunk`;
@@ -91,8 +33,7 @@ function useUpload(setIsOpened?: (value: boolean) => void) {
       alert("Select a file to upload");
       return;
     }
-
-    const file = files[0];
+    const uploadPromises = Array.from(files).map( async (file) => {
     const chunkSize = 1024 * 1024 *  1 ;
     const numberOfChunks = Math.ceil(file.size / chunkSize);
     const totalSize = file.size;
@@ -142,7 +83,7 @@ function useUpload(setIsOpened?: (value: boolean) => void) {
           });
         } catch (e) {
           const error = e as AxiosError;
-          if (hasRetried < 2 && error.code === "ECONNABORTED") {
+          if (hasRetried < 2) {
             hasRetried++;
             await sendRequest();
           } else {
@@ -177,8 +118,14 @@ function useUpload(setIsOpened?: (value: boolean) => void) {
         break;
       }
     }
+  })
 
-    dispatch(refreshPathAsync(data.id));
+  try {
+        await Promise.all(uploadPromises);
+        dispatch(refreshPathAsync(data.id));
+      } catch (error) {
+        console.error("Error uploading files:", error);
+      }
   };
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
