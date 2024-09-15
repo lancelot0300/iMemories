@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk, PayloadAction, AsyncThunkAction } from "@reduxjs/toolkit";
-import axios, { AxiosError } from "axios";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import axios, { AxiosError, CancelTokenSource } from "axios";
 import { LoginResponse, Path, Response, UnknownPathResponse } from "../../../types";
 import { loginSuccess } from "../auth/authSlice";
 
@@ -11,7 +11,7 @@ type InitialState = {
   error: string | null;
 };
 
-let cancelSource: any = null;
+let cancelSource: CancelTokenSource
 export const setPathAsync = createAsyncThunk(
   "path/setPathAsync",
   async (path: string, { signal, rejectWithValue, dispatch }) => {
