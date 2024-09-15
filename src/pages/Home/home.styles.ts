@@ -5,7 +5,6 @@ export const FolderGridContainer = styled.div`
     grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
     justify-content: center;
     justify-items: center;
-    grid-auto-rows: 95px;
     gap: 20px;
     padding: 20px;
     width: 100%;

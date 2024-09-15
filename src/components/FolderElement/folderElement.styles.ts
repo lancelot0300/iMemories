@@ -46,10 +46,10 @@ export const Name = styled.span`
     color: #fff;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 80px;
+    width: 100%;
     text-align: center;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;  
     overflow-wrap: break-word;
 `
