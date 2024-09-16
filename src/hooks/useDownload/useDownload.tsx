@@ -5,7 +5,7 @@ import {
   addFileStatus,
   updateFileStatus,
 } from "../../state/features/requests/requestsSlice";
-import { FileType } from "../../types";
+import { FileType, FolderType } from "../../types";
 
 function useDownload(
   setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>
@@ -16,20 +16,22 @@ function useDownload(
   const handleDownloadClick = async () => {
     try {
       for (const file of selectedFiles) {
-        const fileId = "fileDetails" in file && file.fileDetails.id;
-        const folderId = "folderDetails" in file && file.folderDetails.id;
-        const fileTyped = file as FileType;
+        const isFile = "fileDetails" in file;
+        const isFolder = "folderDetails" in file
 
-        if (!fileId && !folderId) continue;
+        const FiloOrFolder = isFile ? file.fileDetails : isFolder ? file.folderDetails : null;
 
-        const url = fileId
-          ? `${process.env.REACT_APP_API_URL}/file/download/${fileId}`
-          : `${process.env.REACT_APP_API_URL}/folder/download/${folderId}`;
+        if (!FiloOrFolder) continue;
+
+        const fileUrl = `${process.env.REACT_APP_API_URL}/file/download/${FiloOrFolder.id}`
+        const folderUrl = `${process.env.REACT_APP_API_URL}/folder/download/${FiloOrFolder.id}`
+        const url = isFile ? fileUrl : isFolder ? folderUrl : null
+        if (!url) return
 
         dispatch(
           addFileStatus({
-            index: fileTyped.fileDetails.id,
-            fileName: fileTyped.fileDetails.name,
+            index: FiloOrFolder.id,
+            fileName: FiloOrFolder.name,
             progress: "0%",
             status: "Uploading",
           })
@@ -43,11 +45,10 @@ function useDownload(
               if (progressEvent.progress) {
                 dispatch(
                   updateFileStatus({
-                    index: fileTyped.fileDetails.id,
-                    fileName: fileTyped.fileDetails.name,
-                    progress: `${Math.round(progressEvent.progress * 100)}%`,
+                    index: FiloOrFolder.id,
+                    progress: `${(progressEvent.progress * 100).toFixed(0)}%`,
                     status:
-                      progressEvent.progress >= 1 ? "Finished" : "Uploading",
+                      progressEvent.progress >= 1 ? "Downloaded" : "Downloading",
                   })
                 );
               }
@@ -60,11 +61,7 @@ function useDownload(
           const link = document.createElement("a");
           link.href = downloadUrl;
 
-          const fileName = fileId
-            ? file.fileDetails.name
-            : folderId
-            ? file.folderDetails.name
-            : "";
+          const fileName = FiloOrFolder.name
           link.setAttribute("download", fileName);
           document.body.appendChild(link);
           link.click();
@@ -74,8 +71,7 @@ function useDownload(
         } catch (error) {
           dispatch(
             updateFileStatus({
-              index: fileTyped.fileDetails.id,
-              fileName: fileTyped.fileDetails.name,
+              index: FiloOrFolder.id,
               progress: "Failed",
               status: "Error",
             })

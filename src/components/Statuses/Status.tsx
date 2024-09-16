@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { StatusFileName, StatusWrapper } from "./statuses.styles";
+import {
+  LeftWrapper,
+  RightWrapper,
+  StatusFile,
+  StatusFileName,
+  StatusWrapper,
+} from "./statuses.styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { useAppDispatch, useAppSelector } from "../../state/store";
@@ -17,39 +23,42 @@ type Props = {
 };
 
 function Status({ request }: Props) {
-
-  const actualStatus = useAppSelector((state) => getActualElement(state.activeRequests, request.index));
+  const actualStatus = useAppSelector((state) =>
+    getActualElement(state.activeRequests, request.index)
+  );
   const dispatch = useAppDispatch();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (actualStatus?.status === "Finished" || actualStatus?.status === "Error") {
+    if (!actualStatus) return;
+    if (["Uploaded", "Downloaded", "Error"].includes(actualStatus.status)) {
       setTimeout(() => {
         dispatch(removeFileStatus(request.index));
       }, 12000);
     }
-
-    return () => {
-      if (actualStatus?.status === "Finished" || actualStatus?.status === "Error") {
-        wrapperRef.current?.classList.add("fade-out");
-      }
-    };
-  }, [actualStatus?.status, dispatch, request.index]);
+  }, [actualStatus, dispatch, request.index]);
 
   const handleCloseClick = (index: string) => {
     dispatch(removeFileStatus(index));
   };
 
+  console.log(actualStatus?.progress)
+
   return (
-      <StatusWrapper $status={actualStatus?.status} ref={wrapperRef}>
+    <StatusWrapper $status={actualStatus?.status} ref={wrapperRef}>
+      <LeftWrapper>
+        <StatusFile>{actualStatus?.status}:</StatusFile>
         <StatusFileName>{request.fileName}</StatusFileName>
+      </LeftWrapper>
+      <RightWrapper>
         <p>{actualStatus?.progress}</p>
         <FontAwesomeIcon
           icon={faCircleXmark}
           onClick={() => handleCloseClick(request.index)}
           style={{ cursor: "pointer" }}
         />
-      </StatusWrapper>
+      </RightWrapper>
+    </StatusWrapper>
   );
 }
 

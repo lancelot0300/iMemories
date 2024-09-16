@@ -73,9 +73,8 @@ function useUpload(setIsOpened?: (value: boolean) => void) {
                 dispatch(
                   updateFileStatus({
                     index: fileId,
-                    fileName: file.name,
-                    progress: `${Math.round(progress * 100)}%`,
-                    status: progress >= 1 ? "Finished" : "Uploading",
+                    progress: `${(progress * 100).toFixed(0)}%`,
+                    status: progress >= 1 ? "Uploaded" : "Uploading",
                   })
                 );
               }
@@ -98,7 +97,6 @@ function useUpload(setIsOpened?: (value: boolean) => void) {
         dispatch(
           updateFileStatus({
             index: fileId,
-            fileName: file.name,
             progress: "Failed",
             status: "Error",
           })

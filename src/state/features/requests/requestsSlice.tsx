@@ -1,10 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import  { CancelTokenSource } from "axios";
 
 type FileStatusState = {
   index: string;
   fileName: string;
   progress: string;
-  status: "Uploading" | "Error" | "Finished";
+  status: "Uploading" | "Error"  | "Downloading" | "Downloaded" | "Uploaded";
+};
+
+type UpdateStateType = {
+  index: string;
+  progress: string;
+  status: "Uploading" | "Error"  | "Downloading" | "Downloaded" | "Uploaded";
 };
 
 type InitialState = {
@@ -20,8 +27,6 @@ const activeRequests = createSlice({
   initialState,
   reducers: {
     addFileStatus: (state, action: PayloadAction<FileStatusState>) => {
-
-      
       const { index, fileName, status } = action.payload;
       state.activeRequests.push({
         index: index,
@@ -38,14 +43,13 @@ const activeRequests = createSlice({
     removeFileStatus: (state, action: PayloadAction<string>) => {
       state.activeRequests = state.activeRequests.filter((file) => file.index !== action.payload);
     },
-    updateFileStatus: (state, action: PayloadAction<FileStatusState>) => {
+    updateFileStatus: (state, action: PayloadAction<UpdateStateType>) => {
       state.activeRequests = state.activeRequests.map((file) => {
         if (file.index === action.payload.index) {
           return {
-            index: file.index,
-            fileName: file.fileName,
+            ...file,
             progress: action.payload.progress,
-            status: action.payload.status,
+            status: action.payload.status
           };
         }
         return file;
