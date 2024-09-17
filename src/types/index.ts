@@ -67,6 +67,10 @@ export type FolderType = {
   };
 }
 
+export type InfoTextRef = {
+  showInfo: (element: HTMLElement) => void;
+  hideInfo: () => void;
+};
 
 export type ActiveFiles = {
   element: HTMLDivElement | null;

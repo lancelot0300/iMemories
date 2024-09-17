@@ -11,6 +11,10 @@ export const isClickedContainer = (
   );
 };
 
+export const isMobileDevice = () => {
+  return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.userAgent.includes('Mobi');
+};
+
 export const isFolderSelected = (selectedElements: SelectedElements) => {
   const folderSelected = selectedElements.some(
     (folder) => "folderDetails" in folder

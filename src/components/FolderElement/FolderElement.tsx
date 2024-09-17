@@ -1,8 +1,4 @@
-import React, {
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-} from "react";
+import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { ActiveFiles, ContextRef, FolderType } from "../../types";
 import { FolderElementContainer, Icon, Name } from "./folderElement.styles";
 import { useAppDispatch, useAppSelector } from "../../state/store";
@@ -13,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { setNewPathAndFetchAsync } from "../../state/features/path/pathSlice";
 import InfoText from "../InfoText/InfoText";
 import { InfoElement } from "../InfoText/infoText.styles";
-import { getDateString } from "../../utils/homeUtils";
+import { getDateString, isMobileDevice } from "../../utils/homeUtils";
 import { clearFiles } from "../../state/features/files/filesSlice";
 import { useNavigate } from "react-router-dom";
 
@@ -22,12 +18,15 @@ interface IProps {
   clearDrag: () => void;
 }
 
-
 const FolderElement = forwardRef<ActiveFiles | null, IProps>(
   ({ element, clearDrag }, ref) => {
-
-
-    const { setActiveElement, isActive, isCopy, setActiveOnRightClick, selectedFiles } = useFile({ element});
+    const {
+      setActiveElement,
+      isActive,
+      isCopy,
+      setActiveOnRightClick,
+      selectedFiles,
+    } = useFile({ element });
     const fileElementRef = useRef<HTMLDivElement>(null);
     const contextMenuRef = useRef<ContextRef>();
     const infoTextRef = useRef<any>(null);
@@ -53,15 +52,19 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
     };
 
     const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-      const clickTime = new Date().getTime();
-      const timeSinceLastClick = clickTime - lastTimeClick.current;
+      if (isMobileDevice()) {
+        handleRightClick(event);
+      } else {
+        const clickTime = new Date().getTime();
+        const timeSinceLastClick = clickTime - lastTimeClick.current;
 
-      if (timeSinceLastClick < 300) {
-        return handleDoubleClick(event);
+        if (timeSinceLastClick < 300) {
+          return handleDoubleClick(event);
+        }
+
+        lastTimeClick.current = clickTime;
+        setActiveElement(event);
       }
-
-      lastTimeClick.current = clickTime;
-      setActiveElement(event);
     };
 
     const handleRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -80,7 +83,9 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
           onContextMenu={handleRightClick}
           $isSelected={isActive}
           $isCopy={isCopy}
-          onMouseEnter={() => infoTextRef.current?.showInfo(fileElementRef.current)}
+          onMouseEnter={() =>
+            infoTextRef.current?.showInfo(fileElementRef.current)
+          }
           onMouseLeave={() => infoTextRef.current?.hideInfo()}
         >
           <Icon>
@@ -89,10 +94,13 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
           <Name>{element.folderDetails.name}</Name>
           <InfoText ref={infoTextRef}>
             <InfoElement>Name: {element.folderDetails.name}</InfoElement>
-            <InfoElement>Created: {getDateString(element.folderDetails.createdDate) + " UTC"}</InfoElement>
+            <InfoElement>
+              Created:{" "}
+              {getDateString(element.folderDetails.createdDate) + " UTC"}
+            </InfoElement>
           </InfoText>
         </FolderElementContainer>
-        <ContextMenu element="Folder" ref={contextMenuRef} />
+        <ContextMenu element="File" ref={contextMenuRef} infoTextRef={infoTextRef} fileElementRef={fileElementRef} />
       </>
     );
   }

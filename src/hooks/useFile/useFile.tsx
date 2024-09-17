@@ -1,7 +1,7 @@
 import React from 'react'
 import { useAppDispatch, useAppSelector } from "../../state/store"
 import { addFile, removeFile, selectFiles } from '../../state/features/files/filesSlice';
-import { FileType, FolderType, SelectedElements } from '../../types';
+import { FileType, FolderType } from '../../types';
 
 type Props = {
     element: FileType | FolderType,

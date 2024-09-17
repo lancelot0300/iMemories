@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useRef } from "react";
-import { ActiveFiles, ContextRef, FileType } from "../../types";
+import { ActiveFiles, ContextRef, FileType, InfoTextRef } from "../../types";
 import { FileElementContainer, Icon, Name } from "./fileElement.styles";
 import useFile from "../../hooks/useFile/useFile";
 import { useAppSelector } from "../../state/store";
@@ -7,7 +7,7 @@ import ContextMenu from "../ContextMenu/ContextMenu";
 import { renderIcon } from "../../utils/iconsUtils";
 import InfoText from "../InfoText/InfoText";
 import { InfoElement } from "../InfoText/infoText.styles";
-import { getDateString, returnSize } from "../../utils/homeUtils";
+import { getDateString, isMobileDevice, returnSize } from "../../utils/homeUtils";
 import usePreview from "../../hooks/usePreview/usePreview";
 
 interface IProps {
@@ -15,10 +15,6 @@ interface IProps {
   clearDrag: () => void;
 }
 
-type InfoTextRef = {
-  showInfo: (element: HTMLElement) => void;
-  hideInfo: () => void;
-};
 
 const FileElement = forwardRef<ActiveFiles | null, IProps>(
   ({ element, clearDrag }, ref) => {
@@ -39,13 +35,17 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
     }));
 
     const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-      const currentClickTime = Date.now();
-      if (currentClickTime - lastClickTime.current < 300) {
-        handleOpen(true); 
+      if (isMobileDevice()) {
+        handleRightClick(event);
       } else {
-        setActiveElement(event);
+        const currentClickTime = Date.now();
+        if (currentClickTime - lastClickTime.current < 300) {
+          handleOpen(true); 
+        } else {
+          setActiveElement(event);
+        }
+        lastClickTime.current = currentClickTime;
       }
-      lastClickTime.current = currentClickTime;
     };
 
     const handleRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -56,6 +56,8 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
     };
 
     const handleMouseEnter = () => {
+
+      if(isMobileDevice()) return
       if (fileElementRef.current) infoTextRef.current?.showInfo(fileElementRef.current);
     };
 
@@ -86,7 +88,7 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
             <InfoElement>Created: {getDateString(element.fileDetails.createdDate)} UTC</InfoElement>
           </InfoText>
         </FileElementContainer>
-        <ContextMenu element="File" ref={contextMenuRef} />
+        <ContextMenu element="File" ref={contextMenuRef} infoTextRef={infoTextRef} fileElementRef={fileElementRef} />
         {renderPreview()}
       </>
     );

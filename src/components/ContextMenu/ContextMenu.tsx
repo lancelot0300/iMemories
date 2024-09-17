@@ -11,12 +11,17 @@ import UploadContextOption from "../ContextComponents/UploadContextOption/Upload
 import OpenContextOption from "../ContextComponents/OpenContextOption/OpenContextOption";
 import PreviewContextOption from "../ContextComponents/PreviewContextOption/PreviewContextOption";
 import RenameContextOption from "../ContextComponents/RenameContextOption/RenameContextOption";
+import { InfoTextRef } from "../../types";
+import { isMobileDevice } from "../../utils/homeUtils";
+import InfoContextOption from "../ContextComponents/InfoContextOption/InfoContextOption";
 
 type Props = {
   element: "Home" | "Folder" | "File";
+  infoTextRef? : React.RefObject<InfoTextRef>;
+  fileElementRef?: React.RefObject<HTMLDivElement>;
 }
 
-const ContextMenu = forwardRef(({ element }: Props, ref) => {
+const ContextMenu = forwardRef(({ element, infoTextRef, fileElementRef }: Props, ref) => {
   const { handleOpenContext, isOpenedContext, posY, posX, setIsOpenedContex, contextMenuRefs } = useContext();
 
   useImperativeHandle(ref, () => ({
@@ -55,6 +60,7 @@ const ContextMenu = forwardRef(({ element }: Props, ref) => {
         {options.map((OptionComponent, index) => (
           <OptionComponent key={index} setIsOpened={setIsOpenedContex} setIsOpenedContext={setIsOpenedContex}/>
         ))}
+        {isMobileDevice() && <InfoContextOption infoTextRef={infoTextRef} fileElementRef={fileElementRef} setIsOpened={setIsOpenedContex} setIsOpenedContext={setIsOpenedContex}/>}
       </ContextWrapper>
     </CreateModal>
   );

@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useLayoutEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from "react";
 import { StyledInfoWrapper } from "./infoText.styles";
 
 type InfoTextProps = {
@@ -46,6 +46,13 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(
       hideInfo,
     }));
 
+    const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+      event.preventDefault()
+      event.stopPropagation();
+    }
+
+
+
     useLayoutEffect(() => {
       if (visible && wrapperRef.current) {
         let { x, y } = pos;
@@ -66,13 +73,33 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(
         }
 
         setPos({ x, y });
+
       }
     }, [pos.x, pos.y, visible]);
+
+    const handleClickTest = (event: MouseEvent) => {
+      console.log("|")
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as HTMLElement)) {
+        setVisible(false);
+      }
+    }
+
+    useEffect(() => {
+
+      if(!visible) return
+
+      document.addEventListener('click', handleClickTest)
+  
+      return () => {
+        document.removeEventListener('click', handleClickTest)
+      }
+    },[visible])
 
     if (!visible) return null;
 
     return (
-      <StyledInfoWrapper ref={wrapperRef} $posX={pos.x} $posY={pos.y}>
+      <StyledInfoWrapper
+      onClick={handleClick} ref={wrapperRef} $posX={pos.x} $posY={pos.y}>
         {children}
       </StyledInfoWrapper>
     );
