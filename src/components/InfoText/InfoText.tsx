@@ -7,6 +7,8 @@ import React, {
   useState,
 } from "react";
 import { StyledInfoWrapper } from "./infoText.styles";
+import { Overlay } from "../CreateModal/createModal.styles";
+import { isMobileDevice } from "../../utils/homeUtils";
 
 type InfoTextProps = {
   children: React.ReactNode;
@@ -53,6 +55,7 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(({ children }, ref) => {
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
+    setVisible(false);
   };
 
   useLayoutEffect(() => {
@@ -78,36 +81,28 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(({ children }, ref) => {
     }
   }, [pos.x, pos.y, visible]);
 
-  const handleClickTest = (event: MouseEvent) => {
-    if (
-      wrapperRef.current &&
-      !wrapperRef.current.contains(event.target as HTMLElement)
-    ) {
-      setVisible(false);
-    }
-  };
 
-  useEffect(() => {
-    if (!visible) return;
-
-    document.addEventListener("click", handleClickTest);
-
-    return () => {
-      document.removeEventListener("click", handleClickTest);
-    };
-  }, [visible]);
-
-  if (!visible) return null;
-
+  if(!visible) return null
+ 
   return (
-    <StyledInfoWrapper
-      onClick={handleClick}
-      ref={wrapperRef}
-      $posX={pos.x}
-      $posY={pos.y}
-    >
-      {children}
-    </StyledInfoWrapper>
+    <>
+      {isMobileDevice() && (
+        <Overlay
+          $wihoutOverlay={true}
+          onContextMenu={handleClick}
+          onClick={handleClick}
+        />
+      )}
+      <StyledInfoWrapper
+        onClick={handleClick}
+        onContextMenu={handleClick}
+        ref={wrapperRef}
+        $posX={pos.x}
+        $posY={pos.y}
+      >
+        {children}
+      </StyledInfoWrapper>
+    </>
   );
 });
 
