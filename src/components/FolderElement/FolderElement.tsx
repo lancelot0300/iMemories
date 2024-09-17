@@ -102,7 +102,7 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
           </InfoText>
         </FolderElementContainer>
         <ContextMenu
-          element="File"
+          element="Folder"
           ref={contextMenuRef}
           infoTextRef={infoTextRef}
           fileElementRef={fileElementRef}
