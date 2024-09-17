@@ -68,11 +68,19 @@ const Menu: React.FC<Props> = ({ allFilesRefs }) => {
   const handleLogout = async () => {
     const url = `${process.env.REACT_APP_API_URL}/user/logout`;
 
-    await axios.post(url, {
-      withCredentials: true,
-    });
+    await axios.post(
+      url,
+      {}, 
+      {
+        headers: {
+          'Content-Type': 'text/plain', 
+        },
+        withCredentials: true
+      }
+    )
 
   dispatch(logout())
+  navigate("/login")
   };
 
   const renderPath = () => {
