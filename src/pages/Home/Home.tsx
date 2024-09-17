@@ -3,7 +3,7 @@ import { FolderGridContainer, HomeContainer } from "./home.styles";
 import { ContextRef } from "../../types";
 import useDropHook from "../../hooks/useDrop/useDropFiles";
 import useSelection from "../../hooks/useSelection/useSelection";
-import { isClickedContainer } from "../../utils/homeUtils";
+import { isClickedContainer, isMobileDevice } from "../../utils/homeUtils";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import { selectFiles } from "../../state/features/files/filesSlice";
 import Menu from "../../components/Menu/Menu";
@@ -31,6 +31,15 @@ function Home() {
     allFilesRefs,
   } = useSelection({ containerRef, data });
 
+  const handleClickWithContext = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (isMobileDevice()) {
+      handleContextMenu(event);
+    }
+    else{
+      handleClick(event)
+    }
+  }
+
   const handleContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     clearDrag();
@@ -57,7 +66,7 @@ function Home() {
         onMouseLeave={handleMouseLeave}
         onContextMenu={handleContextMenu}
         onMouseMove={handleMouseMove}
-        onClick={handleClick}
+        onClick={handleClickWithContext}
         $isDragging={draggingRef.current ? true : false}
         ref={containerRef}
       >

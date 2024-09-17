@@ -83,9 +83,10 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
           onContextMenu={handleRightClick}
           $isSelected={isActive}
           $isCopy={isCopy}
-          onMouseEnter={() =>
-            infoTextRef.current?.showInfo(fileElementRef.current)
-          }
+          onMouseEnter={() => {
+            if (isMobileDevice()) return;
+            infoTextRef.current?.showInfo(fileElementRef.current);
+          }}
           onMouseLeave={() => infoTextRef.current?.hideInfo()}
         >
           <Icon>
@@ -100,7 +101,12 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
             </InfoElement>
           </InfoText>
         </FolderElementContainer>
-        <ContextMenu element="File" ref={contextMenuRef} infoTextRef={infoTextRef} fileElementRef={fileElementRef} />
+        <ContextMenu
+          element="File"
+          ref={contextMenuRef}
+          infoTextRef={infoTextRef}
+          fileElementRef={fileElementRef}
+        />
       </>
     );
   }
