@@ -16,6 +16,7 @@ import {
   StyledField,
   InformationWrapper,
 } from "../Login/login.styles";
+import { setNewPathAndFetchAsync, setUnkownPathAndFetchAsync } from "../../state/features/path/pathSlice";
 
 type ILoginFormValues = {
   Email: string;
@@ -59,6 +60,7 @@ function Register() {
       );
 
       dispatch(loginSuccess(register.data));
+      dispatch(setUnkownPathAndFetchAsync(""));
 
       const sessionExpiry = new Date(new Date().getTime() + 30 * 60000);
       localStorage.setItem("sessionTill", sessionExpiry.toString());
@@ -81,6 +83,7 @@ function Register() {
     setStatus,
     handleChange,
     handleSubmit,
+    isSubmitting
   } = useFormik<ILoginFormValues>({
     initialValues: {
       Email: "",
@@ -159,7 +162,7 @@ function Register() {
             </InputWrapper>
             <ErrorMessage $isError={status}>{status}</ErrorMessage>
 
-            <Button type="submit">Submit</Button>
+            <Button disabled={isSubmitting} type="submit">Submit</Button>
           </form>
           <RegisterInfo onClick={() => navigate("/login")}>
             Already account? Log in!

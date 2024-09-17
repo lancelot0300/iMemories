@@ -19,7 +19,7 @@ import { useAppDispatch } from "../../state/store";
 import { loginSuccess } from "../../state/features/auth/authSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { setNewPath, setNewPathAndFetchAsync, setPathAsync } from "../../state/features/path/pathSlice";
+import { setNewPathAndFetchAsync, setUnkownPathAndFetchAsync } from "../../state/features/path/pathSlice";
 
 type ILoginFormValues = {
   Username: string;
@@ -58,7 +58,7 @@ function Login() {
       localStorage.setItem("sessionTill", sessionExpiry.toString());
 
       dispatch(loginSuccess(data));
-      dispatch(setNewPathAndFetchAsync({id: "", name: "Home"}));
+      dispatch(setUnkownPathAndFetchAsync(""));
       navigate("/");
     } catch (error) {
       if (axios.isAxiosError<IError>(error) && error.response) {
@@ -75,10 +75,11 @@ function Login() {
     setStatus,
     handleChange,
     handleSubmit,
+    isSubmitting
   } = useFormik<ILoginFormValues>({
     initialValues: {
-      Username: "masza221",
-      Password: "test1234",
+      Username: "",
+      Password: "",
     },
     onSubmit,
     validationSchema: schema,
@@ -96,9 +97,8 @@ function Login() {
   return (
     <LoginContainer>
       <InformationWrapper>
-
         <FormWrapper>
-        <Logo src="./images/logo-color.svg" alt="logo" />
+          <Logo src="./images/logo-color.svg" alt="logo" />
           <Header>Log in</Header>
           <form onSubmit={handleSubmit} title="Login">
             <InputWrapper>
@@ -139,7 +139,7 @@ function Login() {
               <label htmlFor="remember">Remember me</label>
             </RememberMe>
 
-            <Button type="submit">Submit</Button>
+            <Button disabled={isSubmitting} type="submit">Submit</Button>
           </form>
 
           <RegisterInfo onClick={() => navigate("/register")}>
@@ -149,14 +149,14 @@ function Login() {
         <AboutUs>
           <h1>About Us</h1>
           <span>
-            Jesteśmy duetem pasjonatów tworzenia oprogramowania - Krystian i
-            Mateusz. Nasz projekt to nowoczesne narzędzie inspirowane
-            funkcjonalnością Explorera w systemie Windows. Krystian odpowiadał
-            za frontend, dbając o intuicyjny i przyjazny interfejs użytkownika,
-            a Mateusz skupił się na backendzie, zapewniając płynność i
-            niezawodność działania aplikacji. Nasz cel to łączenie estetyki z
-            funkcjonalnością, tworząc narzędzia, które ułatwiają codzienną pracę
-            z plikami i folderami.
+            We are a duo of software development enthusiasts - Krystian and
+            Mateusz. Our project is a modern tool inspired by Explorer
+            functionality in Windows. Krystian was responsible for the frontend,
+            taking care of an intuitive and user-friendly interface, while
+            Mateusz focused on the backend, ensuring smooth and reliability of
+            the application. Our goal is to combine aesthetics with
+            functionality, creating tools that make everyday work with with
+            files and folders.
           </span>
         </AboutUs>
       </InformationWrapper>

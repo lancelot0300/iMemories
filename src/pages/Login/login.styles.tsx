@@ -9,7 +9,7 @@ export const LoginContainer = styled.div`
 
 export const FormWrapper = styled.div`
   position: relative;
-  width: 350px;
+  width: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,6 +25,7 @@ export const FormWrapper = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 100%;
   }
 `;
 
