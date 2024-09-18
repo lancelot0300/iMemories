@@ -28,7 +28,7 @@ function App() {
               path="/login"
               element={
                 <ProtectedRoute
-                  isAllowed={user?.name? true : false}
+                  isAllowed={!!user?.name }
                   redirectPath="/"
                 >
                   <Login />
@@ -39,7 +39,7 @@ function App() {
               path="/register"
               element={
                 <ProtectedRoute
-                  isAllowed={user?.name ? true : false}
+                  isAllowed={!!user?.name}
                   redirectPath="/"
                 >
                   <Register />

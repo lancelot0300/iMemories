@@ -80,7 +80,7 @@ const Menu: React.FC<Props> = ({ allFilesRefs }) => {
     )
 
   dispatch(logout())
-  navigate("/login")
+  // navigate("/login")
   };
 
   const renderPath = () => {

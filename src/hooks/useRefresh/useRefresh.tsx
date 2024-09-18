@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useAppDispatch } from '../../state/store';
-import { loginSuccess } from '../../state/features/auth/authSlice';
+import { loginSuccess, logout } from '../../state/features/auth/authSlice';
 import { LoginResponse } from '../../types';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -20,6 +20,7 @@ function useRefresh() {
              return response
         } catch (error) {
             if (!["/login", "/register"].includes(location.pathname)) {
+               dispatch(logout())
                return navigate("/login");
               }
            return

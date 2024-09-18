@@ -1,5 +1,8 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { FileType, SelectedElements } from "../../types";
 import CreateModal from "../../components/CreateModal/CreateModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   CloseModal,
   Loader,
@@ -7,10 +10,7 @@ import {
   ModalContent,
   ModalHeader,
 } from "../../components/ContextComponents/PreviewContextOption/preview.styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { FileType, SelectedElements } from "../../types";
-import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
+import useRefresh from "../useRefresh/useRefresh";
 
 type UsePreviewProps = {
   setIsOpenedContext?: Dispatch<SetStateAction<boolean>>;
@@ -23,18 +23,11 @@ function usePreview({
   selectedFiles,
   element,
 }: UsePreviewProps) {
-  const [loading, setLoading] = useState(true);
   const [isOpened, setIsOpened] = useState(false);
-  const axiosPrivate = useAxiosPrivate();
-  const [fileToShow, setFileToShow] = useState<string | undefined>();
-  const cacheRef = useRef<Map<string, string>>(new Map());
-
-  useEffect(() => {
-    if (isOpened) {
-      const file = element || (selectedFiles[0] as FileType);
-      loadImages(file);
-    }
-  }, [isOpened]);
+  const [isLoading, setIsLoading] = useState(true);
+  const refresh = useRefresh();
+  const selectedElement = element ? element : (selectedFiles[0] as FileType);
+  const wasError = useRef(false);
 
   const isVideo = (file: FileType) => {
     return (
@@ -62,45 +55,66 @@ function usePreview({
 
     setIsOpened(value);
   };
-
-  const loadImages = async (file: FileType) => {
-    const fileId = file.fileDetails?.id;
-
-    if (cacheRef.current.has(fileId)) {
-      setFileToShow(cacheRef.current.get(fileId)); 
-      setLoading(false);
-      return;
-    }
-
+  const handleError = async (
+    event: React.SyntheticEvent<HTMLImageElement | HTMLVideoElement>
+  ) => {
+    if (wasError.current === true) return;
+    const imgElement = event.target as HTMLImageElement | HTMLVideoElement;
     try {
-      const response = await axiosPrivate.get(
-        `/file/preview/${fileId}`,
-        {
-          responseType: "blob",
-        }
-      );
+      const response = await refresh();
 
-      const reader = new FileReader();
-      reader.readAsDataURL(response.data);
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        cacheRef.current.set(fileId, result); 
-        setFileToShow(result);
-        setLoading(false);
-      };
+      if (response) {
+        const selectedElementId = selectedElement?.fileDetails?.id;
+        if (selectedElementId) {
+          imgElement.src = `${process.env.REACT_APP_API_URL}/file/preview/${selectedElementId}`;
+        }
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Error while refreshing:", error);
+    } finally {
+      setIsLoading(false);
+      wasError.current = true;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      wasError.current = false;
+    };
+  }, [isOpened]);
+
+  const createPreview = (file: FileType) => {
+    const URL = `${process.env.REACT_APP_API_URL}/file/preview/${file.fileDetails.id}`;
+
+    if (isVideo(file)) {
+      return <video src={URL} controls onError={handleError} />;
+    } else if (isImage(file)) {
+      return (
+        <>
+          {isLoading && <Loader />}
+
+          <img
+            src={URL}
+            alt={file.fileDetails.name}
+            style={{ display: isLoading ? "none" : "block" }}
+            onLoad={() => setIsLoading(false)}
+            onError={handleError}
+          />
+        </>
+      );
+    } else {
+      return <p>Preview not available</p>;
     }
   };
 
   const renderPreview = () => {
-    const file = element || (selectedFiles[0] as FileType);
-    if(!canBePreview(file) || !isOpened) return null
+    if (!isOpened) return null;
+
     return (
       <>
         <CreateModal
           isOpened={isOpened}
-          setIsOpened={setIsOpenedContext || handleOpen}
+          setIsOpened={setIsOpenedContext || setIsOpened}
         >
           <ModalContent>
             <ModalHeader>
@@ -108,29 +122,14 @@ function usePreview({
                 <FontAwesomeIcon icon={faTimes} />
               </CloseModal>
             </ModalHeader>
-            <ModalBody>
-                {loading ? (
-                    <Loader/>
-                ) : isImage(file) ? (
-                    <img src={fileToShow} alt="preview" />
-                ) : (
-                    <video controls>
-                        <source src={fileToShow} type="video/mp4" />
-                    </video>
-                )}
-            </ModalBody>
+            <ModalBody>{createPreview(selectedElement)}</ModalBody>
           </ModalContent>
         </CreateModal>
       </>
     );
   };
 
-  return {
-    loading,
-    renderPreview,
-    handleOpen,
-    canBePreview,
-  };
+  return { renderPreview, setIsOpened, handleOpen, canBePreview };
 }
 
 export default usePreview;
