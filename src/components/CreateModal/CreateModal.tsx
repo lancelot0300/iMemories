@@ -1,6 +1,6 @@
 import React from "react";
 import { createPortal } from "react-dom";
-import { Overlay } from "./createModal.styles";
+import { Overlay, PortalBody } from "./createModal.styles";
 
 type CreateModalProps = {
   children: React.ReactNode;
@@ -9,25 +9,27 @@ type CreateModalProps = {
   withoutOverlay?: boolean;
 };
 
-function CreateModal({ isOpened, setIsOpened, withoutOverlay, children } : CreateModalProps) {
-
-
+function CreateModal({
+  isOpened,
+  setIsOpened,
+  withoutOverlay,
+  children,
+}: CreateModalProps) {
   const handleClickOutside = (e: React.MouseEvent) => {
-    if(e.button !== 0) return;
+    e.stopPropagation();
+    if (e.button !== 0) return;
     setIsOpened(false);
   };
 
-
   if (!isOpened) return null;
 
-    return createPortal(
-      <>
-        <Overlay $wihoutOverlay={withoutOverlay} onClick={handleClickOutside} />
-        {children}
-      </>,
-      document.getElementById("modal-root") as HTMLElement
-    );
-
+  return createPortal(
+    <>
+      <Overlay $wihoutOverlay={withoutOverlay} onClick={handleClickOutside} />
+      <PortalBody onClick={(e) => e.stopPropagation()}>{children}</PortalBody>
+    </>,
+    document.getElementById("modal-root") as HTMLElement
+  );
 }
 
 export default CreateModal;

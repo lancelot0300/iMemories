@@ -35,6 +35,8 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
     }));
 
     const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+      event.stopPropagation()
+
       if (isMobileDevice()) {
         handleRightClick(event);
       } else {
@@ -50,12 +52,14 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
 
     const handleRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
       event.preventDefault();
+      event.stopPropagation()
       clearDrag();
       setActiveOnRightClick();
       contextMenuRef.current?.handleOpenContext(event, true);
     };
 
-    const handleMouseEnter = () => {
+    const handleMouseEnter = (event: React.MouseEvent<HTMLDivElement>) => {
+      event.stopPropagation()
 
       if(isMobileDevice()) return
       if (fileElementRef.current) infoTextRef.current?.showInfo(fileElementRef.current);

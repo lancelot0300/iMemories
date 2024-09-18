@@ -14,7 +14,9 @@ function usePaste(setIsOpened: React.Dispatch<React.SetStateAction<boolean>>) {
 
   const selectedElement = selectedFiles.length === 1 && selectedFiles[0].id;
 
-  const handlePasteClick = async () => {
+  const handlePasteClick = async (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation()
+
     const URL = `${process.env.REACT_APP_API_URL}/copy/foldersandfiles`;
 
     const filesids = storageFiles

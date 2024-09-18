@@ -13,3 +13,7 @@ export const Overlay = styled.div<OverLayProps>`
     background-color: ${({ $wihoutOverlay }) => $wihoutOverlay ? '' : 'rgba(0, 0, 0, 0.5)'};
     user-select: none;
 `;
+
+export const PortalBody = styled.div`
+posistion:relative;
+`

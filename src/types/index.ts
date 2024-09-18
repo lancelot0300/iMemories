@@ -81,7 +81,7 @@ export type SelectedElements = FileType[] | FolderType[] | (FileType | FolderTyp
 
 export type ContextRef = {
   handleOpenContext: (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     isOpen: boolean
   ) => void;
 };

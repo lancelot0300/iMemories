@@ -11,7 +11,8 @@ function useDelete(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) 
 
   const dispatch = useAppDispatch();
 
-  const handleDeleteClick = async () => {
+  const handleDeleteClick = async (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation()
 
     const filesToDelete = selectedFiles.map((file) => "fileDetails" in file && file.fileDetails.id).filter((id) => id);
     // const foldersToDelete = selectedFiles.map((file) => "folderDetails" in file && file.folderDetails.id).filter((id) => id);

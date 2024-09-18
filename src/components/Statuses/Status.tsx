@@ -38,7 +38,8 @@ function Status({ request }: Props) {
     }
   }, [actualStatus, dispatch, request.index]);
 
-  const handleCloseClick = (index: string) => {
+  const handleCloseClick = (e :React.MouseEvent<SVGSVGElement>, index: string) => {
+    e.stopPropagation()
     dispatch(removeFileStatus(index));
   };
 
@@ -54,7 +55,7 @@ function Status({ request }: Props) {
         <p>{actualStatus?.progress}</p>
         <FontAwesomeIcon
           icon={faCircleXmark}
-          onClick={() => handleCloseClick(request.index)}
+          onClick={(e) => handleCloseClick(e, request.index)}
           style={{ cursor: "pointer" }}
         />
       </RightWrapper>

@@ -6,7 +6,7 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { InputWrapper, StyledField } from "../../pages/Login/login.styles";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
-import { setPathAsync } from "../../state/features/path/pathSlice";
+import { refreshPathAsync } from "../../state/features/path/pathSlice";
 import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
 import { UploadFormButton, UploadModal } from "./useCreateFolder.styles";
 
@@ -53,7 +53,7 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
       } catch (error) {
         console.error(error);
       }
-      dispatch(setPathAsync(data.id));
+      dispatch(refreshPathAsync(data.id));
     }
 
     const {
@@ -77,7 +77,7 @@ function useCreateFolder(setIsOpened: (value: boolean) => void) {
       return (
         <CreateModal isOpened={isOpenedModal} setIsOpened={handleCloseClick}>
         <UploadModal>
-        <form onSubmit={handleSubmit} title="Folder">
+        <form onClick={e => e.stopPropagation()} onSubmit={handleSubmit} title="Folder">
           <InputWrapper>
             <StyledField id="folder" name="folder" autoComplete="folder" placeholder="Folder name" value={values.folder} onChange={handleChange} $isError={!!errors.folder}/>
             <ErrorMessage $isError={!!errors.folder} >

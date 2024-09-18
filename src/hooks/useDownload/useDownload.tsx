@@ -13,7 +13,8 @@ function useDownload(
   const { selectedFiles } = useAppSelector((state) => state.files);
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useAppDispatch();
-  const handleDownloadClick = async () => {
+  const handleDownloadClick = async (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation()
     try {
       for (const file of selectedFiles) {
         const isFile = "fileDetails" in file;

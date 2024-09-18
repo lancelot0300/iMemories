@@ -20,9 +20,9 @@ function useRefresh() {
              return response
         } catch (error) {
             if (!["/login", "/register"].includes(location.pathname)) {
-                navigate("/login");
+               return navigate("/login");
               }
-            throw new Error
+           return
         }
     }
 

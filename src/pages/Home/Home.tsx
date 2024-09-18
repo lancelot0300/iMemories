@@ -32,6 +32,8 @@ function Home() {
   } = useSelection({ containerRef, data });
 
   const handleClickWithContext = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    event.stopPropagation()
     if (isMobileDevice()) {
       handleContextMenu(event);
     }
@@ -42,6 +44,7 @@ function Home() {
 
   const handleContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
+    e.stopPropagation()
     clearDrag();
     if (!isClickedContainer(containerRef, e)) return;
     contextMenuRef.current?.handleOpenContext(e, true);

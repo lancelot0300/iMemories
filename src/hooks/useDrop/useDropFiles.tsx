@@ -29,6 +29,7 @@ function useDropHook({ containerRef }: HookProps) {
 
         const handleDrop = (e: DragEvent) => {
             e.preventDefault();
+            e.stopPropagation()
             if(ifNotFiles(e)) return;
 
             if (containerRef.current) {
@@ -50,7 +51,8 @@ function useDropHook({ containerRef }: HookProps) {
         };
 
         const handleDragLeave = (e: DragEvent) => {
-            
+            e.stopPropagation()
+
             if(ifNotFiles(e)) return;
 
             if (containerRef.current) {

@@ -40,6 +40,7 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
     }));
 
     const handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
       if (!element.folderDetails) return;
       dispatch(
         setNewPathAndFetchAsync({
@@ -52,6 +53,7 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
     };
 
     const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+      event.stopPropagation()
       if (isMobileDevice()) {
         handleRightClick(event);
       } else {
