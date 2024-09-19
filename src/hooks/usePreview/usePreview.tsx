@@ -1,10 +1,14 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { FileType, SelectedElements } from "../../types";
 import CreateModal from "../../components/CreateModal/CreateModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTimes,
+  faTriangleExclamation,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   CloseModal,
+  ErrorPreview,
   Loader,
   ModalBody,
   ModalContent,
@@ -18,6 +22,7 @@ type UsePreviewProps = {
   element?: FileType;
 };
 
+//can't add selectedFiles into hook because it will re-render all files/folders when selectedFiles change
 function usePreview({
   setIsOpenedContext,
   selectedFiles,
@@ -25,9 +30,9 @@ function usePreview({
 }: UsePreviewProps) {
   const [isOpened, setIsOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
   const refresh = useRefresh();
   const selectedElement = element ? element : (selectedFiles[0] as FileType);
-  const wasError = useRef(false);
 
   const isVideo = (file: FileType) => {
     return (
@@ -58,7 +63,7 @@ function usePreview({
   const handleError = async (
     event: React.SyntheticEvent<HTMLImageElement | HTMLVideoElement>
   ) => {
-    if (wasError.current === true) return;
+    if (isError === true) return;
     const imgElement = event.target as HTMLImageElement | HTMLVideoElement;
     try {
       const response = await refresh();
@@ -73,18 +78,24 @@ function usePreview({
       console.error("Error while refreshing:", error);
     } finally {
       setIsLoading(false);
-      wasError.current = true;
+      setIsError(true);
     }
   };
 
-  useEffect(() => {
-    return () => {
-      wasError.current = false;
-    };
-  }, [isOpened]);
-
   const createPreview = (file: FileType) => {
     const URL = `${process.env.REACT_APP_API_URL}/file/preview/${file.fileDetails.id}`;
+
+    if (isError)
+      return (
+        <ErrorPreview>
+          <FontAwesomeIcon
+            style={{ color: "red" }}
+            icon={faTriangleExclamation}
+            size={"3x"}
+          />
+          Something went wrong! Please reaload the page.
+        </ErrorPreview>
+      );
 
     if (isVideo(file)) {
       return <video src={URL} controls onError={handleError} />;

@@ -34,7 +34,7 @@ function useFile({element}: Props) {
   );
 
     const isActive = selectedFiles.some((el) => el.id === element.id);
-    const isCopy = storageFiles.some((el) => el.id === element.id) && lastCommand === "copy";
+    const isCopy = storageFiles.some((el) => el.id === element.id) && ["copy", "cut"].includes(lastCommand)
     
     const dispatch = useAppDispatch();
 

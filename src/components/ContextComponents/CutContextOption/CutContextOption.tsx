@@ -1,7 +1,7 @@
 import React from 'react'
 import { ContextOption } from '../../FileElement/fileElement.styles'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCopy } from '@fortawesome/free-regular-svg-icons'
+import { faScissors } from '@fortawesome/free-solid-svg-icons'
 import { setLastCommand } from '../../../state/features/files/filesSlice'
 import { useAppDispatch, useAppSelector } from '../../../state/store'
 
@@ -10,28 +10,24 @@ type Props = {
 }
 
 
-function CopyContextOption({setIsOpened}: Props) {
+function CutContextOption({setIsOpened}: Props) {
 
-  
+    
   const { selectedFiles } = useAppSelector((state) => state.files);
   const dispatch = useAppDispatch();
 
   
-  const handleCopyClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleCutClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation()
     setIsOpened && setIsOpened(false);
     if(selectedFiles.length === 0) return
-    dispatch(setLastCommand({files: selectedFiles, command: "copy"}))
+    dispatch(setLastCommand({files: selectedFiles, command: "cut"}))
 }
 
 
     return (
-      <ContextOption onClick={handleCopyClick}><FontAwesomeIcon icon={faCopy} />  <span>Copy</span></ContextOption>
+      <ContextOption onClick={handleCutClick}><FontAwesomeIcon icon={faScissors} /> <span>Cut</span></ContextOption>
     )
 }
 
-export default CopyContextOption
-
-function dispatch(arg0: { payload: { command: "delete" | "copy" | "cut" | "paste"; files?: import("../../../types").SelectedElements }; type: "files/setLastCommand" }) {
-  throw new Error('Function not implemented.')
-}
+export default CutContextOption

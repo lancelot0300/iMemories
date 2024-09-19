@@ -99,3 +99,9 @@ export const NextArrow = styled.div`
   font-size: 20px;
   color: black;
 `;
+
+export const ErrorPreview = styled.div`
+  display:flex;
+  flex-direction: column;
+  gap:20px;
+`

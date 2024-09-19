@@ -12,8 +12,25 @@ export const isClickedContainer = (
 };
 
 export const isMobileDevice = () => {
-  return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.userAgent.includes('Mobi');
+  const userAgent = navigator.userAgent;
+
+  const isMobileUserAgent = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop|BlackBerry/i.test(userAgent);
+
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+  const isiPad = /Macintosh/i.test(userAgent) && isTouchDevice && navigator.maxTouchPoints > 1;
+
+  const isSmallScreen = window.innerWidth <= 1024;
+
+  return (isMobileUserAgent && isTouchDevice && isSmallScreen) || isiPad;
 };
+
+
+
+
+
+
+
 
 export const isFolderSelected = (selectedElements: SelectedElements) => {
   const folderSelected = selectedElements.some(

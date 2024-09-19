@@ -53,7 +53,6 @@ function useSelection({ containerRef, data }: Props) {
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isClickedContainer(containerRef, e) || e.button !== 0 || dragging) return;
-    console.log("mouse down");
 
     startPos = { x: e.pageX, y: e.pageY };
     endPos = { x: e.pageX, y: e.pageY };
@@ -65,7 +64,6 @@ function useSelection({ containerRef, data }: Props) {
     if (!isClickedFlag || !startPos) return;
     
     dragging = true;
-    console.log("mouse move");
     endPos = { x: e.pageX, y: e.pageY };
 
     if (startPos.x > endPos.x) endPos.x += 1;
@@ -127,8 +125,6 @@ function useSelection({ containerRef, data }: Props) {
   const handleClick = (e?: React.MouseEvent<HTMLDivElement>) => {
     if (!isClickedContainer(containerRef, e)) return;
     if (!dragging && !isClickedFlag) return;
-
-    console.log("click");
     clearDrag();
 
     const selectedItems: ActiveFiles[] = allFiles.filter((el) => {
@@ -151,13 +147,11 @@ function useSelection({ containerRef, data }: Props) {
     if (e?.ctrlKey) {
       return dispatch(addFiles(selectedItems.map((el) => el.item)));
     }
-    console.log(allFilesRefs);
     dispatch(selectFiles(selectedItems.map((el) => el.item)));
   };
 
   const handleMouseLeave = () => {
     if (!isClickedFlag || !dragging) return;
-    console.log("mouse leave");
     window.addEventListener("mouseup", () => handleClick(), { once: true });
   };
 
