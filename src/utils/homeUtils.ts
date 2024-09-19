@@ -28,7 +28,16 @@ export const isMobileDevice = () => {
 
 
 
-
+export function extractErrorMessage(inputString: string) {
+  const errorPrefix = "Error:";
+  const index = inputString.indexOf(errorPrefix);
+  
+  if (index !== -1) {
+      return inputString.substring(index + errorPrefix.length).trim();
+  }
+  
+  return inputString
+}
 
 
 

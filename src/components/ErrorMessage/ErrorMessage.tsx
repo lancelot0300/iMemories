@@ -18,6 +18,7 @@ const StyledErrorMessage = styled.span<IInputErrorProps>`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align:center;
   color: ${(props) => (props.$isError ? "red" : "white")};
 `;
 

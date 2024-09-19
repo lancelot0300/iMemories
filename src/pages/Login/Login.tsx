@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FormWrapper,
   LoginContainer,
@@ -11,15 +11,18 @@ import {
   Logo,
   AboutUs,
   InformationWrapper,
+  Loading,
 } from "./login.styles";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import { useAppDispatch } from "../../state/store";
 import { loginSuccess } from "../../state/features/auth/authSlice";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import { setNewPathAndFetchAsync, setUnkownPathAndFetchAsync } from "../../state/features/path/pathSlice";
+import { setUnkownPathAndFetchAsync } from "../../state/features/path/pathSlice";
+import { extractErrorMessage } from "../../utils/homeUtils";
+import { Loader } from "../../components/ContextComponents/PreviewContextOption/preview.styles";
 
 type ILoginFormValues = {
   Username: string;
@@ -27,7 +30,7 @@ type ILoginFormValues = {
 };
 
 type IError = {
-  description: string;
+  Description: string;
 };
 
 function Login() {
@@ -42,6 +45,7 @@ function Login() {
 
   const onSubmit = async ({ Username, Password }: ILoginFormValues) => {
     try {
+      setStatus("")
       const { data } = await axios.post(
         `${process.env.REACT_APP_API_URL}/user/login`,
         { Username, Password },
@@ -60,9 +64,10 @@ function Login() {
       dispatch(loginSuccess(data));
       dispatch(setUnkownPathAndFetchAsync(""));
       navigate("/");
-    } catch (error) {
-      if (axios.isAxiosError<IError>(error) && error.response) {
-        setStatus(error.response.data.description);
+    } catch (e) {
+      const error = e as AxiosError<IError>
+      if (error.response) {
+        setStatus(extractErrorMessage(error.response.data.Description));
       }
     }
   };
@@ -75,7 +80,8 @@ function Login() {
     setStatus,
     handleChange,
     handleSubmit,
-    isSubmitting
+    isSubmitting,
+    isValid
   } = useFormik<ILoginFormValues>({
     initialValues: {
       Username: "",
@@ -109,6 +115,7 @@ function Login() {
                 placeholder="Username"
                 value={values.Username}
                 onChange={handleChange}
+                onFocus={() => setStatus("")}
                 $isError={!!errors.Username || !!status}
               />
               <ErrorMessage $isError={!!errors.Username}>
@@ -125,6 +132,7 @@ function Login() {
                 placeholder="Password"
                 value={values.Password}
                 onChange={handleChange}
+                onFocus={() => setStatus("")}
                 $isError={!!errors.Password || !!status}
               />
               <ErrorMessage $isError={!!errors.Password && !!touched.Password}>
@@ -132,7 +140,9 @@ function Login() {
               </ErrorMessage>
             </InputWrapper>
 
-            <ErrorMessage $isError={!!status}>{status}</ErrorMessage>
+          {isValid && <ErrorMessage $isError={!!status}>{status}</ErrorMessage>}  
+
+          {isSubmitting && <Loading/>}
 
             <RememberMe>
               <input type="checkbox" ref={rememberRef} name="remember" />

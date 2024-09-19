@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import { useAppDispatch } from "../../state/store";
 import { loginSuccess } from "../../state/features/auth/authSlice";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import {
   Header,
@@ -15,8 +15,10 @@ import {
   Button,
   StyledField,
   InformationWrapper,
+  Loading,
 } from "../Login/login.styles";
-import { setNewPathAndFetchAsync, setUnkownPathAndFetchAsync } from "../../state/features/path/pathSlice";
+import { setUnkownPathAndFetchAsync } from "../../state/features/path/pathSlice";
+import { extractErrorMessage } from "../../utils/homeUtils";
 
 type ILoginFormValues = {
   Email: string;
@@ -26,7 +28,7 @@ type ILoginFormValues = {
 };
 
 type IError = {
-  description: string;
+  Description: string;
 };
 
 function Register() {
@@ -43,6 +45,7 @@ function Register() {
   });
 
   const onSubmit = async ({ Username, Password, Email }: ILoginFormValues) => {
+    setStatus("")
     try {
       const register = await axios.post(
         process.env.REACT_APP_API_URL + "/user/register",
@@ -66,11 +69,10 @@ function Register() {
       localStorage.setItem("sessionTill", sessionExpiry.toString());
 
       navigate("/");
-    } catch (error) {
-      if (axios.isAxiosError<IError>(error)) {
-        if (error.response) {
-          setStatus(error.response.data.description);
-        }
+    } catch (e) {
+      const error = e as AxiosError<IError>
+      if (error.response) {
+        setStatus(extractErrorMessage(error.response.data.Description));
       }
     }
   };
@@ -80,6 +82,7 @@ function Register() {
     errors,
     touched,
     status,
+    isValid,
     setStatus,
     handleChange,
     handleSubmit,
@@ -160,7 +163,10 @@ function Register() {
                 {touched.ConfirmPassword ? errors.ConfirmPassword : ""}
               </ErrorMessage>
             </InputWrapper>
-            <ErrorMessage $isError={status}>{status}</ErrorMessage>
+
+            {isValid && <ErrorMessage $isError={!!status}>{status}</ErrorMessage>}  
+
+            {isSubmitting && <Loading/>}
 
             <Button disabled={isSubmitting} type="submit">Submit</Button>
           </form>

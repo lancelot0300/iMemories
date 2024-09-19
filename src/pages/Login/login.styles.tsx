@@ -4,7 +4,6 @@ export const LoginContainer = styled.div`
   height: 100svh;
   min-height: 650px;
   background: url("./images/background.jpg") no-repeat center center/cover;
-
 `;
 
 export const FormWrapper = styled.div`
@@ -26,6 +25,7 @@ export const FormWrapper = styled.div`
     flex-direction: column;
     gap: 10px;
     width: 100%;
+    align-items: center;
   }
 `;
 
@@ -138,7 +138,7 @@ export const InformationWrapper = styled.div`
     gap: 50px;
   }
 
-    @media (max-height: 600px) {
+  @media (max-height: 600px) {
     transform: translateX(-50%);
     top: 100px;
     left: 50%;
@@ -168,5 +168,51 @@ export const AboutUs = styled.div`
 
   @media (max-width: 768px) {
     display: none;
+  }
+`;
+
+export const Loading = styled.div`
+  width: 80px;
+  height: 40px;
+  box-sizing: border-box;
+  background: linear-gradient(#fff 0 0) left / calc(50% - 15px) 8px no-repeat,
+    linear-gradient(#fff 0 0) right/calc(50% - 15px) 8px no-repeat,
+    conic-gradient(from 135deg at top, #0000, #6c2d27 1deg 90deg, #0000 91deg)
+      bottom/14px 8px repeat-x,
+    #0000;
+  border-bottom: 2px solid #6c2d27;
+  position: relative;
+  overflow: hidden;
+  animation: l6-0 1s infinite linear;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 14px;
+    background: lightblue;
+    left: -5px;
+    animation: l6-1 2s infinite cubic-bezier(0, 100, 1, 100),
+      l6-2 2s infinite linear;
+  }
+  @keyframes l6-0 {
+    50% {
+      background-position: left, right, bottom -2px left -4px;
+    }
+  }
+  @keyframes l6-1 {
+    0%,
+    27% {
+      bottom: calc(50% + 4px);
+    }
+    65%,
+    100% {
+      bottom: calc(50% + 4.1px);
+    }
+  }
+  @keyframes l6-2 {
+    100% {
+      left: 100%;
+    }
   }
 `;
