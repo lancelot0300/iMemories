@@ -84,8 +84,8 @@ function Login() {
     isValid
   } = useFormik<ILoginFormValues>({
     initialValues: {
-      Username: "",
-      Password: "",
+      Username: "masza221",
+      Password: "test1234",
     },
     onSubmit,
     validationSchema: schema,
@@ -135,7 +135,7 @@ function Login() {
                 onFocus={() => setStatus("")}
                 $isError={!!errors.Password || !!status}
               />
-              <ErrorMessage $isError={!!errors.Password && !!touched.Password}>
+              <ErrorMessage $isError={errors.Password && !!touched.Password}>
                 {touched.Password ? errors.Password : ""}
               </ErrorMessage>
             </InputWrapper>

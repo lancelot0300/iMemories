@@ -39,7 +39,11 @@ export function extractErrorMessage(inputString: string) {
   return inputString
 }
 
-
+export function isValidUUID(uuid: string) {
+  if(uuid === "") return true
+  const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidPattern.test(uuid);
+}
 
 export const isFolderSelected = (selectedElements: SelectedElements) => {
   const folderSelected = selectedElements.some(

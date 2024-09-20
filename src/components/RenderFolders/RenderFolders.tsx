@@ -8,12 +8,14 @@ type Props = {
   clearDrag: () => void;
 };
 
-const RenderFiles = ({ data, allFilesRefs, clearDrag }: Props) => {
+const RenderFolders = ({ data, allFilesRefs, clearDrag }: Props) => {
   if (!data) return null;
+
+  console.log(data)
 
   return (
     <>
-     {data.childFolders.map((item: FolderType) => {
+     {data.childFolders?.map((item: FolderType) => {
         return (
           <FolderElement
             key={item.id}
@@ -34,4 +36,4 @@ const RenderFiles = ({ data, allFilesRefs, clearDrag }: Props) => {
   );
 };
 
-export default RenderFiles;
+export default RenderFolders;

@@ -1,7 +1,8 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction, ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
 import axios, { AxiosError, CancelTokenSource } from "axios";
 import { LoginResponse, Path, Response, UnknownPathResponse } from "../../../types";
 import { loginSuccess } from "../auth/authSlice";
+import { RejectedWithValueActionFromAsyncThunk } from "@reduxjs/toolkit/dist/matchers";
 
 type InitialState = {
   data: Response;
@@ -11,75 +12,97 @@ type InitialState = {
   error: string | null;
 };
 
+
+const refreshPath = async (
+  dispatch: ThunkDispatch<unknown, unknown, UnknownAction>,
+  next: (path: string) => Promise<Response> | Promise<UnknownPathResponse>,
+  path: string 
+) => {
+
+  try {
+    const response = await axios.get<LoginResponse>(
+      `${process.env.REACT_APP_API_URL}/token/refresh`,
+      {
+        withCredentials: true,
+      }
+    );
+    dispatch(loginSuccess(response.data.user));
+    return await next(path); 
+  } catch (e) {
+    const error = e as AxiosError
+    throw error
+  }
+
+};
+
 let cancelSource: CancelTokenSource
-export const setPathAsync = createAsyncThunk(
+ const setPathAsync = createAsyncThunk(
   "path/setPathAsync",
-  async (path: string, { signal, rejectWithValue, dispatch }) => {
-    try {
+  async (path: string, { rejectWithValue, dispatch }) => {
+
+    const fetchPath = async (path: string) => {
       if (cancelSource) {
         cancelSource.cancel("New request initiated");
       }
       cancelSource = axios.CancelToken.source();
-
-      signal.addEventListener("abort", () => {
-        cancelSource.cancel("Request was aborted");
-        rejectWithValue("Request was aborted");
-      });
-
-      const fetchPath = async () => {
+      const url = `${process.env.REACT_APP_API_URL}/folder/${path}`;
+    
+      try {
         const { data } = await axios.get<Response>(
-          `${process.env.REACT_APP_API_URL}/folder/${path}`,
+          url,
           {
             withCredentials: true,
             cancelToken: cancelSource.token,
           }
         );
-        return data;
-      };
+        return data as Response;
+      }
+      catch(e) {
+        const error = e as AxiosError
+        throw error
+      }
+    };
 
-      try {
-        return await fetchPath();
-      } catch (e) {
-        const error = e as AxiosError;
-        if (error.response?.status === 401) {
-          const response = await axios.get<LoginResponse>(
-            `${process.env.REACT_APP_API_URL}/token/refresh`,
-            {
-              withCredentials: true,
-            }
-          );
-          if (response.data) {
-            dispatch(loginSuccess(response.data.user));
-            return await fetchPath();
-          }
-          return rejectWithValue("Unauthorized");
-        }
-        throw error;
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        return rejectWithValue(error.response?.data || "Something went wrong");
-      }
-      return rejectWithValue("Something went wrong");
+    try {
+      const data = await fetchPath(path);
+      return data
     }
+    catch (e) {
+      const error = e as AxiosError
+
+      if(error.response?.status === 401) {
+       try {
+        const response = await refreshPath(
+          dispatch,
+          async (path) => {
+            return await fetchPath(path); 
+          },
+          path 
+        );
+        if(!response) return rejectWithValue("Failed to refresh path")
+          return response as Response
+       } catch (e) {
+          const error = e as AxiosError
+          return rejectWithValue(error.message)
+       }
+      }
+
+      return rejectWithValue(error.message)
+    }
+
   }
 );
 
 export const setUnknownPathAsync = createAsyncThunk(
   "path/setUnknownPathAsync",
-  async (path: string, { signal, rejectWithValue, dispatch }) => {
-    try {
+  async (path: string, { rejectWithValue, dispatch }) => {
       if (cancelSource) {
         cancelSource.cancel("New request initiated");
       }
       cancelSource = axios.CancelToken.source();
 
-      signal.addEventListener("abort", () => {
-        cancelSource.cancel("Request was aborted");
-        rejectWithValue("Request was aborted");
-      });
 
-      const fetchPath = async () => {
+      const fetchPath = async (path: string) => {
         const url = path
           ? `${process.env.REACT_APP_API_URL}/folder/path/${path}`
           : `${process.env.REACT_APP_API_URL}/folder`;
@@ -98,31 +121,30 @@ export const setUnknownPathAsync = createAsyncThunk(
       };
 
       try {
-        return await fetchPath();
+        const data = await fetchPath(path);
+        return data
       } catch (e) {
         const error = e as AxiosError;
-        if (error.response?.status === 401) {
-          const response = await axios.get<LoginResponse>(
-            `${process.env.REACT_APP_API_URL}/token/refresh`,
-            {
-              withCredentials: true,
-            }
+        if(error.response?.status === 401) {
+         try{
+          const response = await refreshPath(
+            dispatch,
+            async (path) => {
+              return await fetchPath(path); 
+            },
+            path 
           );
-          if (response.data) {
-            dispatch(loginSuccess(response.data.user));
-            return await fetchPath();
-          }
-          return rejectWithValue("Unauthorized");
+          if(!response) return rejectWithValue("Failed to refresh path")
+          return response as UnknownPathResponse
+         }
+         catch (e) {
+          const error = e as AxiosError
+          return rejectWithValue(error.message)
+         }
         }
-        throw error;
+        return rejectWithValue(error.message)
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        return rejectWithValue(error.response?.data || "Something went wrong");
-      }
-      return rejectWithValue("Something went wrong");
-    }
-  }
+    } 
 );
 
 export const setNewPathAndFetchAsync = createAsyncThunk(
@@ -144,8 +166,10 @@ export const setActualPathAndFetchAsync = createAsyncThunk(
 
 export const setUnkownPathAndFetchAsync = createAsyncThunk(
   "path/setUnkownPathAndFetchAsync",
-  async (id: string, { dispatch }) => {
-    return await dispatch(setUnknownPathAsync(id));
+  async (id: string, { dispatch, rejectWithValue }) => {
+    const response = await dispatch(setUnknownPathAsync(id));
+    if(response.meta.requestStatus === "rejected") return rejectWithValue(response.payload)
+    return response.payload as UnknownPathResponse
   }
 );
 
@@ -196,9 +220,9 @@ const pathSlice = createSlice({
           state.error = null;
         }
       )
-      .addCase(setPathAsync.rejected, (state, action) => {
-        state.status = action.error.message === "Rejected" ? "loading" : "failed";
-        state.error = action.error.message || "Request was aborted";
+      .addCase(setPathAsync.rejected, (state, action: RejectedWithValueActionFromAsyncThunk<typeof setPathAsync>) => {
+        state.status = action.payload == "New request initiated" ? "loading" : "failed"
+        state.error = action.payload as string
       })
       .addCase(setPathAsync.pending, (state) => {
         state.status = "loading";
@@ -209,16 +233,16 @@ const pathSlice = createSlice({
         state.error = null;
       })
       .addCase(setUnkownPathAndFetchAsync.fulfilled, (state, action) => {
-        const payload = action.payload.payload as UnknownPathResponse;
+        const payload = action.payload as UnknownPathResponse;
         state.data = payload.folder;
         state.actualPath = payload.path;
         state.history = payload.path;
         state.error = null;
         state.status = "completed";
       })
-      .addCase(setUnkownPathAndFetchAsync.rejected, (state, action) => {
+      .addCase(setUnkownPathAndFetchAsync.rejected, (state, action: RejectedWithValueActionFromAsyncThunk<typeof setUnkownPathAndFetchAsync>) => {
         state.status = "failed";
-        state.error = action.error.message || "Request was aborted";
+        state.error = action.payload as string
       })
   },
 });

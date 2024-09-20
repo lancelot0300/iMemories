@@ -13,7 +13,7 @@ const RenderFiles = ({ data, allFilesRefs, clearDrag }: Props) => {
 
   return (
     <>
-      {data.files.map((item: FileType, index: number) => {
+      {data.files?.map((item: FileType, index: number) => {
         return (
           <FileElement
           key={item.id}

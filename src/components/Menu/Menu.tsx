@@ -15,54 +15,29 @@ import {
   faArrowRight,
   faArrowRightLong,
 } from "@fortawesome/free-solid-svg-icons";
-import { useAppDispatch, useAppSelector } from "../../state/store";
-import {
-  isNextPathInHistory,
-  setActualPathAndFetchAsync,
-} from "../../state/features/path/pathSlice";
+import { useAppDispatch } from "../../state/store";
+
 import { ActiveFiles } from "../../types";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { logout } from "../../state/features/auth/authSlice";
+import usePathNavigation from "../../hooks/usePathNavigation/usePathNavigation";
 
 type Props = {
   allFilesRefs: React.MutableRefObject<ActiveFiles[]>;
 };
 
 const Menu: React.FC<Props> = ({ allFilesRefs }) => {
-  const { actualPath, history } = useAppSelector((state) => state.path);
-  const isNextPath = useAppSelector((state) => isNextPathInHistory(state.path));
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const isPreviousPath = actualPath.length > 1;
+
+  const {actualPath, handlePathChange, setNextPath, setPreviousPath, isPreviousPath, isNextPath} = usePathNavigation(allFilesRefs)
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
   const checkIfPathNameIsNullOrUndefined = (
     path: string | undefined | null
   ) => {
     if (!path) return "Home";
     return path;
-  };
-
-  const handlePathChange = (pathIndex: number) => {
-    allFilesRefs.current = [];
-    dispatch(setActualPathAndFetchAsync(pathIndex));
-    history[pathIndex].name === null
-      ? navigate("/")
-      : navigate(`/${history[pathIndex].id}`);
-  };
-
-  const setPreviousPath = (pathIndex: number) => {
-    if (pathIndex < 0) return;
-    dispatch(setActualPathAndFetchAsync(pathIndex));
-    history[pathIndex].name === null
-      ? navigate("/")
-      : navigate(`/${history[pathIndex].id}`);
-  };
-
-  const setNextPath = (pathIndex: number) => {
-    if (!isNextPath) return;
-    dispatch(setActualPathAndFetchAsync(pathIndex));
-    navigate(`/${history[pathIndex].id}`);
   };
 
   const handleLogout = async () => {

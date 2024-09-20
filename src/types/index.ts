@@ -15,8 +15,8 @@ export type Response = {
     lastOpenedDate: string;
     isStared: boolean;
   } | null;
-  files: FileType[];
-  childFolders: FolderType[];
+  files?: FileType[];
+  childFolders?: FolderType[];
 };
 
 export type UnknownPathResponse = {

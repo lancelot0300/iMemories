@@ -2,9 +2,8 @@ import React from "react";
 import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import { setLastCommand } from "../../state/features/files/filesSlice";
-import { setPathAsync } from "../../state/features/path/pathSlice";
 import { FileType, FolderType } from "../../types";
-import { url } from "inspector";
+import { refreshPathAsync } from "../../state/features/path/pathSlice";
 
 
 function usePaste(setIsOpened: React.Dispatch<React.SetStateAction<boolean>>) {
@@ -43,7 +42,7 @@ function usePaste(setIsOpened: React.Dispatch<React.SetStateAction<boolean>>) {
     dispatch(setLastCommand({ command: "paste" }));
     await requset
       .then(() => {
-        dispatch(setPathAsync(data.id));
+        dispatch(refreshPathAsync(data.id));
       })
       .catch((error) => {
         console.log(error);
