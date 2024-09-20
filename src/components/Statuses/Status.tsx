@@ -43,8 +43,6 @@ function Status({ request }: Props) {
     dispatch(removeFileStatus(index));
   };
 
-  console.log(actualStatus?.progress)
-
   return (
     <StatusWrapper $status={actualStatus?.status} ref={wrapperRef}>
       <LeftWrapper>

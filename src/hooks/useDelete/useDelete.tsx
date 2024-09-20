@@ -15,23 +15,23 @@ function useDelete(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) 
     event.stopPropagation()
 
     const filesToDelete = selectedFiles.map((file) => "fileDetails" in file && file.fileDetails.id).filter((id) => id);
-    // const foldersToDelete = selectedFiles.map((file) => "folderDetails" in file && file.folderDetails.id).filter((id) => id);
+    const foldersToDelete = selectedFiles.map((file) => "folderDetails" in file && file.folderDetails.id).filter((id) => id);
     
     const deleteFilesPromises = filesToDelete.map((id) => {
       const URL = `${process.env.REACT_APP_API_URL}/file/${id}`;
       return axiosPrivate.delete(URL, { withCredentials: true });
     });
 
-    // const deleteFoldersPromises = foldersToDelete.map((id) => {
-    //   const URL = `${process.env.REACT_APP_API_URL}/folder/${id}`;
-    //   return axiosPrivate.delete(URL, { withCredentials: true });
-    // });
+    const deleteFoldersPromises = foldersToDelete.map((id) => {
+      const URL = `${process.env.REACT_APP_API_URL}/folder/${id}`;
+      return axiosPrivate.delete(URL, { withCredentials: true });
+    });
 
     try {
       dispatch(setLastCommand({ files: selectedFiles, command: "delete" }));
-      await Promise.all([...deleteFilesPromises]);
+      await Promise.all([...deleteFilesPromises, deleteFoldersPromises]);
     } catch (error) {
-      console.error("Error deleting files:", error);
+      console.error("Error deleting:", error);
     } finally {
       if (setIsOpened) {
         dispatch(refreshPathAsync(actualPath.id));
