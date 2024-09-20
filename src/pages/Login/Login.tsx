@@ -22,7 +22,6 @@ import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { setUnkownPathAndFetchAsync } from "../../state/features/path/pathSlice";
 import { extractErrorMessage } from "../../utils/homeUtils";
-import { Loader } from "../../components/ContextComponents/PreviewContextOption/preview.styles";
 
 type ILoginFormValues = {
   Username: string;
@@ -84,8 +83,8 @@ function Login() {
     isValid
   } = useFormik<ILoginFormValues>({
     initialValues: {
-      Username: "masza221",
-      Password: "test1234",
+      Username: "",
+      Password: "",
     },
     onSubmit,
     validationSchema: schema,
@@ -116,7 +115,7 @@ function Login() {
                 value={values.Username}
                 onChange={handleChange}
                 onFocus={() => setStatus("")}
-                $isError={!!errors.Username || !!status}
+                $isError={(!!errors.Username && touched.Username) || !!status}
               />
               <ErrorMessage $isError={!!errors.Username}>
                 {touched.Username ? errors.Username : ""}
@@ -133,7 +132,7 @@ function Login() {
                 value={values.Password}
                 onChange={handleChange}
                 onFocus={() => setStatus("")}
-                $isError={!!errors.Password || !!status}
+                $isError={(!!errors.Password && !!touched.Password) || !!status}
               />
               <ErrorMessage $isError={errors.Password && !!touched.Password}>
                 {touched.Password ? errors.Password : ""}
