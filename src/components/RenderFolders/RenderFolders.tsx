@@ -11,8 +11,6 @@ type Props = {
 const RenderFolders = ({ data, allFilesRefs, clearDrag }: Props) => {
   if (!data) return null;
 
-  console.log(data)
-
   return (
     <>
      {data.childFolders?.map((item: FolderType) => {
