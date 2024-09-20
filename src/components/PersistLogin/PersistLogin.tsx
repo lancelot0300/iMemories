@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import useRefresh from "../../hooks/useRefresh/useRefresh";
 import LoadingHome from "../../pages/Home/LoadingHome";
 import { useAppDispatch } from "../../state/store";
@@ -11,7 +11,6 @@ function PersistLogin() {
 
   const refresh = useRefresh();
   const navigate = useNavigate();
-  const location = useLocation();
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
@@ -43,7 +42,7 @@ function PersistLogin() {
     };
 
     handleSession(); 
-  }, [dispatch, id, navigate, refresh, location.pathname]);
+  }, [dispatch, id, navigate, refresh]);
 
   if (loading) {
     return <LoadingHome />;

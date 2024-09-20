@@ -45,7 +45,6 @@ export const renderIcon = (extension: string) => {
     case ".jsx":
     case ".tsx":
     case ".json":
-    case ".xml":
     case ".php":
     case ".py":
     case ".java":
@@ -79,7 +78,6 @@ export const renderIcon = (extension: string) => {
     case ".xhtml":
     case ".rss":
     case ".atom":
-    case ".css":
     case ".scss":
     case ".less":
     case ".sass":

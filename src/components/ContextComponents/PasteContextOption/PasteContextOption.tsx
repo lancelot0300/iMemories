@@ -2,7 +2,6 @@ import React from "react";
 import { ContextOption } from "../../FileElement/fileElement.styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaste } from "@fortawesome/free-regular-svg-icons";
-import { useAppSelector } from "../../../state/store";
 import usePaste from "../../../hooks/usePaste/usePaste";
 
 type Props = {

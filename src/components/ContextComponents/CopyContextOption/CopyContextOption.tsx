@@ -31,7 +31,3 @@ function CopyContextOption({setIsOpened}: Props) {
 }
 
 export default CopyContextOption
-
-function dispatch(arg0: { payload: { command: "delete" | "copy" | "cut" | "paste"; files?: import("../../../types").SelectedElements }; type: "files/setLastCommand" }) {
-  throw new Error('Function not implemented.')
-}
