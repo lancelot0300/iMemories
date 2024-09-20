@@ -2,9 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import useRefresh from "../../hooks/useRefresh/useRefresh";
 import LoadingHome from "../../pages/Home/LoadingHome";
-import { useAppDispatch, useAppSelector } from "../../state/store";
+import { useAppDispatch } from "../../state/store";
 import { setUnkownPathAndFetchAsync } from "../../state/features/path/pathSlice";
-import { error } from "console";
 
 function PersistLogin() {
   const [loading, setLoading] = useState(true);
@@ -15,8 +14,6 @@ function PersistLogin() {
   const location = useLocation();
   const { id } = useParams();
   const dispatch = useAppDispatch();
-
-  const {error} = useAppSelector(state => state.path)
 
   useEffect(() => {
     if (isUseEffectMounted.current) return;
@@ -51,7 +48,7 @@ function PersistLogin() {
   if (loading) {
     return <LoadingHome />;
   }
-  
+
   return <Outlet />; 
 }
 

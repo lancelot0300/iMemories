@@ -1,8 +1,6 @@
-import React, { useState } from "react";
-import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
-import { useAppDispatch, useAppSelector } from "../../state/store";
+import { useState } from "react";
+import { useAppSelector } from "../../state/store";
 import * as yup from "yup";
-import { refreshPathAsync } from "../../state/features/path/pathSlice";
 import { useFormik } from "formik";
 import CreateModal from "../../components/CreateModal/CreateModal";
 import { InputWrapper, StyledField } from "../../pages/Login/login.styles";
@@ -15,11 +13,11 @@ type IFormValues = {
 };
 
 function useRename(setIsOpened: (value: boolean) => void) {
-  const { data } = useAppSelector((state) => state.path);
+  // const { data } = useAppSelector((state) => state.path);
   const [isOpenedModal, setIsOpenedModal] = useState(false);
   const { selectedFiles } = useAppSelector((state) => state.files);
-  const dispatch = useAppDispatch();
-  const axiosPrivate = useAxiosPrivate();
+  // const dispatch = useAppDispatch();
+  // const axiosPrivate = useAxiosPrivate();
 
   const schema = yup.object().shape({
     folder: yup.string().required("Folder name is required"),
@@ -50,7 +48,7 @@ function useRename(setIsOpened: (value: boolean) => void) {
     //   dispatch(refreshPathAsync(data.id));
   };
 
-  const { values, errors, touched, handleChange, handleSubmit, setErrors } =
+  const { values, errors, touched, handleChange, handleSubmit } =
     useFormik<{ name: string }>({
       initialValues: {
         name: "",

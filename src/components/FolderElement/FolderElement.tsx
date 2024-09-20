@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { ActiveFiles, ContextRef, FolderType } from "../../types";
 import { FolderElementContainer, Icon, Name } from "./folderElement.styles";
-import { useAppDispatch, useAppSelector } from "../../state/store";
+import { useAppDispatch } from "../../state/store";
 import ContextMenu from "../ContextMenu/ContextMenu";
 import { faFolder } from "@fortawesome/free-solid-svg-icons";
 import useFile from "../../hooks/useFile/useFile";

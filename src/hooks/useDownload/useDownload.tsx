@@ -5,7 +5,6 @@ import {
   addFileStatus,
   updateFileStatus,
 } from "../../state/features/requests/requestsSlice";
-import { FileType, FolderType } from "../../types";
 
 function useDownload(
   setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>

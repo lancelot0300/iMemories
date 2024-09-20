@@ -2,7 +2,6 @@ import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { ActiveFiles, ContextRef, FileType, InfoTextRef } from "../../types";
 import { FileElementContainer, Icon, Name } from "./fileElement.styles";
 import useFile from "../../hooks/useFile/useFile";
-import { useAppSelector } from "../../state/store";
 import ContextMenu from "../ContextMenu/ContextMenu";
 import { renderIcon } from "../../utils/iconsUtils";
 import InfoText from "../InfoText/InfoText";

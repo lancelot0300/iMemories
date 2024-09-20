@@ -1,6 +1,5 @@
 import React, {
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useLayoutEffect,
   useRef,
@@ -20,10 +19,11 @@ type InfoTextRef = {
 };
 
 const InfoText = forwardRef<InfoTextRef, InfoTextProps>(({ children }, ref) => {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const pos = useRef({x: 0, y: 0})
   const [visible, setVisible] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<number | null>(null);
+
 
   const showInfo = (element: HTMLElement) => {
     const target = element;
@@ -32,7 +32,7 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(({ children }, ref) => {
     const x = target.getBoundingClientRect().left + targetWidth - 10;
     const y = target.getBoundingClientRect().top + targetHeight - 10;
 
-    setPos({ x, y });
+    pos.current = {x,y}
 
     timeoutRef.current = window.setTimeout(() => {
       setVisible(true);
@@ -60,7 +60,7 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(({ children }, ref) => {
 
   useLayoutEffect(() => {
     if (visible && wrapperRef.current) {
-      let { x, y } = pos;
+      const {x, y} = pos.current
 
       const tooltipWidth = wrapperRef.current.offsetWidth;
       const tooltipHeight = wrapperRef.current.offsetHeight;
@@ -70,16 +70,14 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(({ children }, ref) => {
       const isOverY = y + tooltipHeight + padding > window.innerHeight;
 
       if (isOverX) {
-        x = Math.max(padding, window.innerWidth - tooltipWidth - padding);
+        pos.current.x = Math.max(padding, window.innerWidth - tooltipWidth - padding);
       }
 
       if (isOverY) {
-        y = Math.max(padding, window.innerHeight - tooltipHeight - padding);
+        pos.current.y = Math.max(padding, window.innerHeight - tooltipHeight - padding);
       }
-
-      setPos({ x, y });
     }
-  }, [pos.x, pos.y, visible]);
+  }, [visible]);
 
 
   if(!visible) return null
@@ -97,8 +95,8 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(({ children }, ref) => {
         onClick={handleClick}
         onContextMenu={handleClick}
         ref={wrapperRef}
-        $posX={pos.x}
-        $posY={pos.y}
+        $posX={pos.current.x}
+        $posY={pos.current.y}
       >
         {children}
       </StyledInfoWrapper>

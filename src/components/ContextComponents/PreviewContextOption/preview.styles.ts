@@ -104,4 +104,5 @@ export const ErrorPreview = styled.div`
   display:flex;
   flex-direction: column;
   gap:20px;
+  text-align:center;
 `

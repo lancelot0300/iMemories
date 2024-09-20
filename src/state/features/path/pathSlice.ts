@@ -221,7 +221,7 @@ const pathSlice = createSlice({
         }
       )
       .addCase(setPathAsync.rejected, (state, action: RejectedWithValueActionFromAsyncThunk<typeof setPathAsync>) => {
-        state.status = action.payload == "New request initiated" ? "loading" : "failed"
+        state.status = action.payload === "New request initiated" ? "loading" : "failed"
         state.error = action.payload as string
       })
       .addCase(setPathAsync.pending, (state) => {

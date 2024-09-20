@@ -12,7 +12,6 @@ import LoadingHome from "./LoadingHome";
 import RenderFiles from "../../components/RenderFiles/RenderFiles";
 import ContextMenu from "../../components/ContextMenu/ContextMenu";
 import RenderFolders from "../../components/RenderFolders/RenderFolders";
-import { useNavigate } from "react-router-dom";
 import NotFound from "../NotFound/NotFound";
 
 function Home() {
@@ -20,7 +19,6 @@ function Home() {
   const contextMenuRef = useRef<ContextRef>(null);
   const { data, status, error } = useAppSelector((state) => state.path);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate()
 
 
   useDropHook({ containerRef });

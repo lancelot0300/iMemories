@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import  { CancelTokenSource } from "axios";
 
 type FileStatusState = {
   index: string;

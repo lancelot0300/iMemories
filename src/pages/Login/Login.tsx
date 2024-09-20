@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   FormWrapper,
   LoginContainer,
@@ -66,7 +66,7 @@ function Login() {
     } catch (e) {
       const error = e as AxiosError<IError>
       if (error.response) {
-        setStatus(extractErrorMessage(error.response.data.Description));
+        setStatus(extractErrorMessage("Username or password is incorrect"));
       }
     }
   };

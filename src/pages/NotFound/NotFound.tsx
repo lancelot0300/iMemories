@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { HomeContainer } from "../Home/home.styles";
 import { styled } from "styled-components";
 import { useAppDispatch } from "../../state/store";
-import { ActiveFiles } from "../../types";
-import usePathNavigation from "../../hooks/usePathNavigation/usePathNavigation";
 import { setUnkownPathAndFetchAsync } from "../../state/features/path/pathSlice";
 
 const NotFoundContainer = styled.div`
@@ -29,7 +27,7 @@ function NotFound() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
 
-  const {} = usePathNavigation()
+  // const {} = usePathNavigation()
 
   const handleButtonClick = () => {
     dispatch(setUnkownPathAndFetchAsync(""))
