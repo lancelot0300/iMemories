@@ -74,7 +74,7 @@ function Home() {
     }
     console.log("pathWithoutSlash", pathWithoutSlash)
    
-  }, [location.pathname, actualPath, data.id, dispatch]);
+  }, [location.pathname, actualPath, data.id, dispatch, status]);
 
   const handleContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();

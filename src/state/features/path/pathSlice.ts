@@ -3,13 +3,11 @@ import axios, { AxiosError, CancelTokenSource } from "axios";
 import { LoginResponse, Path, Response, UnknownPathResponse } from "../../../types";
 import { loginSuccess } from "../auth/authSlice";
 import { RejectedWithValueActionFromAsyncThunk } from "@reduxjs/toolkit/dist/matchers";
-import { stat } from "fs";
 
 type InitialState = {
   data: Response;
   actualPath: Path[];
   history: Path[];
-  dataFor: string;
   status: "idle" | "loading" | "failed" | "completed";
   error: string | null;
 };
@@ -194,7 +192,6 @@ const initialState: InitialState = {
     files: [],
     childFolders: [],
   },
-  dataFor: "",
   actualPath: [],
   history: [],
   status: "idle",
@@ -221,7 +218,6 @@ const pathSlice = createSlice({
           state.data = action.payload;
           state.status = "completed";
           state.error = null;
-          state.dataFor = action.payload.id;
         }
       )
       .addCase(setPathAsync.rejected, (state, action: RejectedWithValueActionFromAsyncThunk<typeof setPathAsync>) => {
@@ -239,7 +235,6 @@ const pathSlice = createSlice({
       .addCase(setUnkownPathAndFetchAsync.fulfilled, (state, action) => {
         const payload = action.payload as UnknownPathResponse;
         state.data = payload.folder;
-        state.dataFor = payload.folder.id;
         state.actualPath = payload.path;
         state.history = payload.path;
         state.error = null;
