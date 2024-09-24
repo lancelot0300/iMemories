@@ -68,7 +68,7 @@ function Register() {
       const sessionExpiry = new Date(new Date().getTime() + 30 * 60000);
       localStorage.setItem("sessionTill", sessionExpiry.toString());
 
-      navigate("/");
+      navigate("/", { replace: true });
     } catch (e) {
       const error = e as AxiosError<IError>
       if (error.response) {
@@ -170,7 +170,7 @@ function Register() {
 
             <Button disabled={isSubmitting} type="submit">Submit</Button>
           </form>
-          <RegisterInfo onClick={() => navigate("/login")}>
+          <RegisterInfo onClick={() => navigate("/login", {replace: true})}>
             Already account? Log in!
           </RegisterInfo>
         </FormWrapper>

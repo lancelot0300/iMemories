@@ -21,7 +21,7 @@ function useRefresh() {
         } catch (error) {
             if (!["/login", "/register"].includes(location.pathname)) {
                dispatch(logout())
-               return navigate("/login");
+               return navigate("/login", { replace: true });
               }
            return
         }

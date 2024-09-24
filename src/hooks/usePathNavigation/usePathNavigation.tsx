@@ -1,7 +1,7 @@
 import React from 'react'
 import { isNextPathInHistory, setActualPathAndFetchAsync } from '../../state/features/path/pathSlice';
 import { useAppDispatch, useAppSelector } from '../../state/store';
-import { useNavigate} from 'react-router-dom';
+import {  useNavigate} from 'react-router-dom';
 import { ActiveFiles } from '../../types';
 
 function usePathNavigation(allFilesRefs?: React.MutableRefObject<ActiveFiles[]>) {
@@ -10,7 +10,6 @@ function usePathNavigation(allFilesRefs?: React.MutableRefObject<ActiveFiles[]>)
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const isPreviousPath = actualPath.length > 1;
-
   
     const handlePathChange = (pathIndex: number) => {
       if(allFilesRefs)
@@ -19,24 +18,25 @@ function usePathNavigation(allFilesRefs?: React.MutableRefObject<ActiveFiles[]>)
       }
       dispatch(setActualPathAndFetchAsync(pathIndex));
       history[pathIndex].name === null
-        ? navigate("/")
-        : navigate(`/${history[pathIndex].id}`);
+        ? navigate("/", { replace: true })
+        : navigate(`/${history[pathIndex].id}`, { replace: true });
     };
   
     const setPreviousPath = (pathIndex: number) => {
       if (pathIndex < 0) return;
       dispatch(setActualPathAndFetchAsync(pathIndex));
       history[pathIndex].name === null
-        ? navigate("/")
-        : navigate(`/${history[pathIndex].id}`);
+        ? navigate("/", { replace: true })
+        : navigate(`/${history[pathIndex].id}`, { replace: true });
     };
   
     const setNextPath = (pathIndex: number) => {
         
       if (!isNextPath) return;
       dispatch(setActualPathAndFetchAsync(pathIndex));
-      navigate(`/${history[pathIndex].id}`);
+      navigate(`/${history[pathIndex].id}`, { replace: true });
     };
+
 
     return {setNextPath, setPreviousPath, handlePathChange, isPreviousPath, actualPath, isNextPath}
 }

@@ -49,7 +49,7 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
         })
       );
       dispatch(clearFiles());
-      navigate(`/${selectedFiles[0].id}`);
+      navigate(`/${selectedFiles[0].id}`, { replace: true });
     };
 
     const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {

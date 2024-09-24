@@ -55,7 +55,7 @@ const Menu: React.FC<Props> = ({ allFilesRefs }) => {
     )
 
   dispatch(logout())
-  navigate("/login")
+  navigate("/login", { replace: true })
   };
 
   const renderPath = () => {

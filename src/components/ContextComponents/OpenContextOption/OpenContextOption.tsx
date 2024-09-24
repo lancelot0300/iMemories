@@ -21,7 +21,7 @@ function OpenContextOption() {
     if(!folder ) return
     dispatch(setNewPathAndFetchAsync({id: selectedFiles[0].id, name: folder.folderDetails.name}));
     dispatch(clearFiles());
-    navigate(`/${selectedFiles[0].id}`);
+    navigate(`/${selectedFiles[0].id}`, { replace: true });
   }
 
   return (

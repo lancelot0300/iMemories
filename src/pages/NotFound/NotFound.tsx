@@ -27,11 +27,9 @@ function NotFound() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
 
-  // const {} = usePathNavigation()
-
   const handleButtonClick = () => {
     dispatch(setUnkownPathAndFetchAsync(""))
-    navigate("/")
+    navigate("/", {replace: true})
   }
 
   return (
