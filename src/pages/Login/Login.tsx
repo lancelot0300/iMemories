@@ -62,7 +62,7 @@ function Login() {
 
       dispatch(loginSuccess(data));
       dispatch(setUnkownPathAndFetchAsync(""));
-      navigate("/");
+      navigate("/", { replace: true });
     } catch (e) {
       const error = e as AxiosError<IError>
       if (error.response) {

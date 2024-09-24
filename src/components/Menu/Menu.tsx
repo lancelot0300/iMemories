@@ -18,7 +18,7 @@ import {
 import { useAppDispatch } from "../../state/store";
 
 import { ActiveFiles } from "../../types";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { logout } from "../../state/features/auth/authSlice";
 import usePathNavigation from "../../hooks/usePathNavigation/usePathNavigation";

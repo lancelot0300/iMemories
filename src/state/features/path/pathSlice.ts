@@ -3,6 +3,7 @@ import axios, { AxiosError, CancelTokenSource } from "axios";
 import { LoginResponse, Path, Response, UnknownPathResponse } from "../../../types";
 import { loginSuccess } from "../auth/authSlice";
 import { RejectedWithValueActionFromAsyncThunk } from "@reduxjs/toolkit/dist/matchers";
+import { ref } from "yup";
 
 type InitialState = {
   data: Response;
@@ -10,6 +11,7 @@ type InitialState = {
   history: Path[];
   status: "idle" | "loading" | "failed" | "completed";
   error: string | null;
+  cache: { [key: string]: Response };
 };
 
 
@@ -38,7 +40,13 @@ const refreshPath = async (
 let cancelSource: CancelTokenSource
  const setPathAsync = createAsyncThunk(
   "path/setPathAsync",
-  async (path: string, { rejectWithValue, dispatch }) => {
+  async (path: string, { rejectWithValue, dispatch, getState }) => {
+
+    const { path: { cache } } = getState() as { path: InitialState }
+
+    if(cache[path]) {
+      return cache[path]
+    }
 
     const fetchPath = async (path: string) => {
       if (cancelSource) {
@@ -95,7 +103,14 @@ let cancelSource: CancelTokenSource
 
 export const setUnknownPathAsync = createAsyncThunk(
   "path/setUnknownPathAsync",
-  async (path: string, { rejectWithValue, dispatch }) => {
+  async (path: string, { rejectWithValue, dispatch, getState }) => {
+
+    const { path: { cache } } = getState() as { path: InitialState }
+
+    if(cache[path]) {
+      return cache[path]
+    }
+
       if (cancelSource) {
         cancelSource.cancel("New request initiated");
       }
@@ -106,6 +121,7 @@ export const setUnknownPathAsync = createAsyncThunk(
         const url = path
           ? `${process.env.REACT_APP_API_URL}/folder/path/${path}`
           : `${process.env.REACT_APP_API_URL}/folder`;
+
         const { data } = await axios.get(url, {
           withCredentials: true,
           cancelToken: cancelSource.token,
@@ -174,9 +190,10 @@ export const setUnkownPathAndFetchAsync = createAsyncThunk(
 );
 
 export const refreshPathAsync = createAsyncThunk(
-  "path/refreshPath",
+  "path/refreshPathAsync",
   async (pathToRefresh: string, { getState, dispatch }) => {
     const { actualPath } = (getState() as { path: InitialState }).path;
+    dispatch(refreshCashe(pathToRefresh));
     if (actualPath[actualPath.length - 1].id === pathToRefresh) {
       await dispatch(setPathAsync(actualPath[actualPath.length - 1].id));
     }
@@ -196,6 +213,7 @@ const initialState: InitialState = {
   history: [],
   status: "idle",
   error: null,
+  cache: {},
 };
 
 const pathSlice = createSlice({
@@ -209,6 +227,10 @@ const pathSlice = createSlice({
     setActualPath: (state, action: PayloadAction<number>) => {
       state.actualPath = state.history.slice(0, action.payload + 1);
     },
+    refreshCashe: (state, action: PayloadAction<string>) => {
+      const path = action.payload;
+      delete state.cache[path];
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -218,6 +240,7 @@ const pathSlice = createSlice({
           state.data = action.payload;
           state.status = "completed";
           state.error = null;
+          state.cache[action.payload.id] = action.payload
         }
       )
       .addCase(setPathAsync.rejected, (state, action: RejectedWithValueActionFromAsyncThunk<typeof setPathAsync>) => {
@@ -239,6 +262,7 @@ const pathSlice = createSlice({
         state.history = payload.path;
         state.error = null;
         state.status = "completed";
+        state.cache[payload.folder.id] = payload.folder
       })
       .addCase(setUnkownPathAndFetchAsync.rejected, (state, action: RejectedWithValueActionFromAsyncThunk<typeof setUnkownPathAndFetchAsync>) => {
         state.status = "failed";
@@ -253,6 +277,6 @@ export const getActualPath = (state: InitialState) =>
 export const isNextPathInHistory = (state: InitialState) =>
   state.history.length > state.actualPath.length;
 
-export const { setActualPath, setNewPath } = pathSlice.actions;
+export const { setActualPath, setNewPath, refreshCashe } = pathSlice.actions;
 
 export default pathSlice.reducer;

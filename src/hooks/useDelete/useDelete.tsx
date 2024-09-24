@@ -33,9 +33,7 @@ function useDelete(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) 
     } catch (error) {
       console.error("Error deleting:", error);
     } finally {
-      if (setIsOpened) {
         dispatch(refreshPathAsync(actualPath.id));
-      }
     }
   };
 
