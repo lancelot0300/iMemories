@@ -7,6 +7,7 @@ import { RootState } from "./state/store";
 import PersistLogin from "./components/PersistLogin/PersistLogin";
 import Register from "./pages/Register/Register";
 import NotFound from "./pages/NotFound/NotFound";
+import Settings from "./pages/Settings/Settings";
 
 
 function App() {
@@ -50,6 +51,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path=":id" element={<Home/>} />
             </Route>
+            
+            <Route path="/settings" element={<Settings/>} />
             
           </Route>
           <Route path="*" element={<NotFound />} />

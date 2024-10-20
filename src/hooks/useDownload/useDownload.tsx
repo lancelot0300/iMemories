@@ -19,21 +19,21 @@ function useDownload(
         const isFile = "fileDetails" in file;
         const isFolder = "folderDetails" in file
 
-        const FiloOrFolder = isFile ? file.fileDetails : isFolder ? file.folderDetails : null;
+        const FileOrFolder = isFile ? file.fileDetails : isFolder ? file.folderDetails : null;
 
-        if (!FiloOrFolder) continue;
+        if (!FileOrFolder) continue;
 
-        const fileUrl = `${process.env.REACT_APP_API_URL}/file/download/${FiloOrFolder.id}`
-        const folderUrl = `${process.env.REACT_APP_API_URL}/folder/download/${FiloOrFolder.id}`
+        const fileUrl = `${process.env.REACT_APP_API_URL}/file/download/${FileOrFolder.id}`
+        const folderUrl = `${process.env.REACT_APP_API_URL}/folder/download/${FileOrFolder.id}`
         const url = isFile ? fileUrl : isFolder ? folderUrl : null
         if (!url) return
 
         dispatch(
           addFileStatus({
-            index: FiloOrFolder.id,
-            fileName: FiloOrFolder.name,
+            index: FileOrFolder.id,
+            fileName: FileOrFolder.name,
             progress: "0%",
-            status: "Uploading",
+            status: "Downloading",
           })
         );
 
@@ -45,7 +45,7 @@ function useDownload(
               if (progressEvent.progress) {
                 dispatch(
                   updateFileStatus({
-                    index: FiloOrFolder.id,
+                    index: FileOrFolder.id,
                     progress: `${(progressEvent.progress * 100).toFixed(0)}%`,
                     status:
                       progressEvent.progress >= 1 ? "Downloaded" : "Downloading",
@@ -61,7 +61,7 @@ function useDownload(
           const link = document.createElement("a");
           link.href = downloadUrl;
 
-          const fileName = FiloOrFolder.name
+          const fileName = FileOrFolder.name
           link.setAttribute("download", fileName);
           document.body.appendChild(link);
           link.click();
@@ -71,7 +71,7 @@ function useDownload(
         } catch (error) {
           dispatch(
             updateFileStatus({
-              index: FiloOrFolder.id,
+              index: FileOrFolder.id,
               progress: "Failed",
               status: "Error",
             })

@@ -1,4 +1,4 @@
-import {  useRef } from "react";
+import { useRef } from "react";
 import { FolderGridContainer, HomeContainer } from "./home.styles";
 import { ContextRef } from "../../types";
 import useDropHook from "../../hooks/useDrop/useDropFiles";
@@ -20,8 +20,6 @@ function Home() {
   const { data, status, error } = useAppSelector((state) => state.path);
   const dispatch = useAppDispatch();
 
-
-
   useDropHook({ containerRef });
   const {
     handleMouseDown,
@@ -34,38 +32,33 @@ function Home() {
   } = useSelection({ containerRef, data });
 
   const handleClickWithContext = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.preventDefault()
-    event.stopPropagation()
+    event.preventDefault();
+    event.stopPropagation();
     if (isMobileDevice()) {
       handleContextMenu(event);
+    } else {
+      handleClick(event);
     }
-    else{
-      handleClick(event)
-    }
-  }
-
+  };
 
   const handleContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    e.stopPropagation()
+    e.stopPropagation();
     clearDrag();
     if (!isClickedContainer(containerRef, e)) return;
     contextMenuRef.current?.handleOpenContext(e, true);
     dispatch(selectFiles([]));
   };
-  
 
-  if (status === "loading" ) {
+  if (status === "loading") {
     return <LoadingHome withMenu />;
   }
 
-  if(error === "Request failed with status code 404") return <NotFound/>
+  if (error === "Request failed with status code 404") return <NotFound />;
 
   if (status === "failed") {
-    return <div>Failed to load data</div>; 
+    return <div>Failed to load data</div>;
   }
-
-
 
   return (
     <>
