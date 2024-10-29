@@ -11,9 +11,14 @@ type Props = {
 const RenderFolders = ({ data, allFilesRefs, clearDrag }: Props) => {
   if (!data) return null;
 
+
+  const sortedFolders = [...(data.childFolders || [])].sort((a: FolderType, b: FolderType) => {
+    return (b.folderDetails.isStared ? 1 : 0) - (a.folderDetails.isStared ? 1 : 0);
+  });
+
   return (
     <>
-     {data.childFolders?.map((item: FolderType) => {
+     {sortedFolders.map((item: FolderType) => {
         return (
           <FolderElement
             key={item.id}

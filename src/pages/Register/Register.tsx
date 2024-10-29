@@ -113,7 +113,7 @@ function Register() {
                 placeholder="Email"
                 value={values.Email}
                 onChange={handleChange}
-                $isError={!!errors.Email || status}
+                $isError={(!!errors.Email && !!touched.Email) || !!status}
               />
               <ErrorMessage $isError={!!errors.Email}>
                 {touched.Email ? errors.Email : ""}
@@ -127,7 +127,7 @@ function Register() {
                 placeholder="Username"
                 value={values.Username}
                 onChange={handleChange}
-                $isError={!!errors.Username || status}
+                $isError={(!!errors.Username && !!touched.Username) || !!status}
               />
               <ErrorMessage $isError={!!errors.Username}>
                 {touched.Username ? errors.Username : ""}
@@ -142,7 +142,7 @@ function Register() {
                 placeholder="Password"
                 value={values.Password}
                 onChange={handleChange}
-                $isError={!!errors.Password || status}
+                $isError={(!!errors.Password && !!touched.Password) || !!status}
               />
               <ErrorMessage $isError={!!errors.Password && !!touched.Password}>
                 {touched.Password ? errors.Password : ""}
@@ -157,7 +157,7 @@ function Register() {
                 placeholder="Confirm Password"
                 value={values.ConfirmPassword}
                 onChange={handleChange}
-                $isError={!!errors.ConfirmPassword || status}
+                $isError={(!!errors.Password && !!touched.Password) || !!status}
               />
               <ErrorMessage $isError={!!errors.Password && !!touched.Password}>
                 {touched.ConfirmPassword ? errors.ConfirmPassword : ""}

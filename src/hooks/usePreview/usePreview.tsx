@@ -35,19 +35,24 @@ function usePreview({
   const selectedElement = element ? element : (selectedFiles[0] as FileType);
 
   const isVideo = (file: FileType) => {
+    const extToLower = file.fileDetails?.extension?.toLowerCase();
+
     return (
-      file.fileDetails?.extension === ".mp4" ||
-      file.fileDetails?.extension === ".webm" ||
-      file.fileDetails?.extension === ".ogg"
+      extToLower === ".mp4" ||
+      extToLower === ".webm" ||
+      extToLower === ".ogg"
     );
   };
 
   const isImage = (file: FileType) => {
+
+    const extToLower = file.fileDetails?.extension?.toLowerCase();
+
     return (
-      file.fileDetails?.extension === ".png" ||
-      file.fileDetails?.extension === ".jpg" ||
-      file.fileDetails?.extension === ".jpeg" ||
-      file.fileDetails?.extension === ".gif"
+      extToLower === ".png" ||
+      extToLower === ".jpg" ||
+      extToLower === ".jpeg" ||
+      extToLower === ".gif"
     );
   };
 

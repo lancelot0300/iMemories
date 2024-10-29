@@ -15,6 +15,7 @@ import { InfoTextRef } from "../../types";
 import { isMobileDevice } from "../../utils/homeUtils";
 import InfoContextOption from "../ContextComponents/InfoContextOption/InfoContextOption";
 import CutContextOption from "../ContextComponents/CutContextOption/CutContextOption";
+import AddToFavOption from "../ContextComponents/AddToFavOption/AddToFavOption";
 
 type Props = {
   element: "Home" | "Folder" | "File";
@@ -43,13 +44,16 @@ const ContextMenu = forwardRef(({ element, infoTextRef, fileElementRef }: Props,
       CutContextOption,
       PasteContextOption,
       DeleteContextOption,
+      AddToFavOption
     ],
     File: [
       PreviewContextOption,
+      RenameContextOption,
       DownloadContextOption,
       CopyContextOption,
       CutContextOption,
       DeleteContextOption,
+      AddToFavOption
     ]
   };
 

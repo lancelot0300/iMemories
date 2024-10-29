@@ -19,6 +19,7 @@ type Props = {
     fileName: string;
     progress: string;
     index: string;
+    controller?: AbortController;
   };
 };
 
@@ -40,6 +41,9 @@ function Status({ request }: Props) {
 
   const handleCloseClick = (e :React.MouseEvent<SVGSVGElement>, index: string) => {
     e.stopPropagation()
+    if(request.controller) {
+      request.controller.abort();
+    }
     dispatch(removeFileStatus(index));
   };
 

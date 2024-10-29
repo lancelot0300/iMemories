@@ -23,6 +23,8 @@ function useDownload(
 
         if (!FileOrFolder) continue;
 
+        const uuid = crypto.randomUUID();
+
         const fileUrl = `${process.env.REACT_APP_API_URL}/file/download/${FileOrFolder.id}`
         const folderUrl = `${process.env.REACT_APP_API_URL}/folder/download/${FileOrFolder.id}`
         const url = isFile ? fileUrl : isFolder ? folderUrl : null
@@ -30,7 +32,7 @@ function useDownload(
 
         dispatch(
           addFileStatus({
-            index: FileOrFolder.id,
+            index: uuid,
             fileName: FileOrFolder.name,
             progress: "0%",
             status: "Downloading",
@@ -45,7 +47,7 @@ function useDownload(
               if (progressEvent.progress) {
                 dispatch(
                   updateFileStatus({
-                    index: FileOrFolder.id,
+                    index: uuid,
                     progress: `${(progressEvent.progress * 100).toFixed(0)}%`,
                     status:
                       progressEvent.progress >= 1 ? "Downloaded" : "Downloading",

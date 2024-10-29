@@ -11,9 +11,16 @@ type Props = {
 const RenderFiles = ({ data, allFilesRefs, clearDrag }: Props) => {
   if (!data) return null;
 
+
+  const sortedFiles = [...(data.files || [])].sort((a: FileType, b: FileType) => {
+    return (b.fileDetails.isStared ? 1 : 0) - (a.fileDetails.isStared ? 1 : 0);
+  });
+  
+
+
   return (
     <>
-      {data.files?.map((item: FileType, index: number) => {
+      {sortedFiles.map((item: FileType, index: number) => {
         return (
           <FileElement
           key={item.id}

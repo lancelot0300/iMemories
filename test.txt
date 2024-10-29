@@ -1,0 +1,224 @@
+Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Int32), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid), @p4='?' (DbType = Int64)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [FileChunks] ([Id], [ChunkIndex], [FileUploadProgressId], [OwnerId], [Size])
+      VALUES (@p0, @p1, @p2, @p3, @p4);
+fail: Microsoft.EntityFrameworkCore.Database.Command[20102]
+      Failed executing DbCommand (10ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime2), @p6='?' (Size = 4000), @p7='?' (Size = 4000), @p8='?' (DbType = Boolean), @p9='?' (DbType = DateTime2), @p10='?' (DbType = DateTime2), @p11='?' (Size = 4000), @p12='?' (DbType = Int64)], CommandType='Text', CommandTimeout='30']
+      SET NOCOUNT ON;
+      INSERT INTO [Files] ([Id], [CategoryId], [FolderId], [OwnerId])
+      VALUES (@p0, @p1, @p2, @p3);
+      INSERT INTO [FileDetails] ([Id], [CreatedDate], [Description], [Extension], [IsStared], [LastModifiedDate], [LastOpenedDate], [Name], [Size])
+      VALUES (@p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12);
+fail: Microsoft.EntityFrameworkCore.Update[10000]
+      An exception occurred in the database while saving changes for context type 'MemoriesBackend.Infrastructure.Contexts.ApplicationDbContext'.
+      Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+       ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot insert the value NULL into column 'Description', table 'memories.dbo.FileDetails'; column does not allow nulls. INSERT fails.
+      The statement has been terminated.
+         at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+         at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+      --- End of stack trace from previous location ---
+         at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+         at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+      --- End of stack trace from previous location ---
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+      ClientConnectionId:17a3929b-39fb-4507-b772-2e756aa958e4
+      Error Number:515,State:2,Class:16
+         --- End of inner exception stack trace ---
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+      Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+       ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot insert the value NULL into column 'Description', table 'memories.dbo.FileDetails'; column does not allow nulls. INSERT fails.
+      The statement has been terminated.
+         at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+         at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+      --- End of stack trace from previous location ---
+         at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+         at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+      --- End of stack trace from previous location ---
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+      ClientConnectionId:17a3929b-39fb-4507-b772-2e756aa958e4
+      Error Number:515,State:2,Class:16
+         --- End of inner exception stack trace ---
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+fail: MemoriesBackend.API.Middlewares.GlobalExceptionHandlingMiddleware[0]
+      An unexpected error occurred.
+      Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+       ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot insert the value NULL into column 'Description', table 'memories.dbo.FileDetails'; column does not allow nulls. INSERT fails.
+      The statement has been terminated.
+         at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+         at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+      --- End of stack trace from previous location ---
+         at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+         at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+      --- End of stack trace from previous location ---
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+      ClientConnectionId:17a3929b-39fb-4507-b772-2e756aa958e4
+      Error Number:515,State:2,Class:16
+         --- End of inner exception stack trace ---
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at MemoriesBackend.Infrastructure.Repositories.GenericRepository`1.Save() in C:\ProgramData\Jenkins\.jenkins\workspace\memories-back\MemoriesBackend.Infrastructure\Repositories\GenericRepository.cs:line 161
+         at MemoriesBackend.Application.Services.FileDatabaseService.SaveAsync() in C:\ProgramData\Jenkins\.jenkins\workspace\memories-back\MemoriesBackend.Core\Services\FileDatabaseService.cs:line 103
+         at MemoriesBackend.Application.Services.FileManagementService.AddFileUsingChunksAsync(Stream stream, String fileName, Int32 chunkIndex, Int32 totalChunks, Guid folderId, Guid fileId) in C:\ProgramData\Jenkins\.jenkins\workspace\memories-back\MemoriesBackend.Core\Services\FileManagementService.cs:line 119
+         at MemoriesBackend.API.Controllers.FileController.AddChunk(IFormFile fileData, String fileName, Int32 chunkIndex, Int32 totalChunks, Guid folderId, Guid fileId) in C:\ProgramData\Jenkins\.jenkins\workspace\memories-back\MemoriesBackend.API\Controllers\FileController.cs:line 82
+         at lambda_method372(Closure, Object)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+         at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+         at MemoriesBackend.API.Middlewares.SessionValidationMiddleware.InvokeAsync(HttpContext context, ILogger`1 _logger, UserManager`1 userManager) in C:\ProgramData\Jenkins\.jenkins\workspace\memories-back\MemoriesBackend.API\Middlewares\SessionValidationMiddleware.cs:line 33
+         at MemoriesBackend.API.Middlewares.GlobalExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\ProgramData\Jenkins\.jenkins\workspace\memories-back\MemoriesBackend.API\Middlewares\GlobalExceptionHandlingMiddleware.cs:line 26
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__currentUserId_0='?' (DbType = Guid), @__fileUploadProgressId_1='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT [t].[Id], [t].[Extension], [t].[LastModifiedDate], [t].[Name], [t].[OwnerId], [t].[RelativePath], [t].[Size], [t].[TotalChunks], [f0].[Id], [f0].[ChunkIndex], [f0].[FileUploadProgressId], [f0].[OwnerId], [f0].[Size]
+      FROM (
+          SELECT TOP(1) [f].[Id], [f].[Extension], [f].[LastModifiedDate], [f].[Name], [f].[OwnerId], [f].[RelativePath], [f].[Size], [f].[TotalChunks]
+          FROM [FileUploadProgress] AS [f]
+          WHERE [f].[OwnerId] = @__currentUserId_0 AND [f].[Id] = @__fileUploadProgressId_1 AND [f].[Id] = @__fileUploadProgressId_1
+      ) AS [t]
+      LEFT JOIN [FileChunks] AS [f0] ON [t].[Id] = [f0].[FileUploadProgressId]
+      ORDER BY [t].[Id]
+fail: MemoriesBackend.API.Middlewares.GlobalExceptionHandlingMiddleware[0]
+      An unexpected error occurred.
+      System.ApplicationException: Invalid chunk index.
+         at MemoriesBackend.Application.Services.FileManagementService.AddFileUsingChunksAsync(Stream stream, String fileName, Int32 chunkIndex, Int32 totalChunks, Guid folderId, Guid fileId) in C:\ProgramData\Jenkins\.jenkins\workspace\memories-back\MemoriesBackend.Core\Services\FileManagementService.cs:line 80
+         at MemoriesBackend.API.Controllers.FileController.AddChunk(IFormFile fileData, String fileName, Int32 chunkIndex, Int32 totalChunks, Guid folderId, Guid fileId) in C:\ProgramData\Jenkins\.jenkins\workspace\memories-back\MemoriesBackend.API\Controllers\FileController.cs:line 82
+         at lambda_method372(Closure, Object)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+         at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+         at MemoriesBackend.API.Middlewares.SessionValidationMiddleware.InvokeAsync(HttpContext context, ILogger`1 _logger, UserManager`1 userManager) in C:\ProgramData\Jenkins\.jenkins\workspace\memories-back\MemoriesBackend.API\Middlewares\SessionValidationMiddleware.cs:line 33
+         at MemoriesBackend.API.Middlewares.GlobalExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\ProgramData\Jenkins\.jenkins\workspace\memories-back\MemoriesBackend.API\Middlewares\GlobalExceptionHandlingMiddleware.cs:line 26
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@__currentUserId_0='?' (DbType = Guid), @__fileUploadProgressId_1='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT [t].[Id], [t].[Extension], [t].[LastModifiedDate], [t].[Name], [t].[OwnerId], [t].[RelativePath], [t].[Size], [t].[TotalChunks], [f0].[Id], [f0].[ChunkIndex], [f0].[FileUploadProgressId], [f0].[OwnerId], [f0].[Size]
+      FROM (
+          SELECT TOP(1) [f].[Id], [f].[Extension], [f].[LastModifiedDate], [f].[Name], [f].[OwnerId], [f].[RelativePath], [f].[Size], [f].[TotalChunks]
+          FROM [FileUploadProgress] AS [f]
+          WHERE [f].[OwnerId] = @__currentUserId_0 AND [f].[Id] = @__fileUploadProgressId_1 AND [f].[Id] = @__fileUploadProgressId_1
+      ) AS [t]
+      LEFT JOIN [FileChunks] AS [f0] ON [t].[Id] = [f0].[FileUploadProgressId]
+      ORDER BY [t].[Id]
+fail: MemoriesBackend.API.Middlewares.GlobalExceptionHandlingMiddleware[0]
+      An unexpected error occurred.
+      System.ApplicationException: Invalid chunk index.
+         at MemoriesBackend.Application.Services.FileManagementService.AddFileUsingChunksAsync(Stream stream, String fileName, Int32 chunkIndex, Int32 totalChunks, Guid folderId, Guid fileId) in C:\ProgramData\Jenkins\.jenkins\workspace\memories-back\MemoriesBackend.Core\Services\FileManagementService.cs:line 80
+         at MemoriesBackend.API.Controllers.FileController.AddChunk(IFormFile fileData, String fileName, Int32 chunkIndex, Int32 totalChunks, Guid folderId, Guid fileId) in C:\ProgramData\Jenkins\.jenkins\workspace\memories-back\MemoriesBackend.API\Controllers\FileController.cs:line 82
+         at lambda_method372(Closure, Object)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+         at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+         at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+         at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+         at MemoriesBackend.API.Middlewares.SessionValidationMiddleware.InvokeAsync(HttpContext context, ILogger`1 _logger, UserManager`1 userManager) in C:\ProgramData\Jenkins\.jenkins\workspace\memories-back\MemoriesBackend.API\Middlewares\SessionValidationMiddleware.cs:line 33
+         at MemoriesBackend.API.Middlewares.GlobalExceptionHandlingMiddleware.InvokeAsync(HttpContext context) in C:\ProgramData\Jenkins\.jenkins\workspace\memories-back\MemoriesBackend.API\Middlewares\GlobalExceptionHandlingMiddleware.cs:line 26
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[@__currentUserId_0='?' (DbType = Guid), @__folderId_1='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [f].[Id], [f].[HierarchyId], [f].[OldHierarchyId], [f].[OwnerId], [f].[ParentFolderId], [f0].[Id], [f0].[CreatedDate], [f0].[IsStared], [f0].[LastModifiedDate], [f0].[LastOpenedDate], [f0].[Name]
+      FROM [Folders] AS [f]
+      LEFT JOIN [FolderDetails] AS [f0] ON [f].[Id] = [f0].[Id]
+      WHERE [f].[OwnerId] = @__currentUserId_0 AND [f].[Id] = @__folderId_1
+      ORDER BY [f].[Id], [f0].[Id]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@__currentUserId_0='?' (DbType = Guid), @__folderId_1='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT [t0].[Id], [t0].[HierarchyId], [t0].[OldHierarchyId], [t0].[OwnerId], [t0].[ParentFolderId], [t0].[Id0], [t0].[CreatedDate], [t0].[IsStared], [t0].[LastModifiedDate], [t0].[LastOpenedDate], [t0].[Name], [t].[Id], [t].[Id0]
+      FROM (
+          SELECT TOP(1) [f].[Id], [f0].[Id] AS [Id0]
+          FROM [Folders] AS [f]
+          LEFT JOIN [FolderDetails] AS [f0] ON [f].[Id] = [f0].[Id]
+          WHERE [f].[OwnerId] = @__currentUserId_0 AND [f].[Id] = @__folderId_1
+      ) AS [t]
+      INNER JOIN (
+          SELECT [f1].[Id], [f1].[HierarchyId], [f1].[OldHierarchyId], [f1].[OwnerId], [f1].[ParentFolderId], [f2].[Id] AS [Id0], [f2].[CreatedDate], [f2].[IsStared], [f2].[LastModifiedDate], [f2].[LastOpenedDate], [f2].[Name]
+          FROM [Folders] AS [f1]
+          LEFT JOIN [FolderDetails] AS [f2] ON [f1].[Id] = [f2].[Id]
+      ) AS [t0] ON [t].[Id] = [t0].[ParentFolderId]
+      ORDER BY [t].[Id], [t].[Id0]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@__currentUserId_0='?' (DbType = Guid), @__folderId_1='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT [t0].[Id], [t0].[CategoryId], [t0].[FolderId], [t0].[OwnerId], [t0].[Id0], [t0].[CreatedDate], [t0].[Description], [t0].[Extension], [t0].[IsStared], [t0].[LastModifiedDate], [t0].[LastOpenedDate], [t0].[Name], [t0].[Size], [t].[Id], [t].[Id0]
+      FROM (
+          SELECT TOP(1) [f].[Id], [f0].[Id] AS [Id0]
+          FROM [Folders] AS [f]
+          LEFT JOIN [FolderDetails] AS [f0] ON [f].[Id] = [f0].[Id]
+          WHERE [f].[OwnerId] = @__currentUserId_0 AND [f].[Id] = @__folderId_1
+      ) AS [t]
+      INNER JOIN (
+          SELECT [f1].[Id], [f1].[CategoryId], [f1].[FolderId], [f1].[OwnerId], [f2].[Id] AS [Id0], [f2].[CreatedDate], [f2].[Description], [f2].[Extension], [f2].[IsStared], [f2].[LastModifiedDate], [f2].[LastOpenedDate], [f2].[Name], [f2].[Size]
+          FROM [Files] AS [f1]
+          LEFT JOIN [FileDetails] AS [f2] ON [f1].[Id] = [f2].[Id]
+      ) AS [t0] ON [t].[Id] = [t0].[FolderId]
+      ORDER BY [t].[Id], [t].[Id0]

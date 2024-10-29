@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAppSelector } from "../../state/store";
+import { useAppDispatch, useAppSelector } from "../../state/store";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import CreateModal from "../../components/CreateModal/CreateModal";
@@ -7,20 +7,22 @@ import { InputWrapper, StyledField } from "../../pages/Login/login.styles";
 import { UploadModal } from "../../components/ContextComponents/CreateFolderOption/createFolder.styles";
 import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import { UploadFormButton } from "../useCreateFolder/useCreateFolder.styles";
+import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
+import { refreshPathAsync } from "../../state/features/path/pathSlice";
 
 type IFormValues = {
   name: string;
 };
 
 function useRename(setIsOpened: (value: boolean) => void) {
-  // const { data } = useAppSelector((state) => state.path);
+  const { data } = useAppSelector((state) => state.path);
   const [isOpenedModal, setIsOpenedModal] = useState(false);
   const { selectedFiles } = useAppSelector((state) => state.files);
-  // const dispatch = useAppDispatch();
-  // const axiosPrivate = useAxiosPrivate();
+  const dispatch = useAppDispatch();
+  const axiosPrivate = useAxiosPrivate();
 
   const schema = yup.object().shape({
-    folder: yup.string().required("Folder name is required"),
+    name: yup.string().required("Folder name is required"),
   });
 
   const handleCloseClick = () => {
@@ -30,22 +32,24 @@ function useRename(setIsOpened: (value: boolean) => void) {
 
   const onSubmit = async ({ name }: IFormValues) => {
     const cleanedName = name.trim();
-    console.log(cleanedName);
-    //   try {
-    //     await axiosPrivate.post(
-    //       process.env.REACT_APP_API_URL + "/folder",
-    //       {
-    //         parentFolderId: data.id,
-    //         folderDetails: {
-    //           Name: cleanedName,
-    //         },
-    //       },
-    //       { withCredentials: true }
-    //     );
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    //   dispatch(refreshPathAsync(data.id));
+    const isFile = "fileDetails" in selectedFiles[0];
+    const isFolder = "folderDetails" in selectedFiles[0];
+
+    const url = isFile ? "/file" : isFolder ? "/folder" : "";
+
+      try {
+        await axiosPrivate.patch(
+          process.env.REACT_APP_API_URL + url + "/rename",
+          {
+            id: selectedFiles[0].id,
+            name: cleanedName,
+          },
+          { withCredentials: true }
+        );
+      } catch (error) {
+        console.error(error);
+      }
+      dispatch(refreshPathAsync(data.id));
   };
 
   const { values, errors, touched, handleChange, handleSubmit } =
