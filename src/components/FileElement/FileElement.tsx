@@ -1,6 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { ActiveFiles, ContextRef, FileType, InfoTextRef } from "../../types";
-import { FileElementContainer, Icon, Name } from "./fileElement.styles";
+import { FileElementContainer, Icon, Name, StarIcon } from "./fileElement.styles";
 import useFile from "../../hooks/useFile/useFile";
 import ContextMenu from "../ContextMenu/ContextMenu";
 import { renderIcon } from "../../utils/iconsUtils";
@@ -8,6 +8,8 @@ import InfoText from "../InfoText/InfoText";
 import { InfoElement } from "../InfoText/infoText.styles";
 import { getDateString, isMobileDevice, returnSize } from "../../utils/homeUtils";
 import usePreview from "../../hooks/usePreview/usePreview";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
 
 interface IProps {
   element: FileType;
@@ -85,12 +87,13 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
             />
           </Icon>
           <Name>{element.fileDetails.name}</Name>
-          <InfoText ref={infoTextRef}>
+          {element.fileDetails.isStared && <StarIcon><FontAwesomeIcon icon={faStar} /></StarIcon>}
+        </FileElementContainer>
+        <InfoText ref={infoTextRef}>
             <InfoElement>Name: {element.fileDetails.name}</InfoElement>
             <InfoElement>Size: {returnSize(element.fileDetails.size)}</InfoElement>
             <InfoElement>Created: {getDateString(element.fileDetails.createdDate)} UTC</InfoElement>
           </InfoText>
-        </FileElementContainer>
         <ContextMenu element="File" ref={contextMenuRef} infoTextRef={infoTextRef} fileElementRef={fileElementRef} />
         {renderPreview()}
       </>

@@ -1,9 +1,9 @@
 import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { ActiveFiles, ContextRef, FolderType } from "../../types";
-import { FolderElementContainer, Icon, Name } from "./folderElement.styles";
+import { FolderElementContainer, Icon, Name, StarIcon } from "./folderElement.styles";
 import { useAppDispatch } from "../../state/store";
 import ContextMenu from "../ContextMenu/ContextMenu";
-import { faFolder } from "@fortawesome/free-solid-svg-icons";
+import { faFolder, faStar } from "@fortawesome/free-solid-svg-icons";
 import useFile from "../../hooks/useFile/useFile";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { setNewPathAndFetchAsync } from "../../state/features/path/pathSlice";
@@ -94,7 +94,9 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
           <Icon>
             <FontAwesomeIcon size="3x" color="#8ec8f3" icon={faFolder} />
           </Icon>
+          {element.folderDetails.isStared && <StarIcon><FontAwesomeIcon icon={faStar} /></StarIcon>}
           <Name>{element.folderDetails.name}</Name>
+        </FolderElementContainer>
           <InfoText ref={infoTextRef}>
             <InfoElement>Name: {element.folderDetails.name}</InfoElement>
             <InfoElement>
@@ -102,7 +104,6 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
               {getDateString(element.folderDetails.createdDate) + " UTC"}
             </InfoElement>
           </InfoText>
-        </FolderElementContainer>
         <ContextMenu
           element="Folder"
           ref={contextMenuRef}

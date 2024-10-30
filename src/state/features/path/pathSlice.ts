@@ -3,7 +3,6 @@ import axios, { AxiosError, CancelTokenSource } from "axios";
 import { LoginResponse, Path, Response, UnknownPathResponse } from "../../../types";
 import { loginSuccess } from "../auth/authSlice";
 import { RejectedWithValueActionFromAsyncThunk } from "@reduxjs/toolkit/dist/matchers";
-import { ref } from "yup";
 
 type InitialState = {
   data: Response;

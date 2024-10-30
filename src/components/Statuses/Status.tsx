@@ -13,13 +13,13 @@ import {
   getActualElement,
   removeFileStatus,
 } from "../../state/features/requests/requestsSlice";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate/useAxiosPrivate";
 
 type Props = {
   request: {
     fileName: string;
     progress: string;
     index: string;
-    controller?: AbortController;
   };
 };
 
@@ -30,6 +30,8 @@ function Status({ request }: Props) {
   const dispatch = useAppDispatch();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
 
+const axiosPrivate = useAxiosPrivate();
+  
   useEffect(() => {
     if (!actualStatus) return;
     if (["Uploaded", "Downloaded", "Error"].includes(actualStatus.status)) {
@@ -41,9 +43,7 @@ function Status({ request }: Props) {
 
   const handleCloseClick = (e :React.MouseEvent<SVGSVGElement>, index: string) => {
     e.stopPropagation()
-    if(request.controller) {
-      request.controller.abort();
-    }
+    console.log(axiosPrivate.get)
     dispatch(removeFileStatus(index));
   };
 

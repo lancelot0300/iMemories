@@ -37,6 +37,8 @@ function useRename(setIsOpened: (value: boolean) => void) {
 
     const url = isFile ? "/file" : isFolder ? "/folder" : "";
 
+    if(!url) return;
+
       try {
         await axiosPrivate.patch(
           process.env.REACT_APP_API_URL + url + "/rename",

@@ -92,7 +92,7 @@ export const RememberMe = styled.div`
   justify-content: center;
   gap: 10px;
   color: #fff;
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin-top: 10px;
   cursor: pointer;
 

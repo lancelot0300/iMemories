@@ -143,12 +143,12 @@ function Login() {
 
           {isSubmitting && <Loading/>}
 
+
+            <Button disabled={isSubmitting} type="submit">Submit</Button>
             <RememberMe>
               <input type="checkbox" ref={rememberRef} name="remember" />
               <label htmlFor="remember">Remember me</label>
             </RememberMe>
-
-            <Button disabled={isSubmitting} type="submit">Submit</Button>
           </form>
 
           <RegisterInfo onClick={() => navigate("/register")}>
