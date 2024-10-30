@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 
 export const StyledInfoWrapper = styled.div<{ $posX: number, $posY: number }>`
-    position: absolute;
+    position: fixed;
     width: fit-content;
     height: fit-content;
     max-width: 200px;

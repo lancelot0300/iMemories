@@ -32,11 +32,11 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(({ children }, ref) => {
     const x = target.getBoundingClientRect().left + targetWidth - 10;
     const y = target.getBoundingClientRect().top + targetHeight - 10;
 
-    pos.current = {x,y}
+    pos.current = {x, y}
 
     timeoutRef.current = window.setTimeout(() => {
       setVisible(true);
-    }, 300);
+    }, 500);
   };
 
   const hideInfo = () => {
@@ -59,7 +59,8 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(({ children }, ref) => {
   };
 
   useLayoutEffect(() => {
-    if (visible && wrapperRef.current) {
+    if(!visible) return
+    if(!wrapperRef.current) return
       const {x, y} = pos.current
 
       const tooltipWidth = wrapperRef.current.offsetWidth;
@@ -70,13 +71,14 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(({ children }, ref) => {
       const isOverY = y + tooltipHeight + padding > window.innerHeight;
 
       if (isOverX) {
-        pos.current.x = Math.max(padding, window.innerWidth - tooltipWidth - padding);
+        wrapperRef.current.style.left = x - tooltipWidth - padding + "px";
       }
 
       if (isOverY) {
-        pos.current.y = Math.max(padding, window.innerHeight - tooltipHeight - padding);
+        wrapperRef.current.style.top = y - tooltipHeight - padding + "px";
       }
-    }
+
+    
   }, [visible]);
 
 
@@ -84,6 +86,8 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(({ children }, ref) => {
  
   return (
     <>
+     {console.log(pos.current)}
+     {console.log(window.innerWidth)}
       {isMobileDevice() && (
         <Overlay
           $wihoutOverlay={true}

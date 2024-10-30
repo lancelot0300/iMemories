@@ -96,7 +96,6 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
           </Icon>
           {element.folderDetails.isStared && <StarIcon><FontAwesomeIcon icon={faStar} /></StarIcon>}
           <Name>{element.folderDetails.name}</Name>
-        </FolderElementContainer>
           <InfoText ref={infoTextRef}>
             <InfoElement>Name: {element.folderDetails.name}</InfoElement>
             <InfoElement>
@@ -104,6 +103,7 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
               {getDateString(element.folderDetails.createdDate) + " UTC"}
             </InfoElement>
           </InfoText>
+        </FolderElementContainer>
         <ContextMenu
           element="Folder"
           ref={contextMenuRef}
