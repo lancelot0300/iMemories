@@ -5,11 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 
 type Props = {
-    setIsOpened: React.Dispatch<React.SetStateAction<boolean>>
+  setIsOpenedContext: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function DownloadContextOption({setIsOpened}: Props) {
-    const {handleDownloadClick} = useDownload(setIsOpened)
+function DownloadContextOption({setIsOpenedContext}: Props) {
+    const {handleDownloadClick} = useDownload(setIsOpenedContext)
 
   return (
     <ContextOption onClick={handleDownloadClick}><FontAwesomeIcon icon={faDownload} /><span>Download</span></ContextOption>

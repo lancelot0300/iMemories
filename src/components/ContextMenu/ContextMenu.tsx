@@ -65,7 +65,7 @@ const ContextMenu = forwardRef(({ element, infoTextRef, fileElementRef }: Props,
     <CreateModal isOpened={isOpenedContext} setIsOpened={setIsOpenedContex} withoutOverlay >
       <ContextWrapper $posX={posX.current} $posY={posY.current} ref={contextMenuRefs}>
         {options.map((OptionComponent, index) => (
-          <OptionComponent key={index} setIsOpened={setIsOpenedContex} setIsOpenedContext={setIsOpenedContex}/>
+          <OptionComponent key={index} setIsOpenedContext={setIsOpenedContex}/>
         ))}
         {isMobileDevice() && element !== "Home" && <InfoContextOption infoTextRef={infoTextRef} fileElementRef={fileElementRef} setIsOpened={setIsOpenedContex} setIsOpenedContext={setIsOpenedContex}/>}
       </ContextWrapper>

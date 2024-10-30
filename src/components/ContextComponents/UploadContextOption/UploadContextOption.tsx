@@ -5,11 +5,11 @@ import useUpload from "../../../hooks/useUpload/useUpload";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
-  setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpenedContext: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function UploadContextOption({setIsOpened}: Props) {
-  const { createModal, setIsOpenedModal } = useUpload(setIsOpened);
+function UploadContextOption({setIsOpenedContext}: Props) {
+  const { createModal, setIsOpenedModal } = useUpload(setIsOpenedContext);
 
   const handleOptionClick = () => {
     setIsOpenedModal(true);

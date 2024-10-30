@@ -6,11 +6,11 @@ import { setLastCommand } from '../../../state/features/files/filesSlice'
 import { useAppDispatch, useAppSelector } from '../../../state/store'
 
 type Props = {
-    setIsOpened: React.Dispatch<React.SetStateAction<boolean>>
+  setIsOpenedContext: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 
-function CutContextOption({setIsOpened}: Props) {
+function CutContextOption({setIsOpenedContext}: Props) {
 
     
   const { selectedFiles } = useAppSelector((state) => state.files);
@@ -19,7 +19,7 @@ function CutContextOption({setIsOpened}: Props) {
   
   const handleCutClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation()
-    setIsOpened && setIsOpened(false);
+    setIsOpenedContext && setIsOpenedContext(false);
     if(selectedFiles.length === 0) return
     dispatch(setLastCommand({files: selectedFiles, command: "cut"}))
 }

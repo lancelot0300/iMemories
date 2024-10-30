@@ -29,7 +29,7 @@ function useDelete(setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>) 
 
     try {
       dispatch(setLastCommand({ files: selectedFiles, command: "delete" }));
-      await Promise.all([...deleteFilesPromises, deleteFoldersPromises]);
+      await Promise.all([...deleteFilesPromises, ...deleteFoldersPromises]);
     } catch (error) {
       console.error("Error deleting:", error);
     } finally {

@@ -5,11 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 type Props = {
-    setIsOpened: React.Dispatch<React.SetStateAction<boolean>>
+  setIsOpenedContext: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function DeleteContextOption({setIsOpened}: Props) {
-    const {handleDeleteClick} = useDelete(setIsOpened)
+function DeleteContextOption({setIsOpenedContext}: Props) {
+    const {handleDeleteClick} = useDelete(setIsOpenedContext)
 
     return (
       <ContextOption onClick={handleDeleteClick}><FontAwesomeIcon icon={faTrash} size='1x' /><span>Delete</span></ContextOption>

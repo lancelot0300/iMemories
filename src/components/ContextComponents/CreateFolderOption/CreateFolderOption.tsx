@@ -4,12 +4,12 @@ import { ContextOption } from "../../FileElement/fileElement.styles";
 import useCreateFolder from "../../../hooks/useCreateFolder/useCreateFolder";
 
 type Props = {
-  setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpenedContext: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function CreateFolderOption({setIsOpened}: Props) {
+function CreateFolderOption({setIsOpenedContext}: Props) {
 
-  const {createModal, setIsOpenedModal, } = useCreateFolder(setIsOpened);
+  const {createModal, setIsOpenedModal, } = useCreateFolder(setIsOpenedContext);
 
   const handleOptionClick = () => {
     setIsOpenedModal(true);

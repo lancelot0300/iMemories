@@ -57,7 +57,7 @@ function useUpload(setIsOpened?: (value: boolean) => void) {
               timeout: 15000,
               onUploadProgress: (progressEvent) => {
                 if (progressEvent && progressEvent.total) {
-                  const progress = (chunkIndex * chunkSize + progressEvent.loaded) / totalSize;
+                  const progress =  (chunkIndex + progressEvent.loaded / progressEvent.total) / numberOfChunks;
                   dispatch(updateFileStatus({
                     index: fileId,
                     progress: `${(progress * 100).toFixed(0)}%`,

@@ -5,11 +5,11 @@ import { faPaste } from "@fortawesome/free-regular-svg-icons";
 import usePaste from "../../../hooks/usePaste/usePaste";
 
 type Props = {
-  setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpenedContext: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function PasteContextOption({ setIsOpened }: Props) {
-  const { handlePasteClick, storageFiles, selectedFiles } = usePaste(setIsOpened);
+function PasteContextOption({ setIsOpenedContext }: Props) {
+  const { handlePasteClick, storageFiles, selectedFiles } = usePaste(setIsOpenedContext);
 
   if (storageFiles.length === 0 || selectedFiles.length > 1) return null;
 
