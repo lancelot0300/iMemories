@@ -6,6 +6,7 @@ type InitialState = {
     selectedFiles: SelectedElements
     storageFiles: SelectedElements;  
     lastCommand: string;
+    cutOrign: string | null;
 };
 
 
@@ -13,6 +14,7 @@ const initialState: InitialState = {
     selectedFiles: [],
     storageFiles: [],
     lastCommand: "",
+    cutOrign: null,
 };
 
 type Commands = "copy" | "cut" | "paste" | "delete";
@@ -20,6 +22,7 @@ type Commands = "copy" | "cut" | "paste" | "delete";
 type LastCommandPayload = {
     command: Commands;
     files?: SelectedElements;
+    cutOrign?: string;
 };
 
 
@@ -54,6 +57,7 @@ const filesSlice = createSlice({
           break;
         case "cut":
           state.storageFiles = action.payload.files || state.selectedFiles;
+          state.cutOrign = action.payload.cutOrign || null;
           break;
         case "delete":
           state.storageFiles = state.storageFiles.filter((stateEl) => {
@@ -62,6 +66,7 @@ const filesSlice = createSlice({
           break;
         default:
           state.storageFiles = [];
+          state.cutOrign = null;
       }
 
       state.lastCommand = action.payload.command;

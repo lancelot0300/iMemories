@@ -86,8 +86,6 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(({ children }, ref) => {
  
   return (
     <>
-     {console.log(pos.current)}
-     {console.log(window.innerWidth)}
       {isMobileDevice() && (
         <Overlay
           $wihoutOverlay={true}

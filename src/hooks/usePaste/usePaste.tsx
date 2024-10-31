@@ -3,14 +3,14 @@ import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import { setLastCommand } from "../../state/features/files/filesSlice";
 import { FileType, FolderType } from "../../types";
-import { refreshPathAsync } from "../../state/features/path/pathSlice";
+import { refreshCashe, refreshPathAsync } from "../../state/features/path/pathSlice";
 
 
 function usePaste(setIsOpened: React.Dispatch<React.SetStateAction<boolean>>) {
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useAppDispatch();
   const { data } = useAppSelector((state) => state.path);
-  const { storageFiles, selectedFiles, lastCommand } = useAppSelector((state) => state.files);
+  const { storageFiles, selectedFiles, lastCommand, cutOrign } = useAppSelector((state) => state.files);
 
   const selectedElement = selectedFiles.length === 1 && selectedFiles[0].id;
 
@@ -40,6 +40,7 @@ function usePaste(setIsOpened: React.Dispatch<React.SetStateAction<boolean>>) {
       }
     );
     dispatch(setLastCommand({ command: "paste" }));
+    cutOrign && dispatch(refreshCashe(cutOrign))
     await requset
       .then(() => {
         dispatch(refreshPathAsync(data.id));
