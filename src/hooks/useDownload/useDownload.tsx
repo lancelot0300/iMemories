@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import useAxiosPrivate from "../useAxiosPrivate/useAxiosPrivate";
 import {
   addFileStatus,
   updateFileStatus,
 } from "../../state/features/requests/requestsSlice";
+import { addController, removeController } from "../../utils/abortControlerMap";
 
 function useDownload(
   setIsOpened?: React.Dispatch<React.SetStateAction<boolean>>
 ) {
   const { selectedFiles } = useAppSelector((state) => state.files);
+
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useAppDispatch();
   const handleDownloadClick = async (event: React.MouseEvent<HTMLDivElement>) => {
@@ -30,6 +32,10 @@ function useDownload(
         const url = isFile ? fileUrl : isFolder ? folderUrl : null
         if (!url) return
 
+        const controller = new AbortController();
+        addController(uuid, controller);
+    
+
         dispatch(
           addFileStatus({
             index: uuid,
@@ -43,6 +49,7 @@ function useDownload(
           const response = await axiosPrivate.get(url, {
             withCredentials: true,
             responseType: "blob",
+            signal: controller.signal,
             onDownloadProgress(progressEvent) {
               if (progressEvent.progress) {
                 dispatch(
@@ -79,6 +86,9 @@ function useDownload(
             })
           );
         }
+        finally {
+          removeController(uuid);
+        }
       }
     } catch (error) {
       console.error("Error downloading file:", error);
@@ -88,6 +98,7 @@ function useDownload(
       }
     }
   };
+
 
   return { handleDownloadClick };
 }

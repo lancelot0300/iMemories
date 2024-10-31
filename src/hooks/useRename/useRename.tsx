@@ -72,7 +72,7 @@ function useRename(setIsOpened: (value: boolean) => void) {
     dispatch(refreshPathAsync(data.id));
   };
 
-  const { values, errors, touched, handleChange, handleSubmit, setValues } =
+  const { values, errors, touched, handleChange, handleSubmit, setValues, isSubmitting } =
     useFormik<{ name: string }>({
       initialValues: {
         name: "",
@@ -104,7 +104,7 @@ function useRename(setIsOpened: (value: boolean) => void) {
                   {touched.name && errors.name ? errors.name : ""}
                 </ErrorMessage>
               </InputWrapper>
-              <UploadFormButton type="submit">Rename</UploadFormButton>
+              <UploadFormButton disabled={isSubmitting} type="submit">Rename</UploadFormButton>
             </form>
           </UploadModal>
         </CreateModal>

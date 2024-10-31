@@ -4,13 +4,13 @@ type FileStatusState = {
   index: string;
   fileName: string;
   progress: string;
-  status: "Uploading" | "Error"  | "Downloading" | "Downloaded" | "Uploaded";
+  status: "Uploading" | "Error"  | "Downloading" | "Downloaded" | "Uploaded" | "Canceled";
 };
 
 type UpdateStateType = {
   index: string;
   progress: string;
-  status: "Uploading" | "Error"  | "Downloading" | "Downloaded" | "Uploaded";
+  status: "Uploading" | "Error"  | "Downloading" | "Downloaded" | "Uploaded" | "Canceled";
 };
 
 type InitialState = {

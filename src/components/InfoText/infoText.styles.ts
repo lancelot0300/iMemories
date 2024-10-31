@@ -12,6 +12,7 @@ export const StyledInfoWrapper = styled.div<{ $posX: number, $posY: number }>`
     padding: 5px;
     font-size: 12px;
     text-wrap: nowrap;
+    z-index: 1;
 `;
 
 export const InfoElement = styled.div`

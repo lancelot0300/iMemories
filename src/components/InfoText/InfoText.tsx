@@ -71,11 +71,11 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(({ children }, ref) => {
       const isOverY = y + tooltipHeight + padding > window.innerHeight;
 
       if (isOverX) {
-        wrapperRef.current.style.left = x - tooltipWidth - padding + "px";
+        wrapperRef.current.style.left = Math.max(0, x - tooltipWidth - padding) + "px";
       }
 
       if (isOverY) {
-        wrapperRef.current.style.top = y - tooltipHeight - padding + "px";
+        wrapperRef.current.style.top = Math.max(0, y - tooltipHeight - padding) + "px";
       }
 
     

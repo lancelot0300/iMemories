@@ -60,6 +60,7 @@ type FolderTypeProps = {
 }
 
 export const FileElementContainer = styled.div<FolderTypeProps>`
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -127,4 +128,9 @@ export const ContextOption = styled.div`
 `
 
 export const StarIcon = styled.div`
+    position: absolute;
+    top: 40px;
+    right: 17px;
+    color: #f1c40f;
+    font-size: 20px;
 `

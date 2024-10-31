@@ -12,8 +12,10 @@ import { useAppDispatch, useAppSelector } from "../../state/store";
 import {
   getActualElement,
   removeFileStatus,
+  updateFileStatus,
 } from "../../state/features/requests/requestsSlice";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate/useAxiosPrivate";
+import { abortController } from "../../utils/abortControlerMap";
 
 type Props = {
   request: {
@@ -43,7 +45,14 @@ const axiosPrivate = useAxiosPrivate();
 
   const handleCloseClick = (e :React.MouseEvent<SVGSVGElement>, index: string) => {
     e.stopPropagation()
-    console.log(axiosPrivate.get)
+    abortController(request.index);
+    dispatch(
+      updateFileStatus({
+        index: request.index,
+        progress: "Canceled",
+        status: "Canceled",
+      })
+    );
     dispatch(removeFileStatus(index));
   };
 

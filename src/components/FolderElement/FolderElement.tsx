@@ -94,8 +94,8 @@ const FolderElement = forwardRef<ActiveFiles | null, IProps>(
           <Icon>
             <FontAwesomeIcon size="3x" color="#8ec8f3" icon={faFolder} />
           </Icon>
-          {element.folderDetails.isStared && <StarIcon><FontAwesomeIcon icon={faStar} /></StarIcon>}
           <Name>{element.folderDetails.name}</Name>
+          {element.folderDetails.isStared && <StarIcon><FontAwesomeIcon icon={faStar} /></StarIcon>}
           <InfoText ref={infoTextRef}>
             <InfoElement>Name: {element.folderDetails.name}</InfoElement>
             <InfoElement>
