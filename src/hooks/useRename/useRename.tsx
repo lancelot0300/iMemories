@@ -23,21 +23,9 @@ function useRename(setIsOpened: (value: boolean) => void) {
   const nameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (isOpenedModal) {
-      const initialName =
-        "fileDetails" in selectedFiles[0]
-          ? selectedFiles[0].fileDetails.name
-          : "folderDetails" in selectedFiles[0]
-          ? selectedFiles[0].folderDetails.name
-          : "";
-      setValues({ name: initialName });
-    }
-  }, [isOpenedModal, selectedFiles]);
-
-  useEffect(() => {
     if (!nameRef.current) return;
     nameRef.current.focus();
-    nameRef.current.setSelectionRange(0, nameRef.current.value.indexOf("."));
+    nameRef.current.setSelectionRange(0, nameRef.current.value.lastIndexOf("."));
   }, [nameRef.current]);
 
   const schema = yup.object().shape({
@@ -48,6 +36,18 @@ function useRename(setIsOpened: (value: boolean) => void) {
     setIsOpenedModal(false);
     setIsOpened(false);
   };
+
+  const handleOpenClick = () => {
+    const initialName =
+    "fileDetails" in selectedFiles[0]
+      ? selectedFiles[0].fileDetails.name
+      : "folderDetails" in selectedFiles[0]
+      ? selectedFiles[0].folderDetails.name
+      : "";
+  setValues({ name: initialName });
+  setIsOpenedModal(true)
+
+  }
 
   const onSubmit = async ({ name }: IFormValues) => {
     const cleanedName = name.trim();
@@ -85,7 +85,7 @@ function useRename(setIsOpened: (value: boolean) => void) {
     if (!isOpenedModal) return null;
 
     return (
-      <>
+      <> 
         <CreateModal isOpened={isOpenedModal} setIsOpened={handleCloseClick}>
           <UploadModal>
             <form onSubmit={handleSubmit} title="Folder">
@@ -112,7 +112,7 @@ function useRename(setIsOpened: (value: boolean) => void) {
     );
   };
 
-  return { setIsOpenedModal, createModal, selectedFiles, isOpenedModal };
+  return { setIsOpenedModal, createModal, selectedFiles, isOpenedModal, handleOpenClick };
 }
 
 export default useRename;

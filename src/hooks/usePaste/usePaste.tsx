@@ -41,6 +41,7 @@ function usePaste(setIsOpened: React.Dispatch<React.SetStateAction<boolean>>) {
     );
     dispatch(setLastCommand({ command: "paste" }));
     cutOrign && dispatch(refreshCashe(cutOrign))
+    setIsOpened(false);
     await requset
       .then(() => {
         dispatch(refreshPathAsync(data.id));
@@ -48,7 +49,6 @@ function usePaste(setIsOpened: React.Dispatch<React.SetStateAction<boolean>>) {
       .catch((error) => {
         console.log(error);
       });
-    setIsOpened(false);
   };
 
   return { handlePasteClick, storageFiles, selectedFiles };

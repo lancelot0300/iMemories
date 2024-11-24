@@ -84,7 +84,6 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
 
     return (
       <>
-      {console.log("FileElement")}
         <FileElementContainer
           ref={fileElementRef}
           onClick={handleClick}

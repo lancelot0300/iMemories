@@ -41,8 +41,9 @@ function Register() {
     Password: yup.string().min(5).required("Password is required"),
     ConfirmPassword: yup
       .string()
-      .oneOf([yup.ref("Password")], "Passwords must match"),
-  });
+      .oneOf([yup.ref("Password")], "Passwords must match")
+      .required("Enter your password again")
+    });
 
   const onSubmit = async ({ Username, Password, Email }: ILoginFormValues) => {
     setStatus("")
@@ -157,9 +158,9 @@ function Register() {
                 placeholder="Confirm Password"
                 value={values.ConfirmPassword}
                 onChange={handleChange}
-                $isError={(!!errors.Password && !!touched.Password) || !!status}
+                $isError={(!!errors.ConfirmPassword && !!touched.ConfirmPassword) || !!status}
               />
-              <ErrorMessage $isError={!!errors.Password && !!touched.Password}>
+              <ErrorMessage $isError={!!errors.ConfirmPassword && !!touched.ConfirmPassword}>
                 {touched.ConfirmPassword ? errors.ConfirmPassword : ""}
               </ErrorMessage>
             </InputWrapper>

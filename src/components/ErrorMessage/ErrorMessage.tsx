@@ -15,11 +15,11 @@ const StyledErrorMessage = styled.span<IInputErrorProps>`
   font-size: small;
   font-weight: 300;
   line-height: 1.4;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align:center;
   color: ${(props) => (props.$isError ? "red" : "white")};
+  width: 100%;
 `;
 
 

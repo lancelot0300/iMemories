@@ -9,18 +9,15 @@ type Props = {
 };
 
 function RenameContextOption({ setIsOpenedContext }: Props) {
-  const { createModal, setIsOpenedModal, selectedFiles } =
+  const { createModal,  selectedFiles, handleOpenClick } =
     useRename(setIsOpenedContext);
 
-  const handleOptionClick = () => {
-    setIsOpenedModal(true);
-  };
 
   if (selectedFiles.length > 1) return null;
 
   return (
     <>
-      <ContextOption onClick={handleOptionClick}>
+      <ContextOption onClick={handleOpenClick}>
         <FontAwesomeIcon icon={faPenToSquare} />
         <span>Rename</span>
       </ContextOption>

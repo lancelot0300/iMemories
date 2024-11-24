@@ -3,6 +3,7 @@ import axios, { AxiosError, CancelTokenSource } from "axios";
 import { LoginResponse, Path, Response, UnknownPathResponse } from "../../../types";
 import { loginSuccess } from "../auth/authSlice";
 import { RejectedWithValueActionFromAsyncThunk } from "@reduxjs/toolkit/dist/matchers";
+import { clearFiles } from "../files/filesSlice";
 
 type InitialState = {
   data: Response;
@@ -193,6 +194,7 @@ export const refreshPathAsync = createAsyncThunk(
   async (pathToRefresh: string, { getState, dispatch }) => {
     const { actualPath } = (getState() as { path: InitialState }).path;
     dispatch(refreshCashe(pathToRefresh));
+    dispatch(clearFiles())
     if (actualPath[actualPath.length - 1].id === pathToRefresh) {
       await dispatch(setPathAsync(actualPath[actualPath.length - 1].id));
     }
