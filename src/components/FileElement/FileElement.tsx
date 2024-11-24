@@ -79,8 +79,18 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
 
       if (isMobileDevice()) return;
       if (fileElementRef.current)
-        infoTextRef.current?.showInfo(fileElementRef.current);
+      infoTextRef.current?.showInfo(fileElementRef.current);
     };
+
+    const handleMouseDown = () => {
+      infoTextRef.current?.hideInfo();
+    }
+
+    const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      console.log(e)
+      
+    }
 
     return (
       <>
@@ -92,6 +102,9 @@ const FileElement = forwardRef<ActiveFiles | null, IProps>(
           $isCopy={isCopy}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={() => infoTextRef.current?.hideInfo()}
+          onMouseDown={handleMouseDown}
+          onDragStart={handleDragStart}
+          draggable
         >
           <Icon>
             <img

@@ -28,8 +28,14 @@ export const HomeContainer = styled.div<ContainerProps>`
     cursor: ${({ $isDragging }) => $isDragging ? 'crosshair' : 'default'};
 
 
-    &.dragging ${FolderGridContainer} {
-      border: 2px dashed #212121;
+    &.dragging:before {
+    content: "";
+    display: block;
+    width: calc(100% - 20px);
+    height: calc(var(--appHeight) - 20px);
+    margin: 10px;
+    border: 1px dotted #fff;
+    position: fixed;
     }
 `;
 

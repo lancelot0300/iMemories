@@ -33,6 +33,7 @@ const InfoText = forwardRef<InfoTextRef, InfoTextProps>(({ children }, ref) => {
     const y = target.getBoundingClientRect().top + targetHeight - 10;
 
     pos.current = {x, y}
+    
 
     timeoutRef.current = window.setTimeout(() => {
       setVisible(true);

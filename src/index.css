@@ -6,12 +6,16 @@
   padding: 0; 
   user-select: none;
 }
-html{
-  font-size: 62.5%; 
+
+:root {
   --btn-color: #BB86FC;
   --navBarHeight: 60px;
-  --appHeight: calc(100vh - var(--navBarHeight));
+  --appHeight: calc(100svh - var(--navBarHeight));
   --background-color: #040a19;
+}
+
+html{
+  font-size: 62.5%; 
 }
 
 body{
@@ -22,7 +26,7 @@ body{
   background-color: var(--background-color)
 }
 body, html, .App{
-  height: 100%; 
+  height: 100svh; 
   scroll-behavior: smooth; 
 }
 
